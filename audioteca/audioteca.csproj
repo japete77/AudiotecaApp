@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
+    <PackageReference Include="RestSharp" Version="106.10.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Acr.UserDialogs" Version="7.0.35" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Pages\MainPage.xaml.cs" />
+    <Compile Remove="Pages\ByTitlePage.xaml.cs" />
+    <Compile Remove="Pages\ByAuthorTitlesPage.xaml.cs" />
+    <Compile Remove="Pages\ByAuthorPage.xaml.cs" />
+    <Compile Remove="Pages\AudioLibraryPage.xaml.cs" />
+    <Compile Remove="App.xaml.cs" />
+    <Compile Remove="AudioLibraryPage.cs" />
+  </ItemGroup>
+<ItemGroup>
+  <Compile Include="Pages\MainPage.xaml.cs">
+    <DependentUpon>MainPage.xaml</DependentUpon>
+  </Compile>
+  <Compile Include="Pages\ByTitlePage.xaml.cs">
+    <DependentUpon>ByTitlePage.xaml</DependentUpon>
+  </Compile>
+  <Compile Include="Pages\ByAuthorTitlesPage.xaml.cs">
+    <DependentUpon>ByAuthorTitlesPage.xaml</DependentUpon>
+  </Compile>
+  <Compile Include="Pages\ByAuthorPage.xaml.cs">
+    <DependentUpon>ByAuthorPage.xaml</DependentUpon>
+  </Compile>
+  <Compile Include="Pages\AudioLibraryPage.xaml.cs">
+    <DependentUpon>AudioLibraryPage.xaml</DependentUpon>
+  </Compile>
+  <Compile Include="App.xaml.cs">
+    <DependentUpon>App.xaml</DependentUpon>
+  </Compile>
+</ItemGroup>
+<ItemGroup>
+    <Folder Include="Pages\" />
+    <Folder Include="Services\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\Api\" />
+    <Folder Include="Models\Audiobook\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Models\Session\" />
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
+</Project>

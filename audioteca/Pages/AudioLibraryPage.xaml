@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Helpers="clr-namespace:audioteca.Helpers"
+    x:Class="audioteca.AudioLibraryPage"
+    Padding="20">
+    <StackLayout>
+        <StackLayout IsVisible="{Binding Authenticated}">
+            <Button
+                Text="Por Título"
+                FontSize="Large"
+                BackgroundColor="Black"
+                TextColor="White"
+                Clicked="ButtonClick_ByTitle" FontAttributes="Bold"></Button>
+            <Button
+                Text="Por Autor"
+                FontSize="Large"
+                BackgroundColor="Black"
+                TextColor="White"
+                Clicked="ButtonClick_ByAuthor" FontAttributes="Bold"></Button>
+        </StackLayout>
+        <StackLayout IsVisible="{Binding Authenticated, Converter={Helpers:InverseBoolConverter}}">
+            <Label Text="Introduzca sus credenciales de acceso" FontSize="Medium" HorizontalTextAlignment="Center"></Label>
+            <Entry Placeholder="Usuario" FontSize="Medium" Text="{Binding Username}"/>
+            <Entry Placeholder="Contraseña" FontSize="Medium" IsPassword="True" Text="{Binding Password}"/>
+            <Button
+                Text="Acceder"
+                FontSize="Large"
+                BackgroundColor="Black"
+                TextColor="White"
+                Clicked="ButtonClick_Login" FontAttributes="Bold"></Button>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>
