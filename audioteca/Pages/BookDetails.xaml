@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Helpers="clr-namespace:audioteca.Helpers"
+    x:Class="audioteca.BookDetails"
+    Padding="20"
+    IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
+    <ScrollView>
+        <StackLayout>
+            <StackLayout>
+                <Label Text="{Binding AudioBook.Title}" FontSize="Large" FontAttributes="Bold"></Label>
+                <Label Text="{Binding AudioBook.Author.Name}"></Label>
+                <Label Text="{Binding AudioBook, Converter={Helpers:GetDuration}}"></Label>
+            </StackLayout>
+            <StackLayout Padding="0,20,0,0">
+                <Label Text="{Binding AudioBook.Comments}"></Label>
+            </StackLayout>
+            <StackLayout Padding="0,20,0,0">
+                <Button
+                    Text="Descargar"
+                    FontSize="Large"
+                    BackgroundColor="Black"
+                    TextColor="White"
+                    Clicked="ButtonClick_Download" FontAttributes="Bold"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

@@ -18,32 +18,42 @@
     <PackageReference Include="Acr.UserDialogs" Version="7.0.35" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Pages\MainPage.xaml.cs" />
-    <Compile Remove="Pages\ByTitlePage.xaml.cs" />
-    <Compile Remove="Pages\ByAuthorTitlesPage.xaml.cs" />
     <Compile Remove="Pages\ByAuthorPage.xaml.cs" />
+    <Compile Remove="Pages\ByTitlePage.xaml.cs" />
     <Compile Remove="Pages\AudioLibraryPage.xaml.cs" />
+    <Compile Remove="Pages\MainPage.xaml.cs" />
+    <Compile Remove="Pages\ByAuthorTitlesPage.xaml.cs" />
+    <Compile Remove="Pages\BookDetails.xaml.cs" />
     <Compile Remove="App.xaml.cs" />
-    <Compile Remove="AudioLibraryPage.cs" />
   </ItemGroup>
 <ItemGroup>
+  <Compile Include="Pages\AudioLibraryPage.xaml.cs">
+    <DependentUpon>AudioLibraryPage.xaml</DependentUpon>
+    <SubType>Code</SubType>
+  </Compile>
   <Compile Include="Pages\MainPage.xaml.cs">
     <DependentUpon>MainPage.xaml</DependentUpon>
+    <SubType>Code</SubType>
   </Compile>
   <Compile Include="Pages\ByTitlePage.xaml.cs">
     <DependentUpon>ByTitlePage.xaml</DependentUpon>
+    <SubType>Code</SubType>
   </Compile>
   <Compile Include="Pages\ByAuthorTitlesPage.xaml.cs">
     <DependentUpon>ByAuthorTitlesPage.xaml</DependentUpon>
+    <SubType>Code</SubType>
   </Compile>
   <Compile Include="Pages\ByAuthorPage.xaml.cs">
     <DependentUpon>ByAuthorPage.xaml</DependentUpon>
+    <SubType>Code</SubType>
   </Compile>
-  <Compile Include="Pages\AudioLibraryPage.xaml.cs">
-    <DependentUpon>AudioLibraryPage.xaml</DependentUpon>
+  <Compile Include="Pages\BookDetails.xaml.cs">
+    <DependentUpon>BookDetails.xaml</DependentUpon>
+    <SubType>Code</SubType>
   </Compile>
   <Compile Include="App.xaml.cs">
     <DependentUpon>App.xaml</DependentUpon>
+    <SubType>Code</SubType>
   </Compile>
 </ItemGroup>
 <ItemGroup>

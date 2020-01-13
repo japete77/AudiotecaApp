@@ -42,7 +42,11 @@ namespace audioteca.Services
             request.AddJsonBody(new LoginRequest { User = user, Password = password });
 
             var result = ApiClient.Instance.Client.Post<LoginResult>(request);
-            if (result.ResponseStatus != ResponseStatus.Completed)
+            if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedException();
+            }
+            else if (result.ResponseStatus != ResponseStatus.Completed)
             {
                 throw new UnavailableException();
             }
@@ -63,6 +67,38 @@ namespace audioteca.Services
             }
 
             return result.Data.Success;
+        }
+
+        public bool IsAuthenticated()
+        {
+            if (_sessionInfo == null) return false;
+
+            if (!string.IsNullOrEmpty(_sessionInfo.Session))
+            {
+                // Check if session is still valid
+                try
+                {
+                    AsyncHelper.RunSync(() => AudioLibrary.Instance.GetBooksByTitle(1, 1));
+                    return true;
+                }
+                catch (UnauthorizedException)
+                {
+                    try
+                    {
+                        if (Login(_sessionInfo.Username, _sessionInfo.Password))
+                        {
+                            return true;
+                        }
+                    }
+                    catch
+                    {
+                    }
+
+                    return false;
+                }
+            }
+
+            return false;
         }
 
         public string GetSession()

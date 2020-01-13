@@ -5,7 +5,7 @@
     xmlns:Helpers="clr-namespace:audioteca.Helpers"
     x:Class="audioteca.AudioLibraryPage"
     Padding="20">
-    <StackLayout>
+    <StackLayout IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}" >
         <StackLayout IsVisible="{Binding Authenticated}">
             <Button
                 Text="Por Título"
@@ -30,6 +30,7 @@
                 BackgroundColor="Black"
                 TextColor="White"
                 Clicked="ButtonClick_Login" FontAttributes="Bold"></Button>
+            <Label Text="{Binding ErrorMessage}" FontSize="Medium" HorizontalTextAlignment="Center" TextColor="Red"></Label>
         </StackLayout>
     </StackLayout>
 </ContentPage>
