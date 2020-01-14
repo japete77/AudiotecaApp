@@ -65,5 +65,6 @@
     <Folder Include="Helpers\" />
     <Folder Include="Models\Session\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 </Project>

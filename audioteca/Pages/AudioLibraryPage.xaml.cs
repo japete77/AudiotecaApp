@@ -3,35 +3,30 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Acr.UserDialogs;
 using audioteca.Services;
+using audioteca.ViewModels;
 using Xamarin.Forms;
 
 namespace audioteca
 {
     public partial class AudioLibraryPage : ContentPage, INotifyPropertyChanged
     {
-        public new event PropertyChangedEventHandler PropertyChanged;
-
-        public bool Authenticated { get; set; } = false;
-        public bool Loading { get; set; } = true;
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string ErrorMessage { get; set; }
+        private AudioLibraryPageViewModel _model;
 
         public AudioLibraryPage()
-        {
+        {            
             UserDialogs.Instance.ShowLoading("Verificando credenciales");
 
-            this.BindingContext = this;
+            _model = new AudioLibraryPageViewModel();
+            this.BindingContext = _model;
+            _model.Loading = true;
             Title = "Audioteca";
             InitializeComponent();
         }
 
         protected override void OnAppearing()
         {
-            Authenticated = Session.Instance.IsAuthenticated();
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Authenticated)));
-            Loading = false;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Loading)));
+            _model.Authenticated = Session.Instance.IsAuthenticated();
+            _model.Loading = false;
             UserDialogs.Instance.HideLoading();
         }
 
@@ -53,28 +48,28 @@ namespace audioteca
                 try
                 {
                     int iUsername;
-                    if (Int32.TryParse(Username, out iUsername))
+                    if (Int32.TryParse(_model.Username, out iUsername))
                     {
-                        if (Session.Instance.Login(iUsername, Password))
+                        if (Session.Instance.Login(iUsername, _model.Password))
                         {
-                            Authenticated = true;
-                            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Authenticated)));
+                            _model.Authenticated = true;
                         }
                         else
                         {
-                            ErrorMessage = "Usuario o contraseña incorrectos";
-                            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
+                            _model.ErrorMessage = "Usuario o contraseña incorrectos";
                         }
+                    }
+                    else
+                    {
+                        _model.ErrorMessage = "Usuario o contraseña incorrectos";
                     }
                 }
                 catch
                 {
-                    ErrorMessage = "Audioteca no disponible";
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
+                    _model.ErrorMessage = "Audioteca no disponible";
                 }
                 UserDialogs.Instance.HideLoading();
             });
         }
-        
     }
 }

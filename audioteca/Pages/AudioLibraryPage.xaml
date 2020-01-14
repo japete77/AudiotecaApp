@@ -4,8 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:Helpers="clr-namespace:audioteca.Helpers"
     x:Class="audioteca.AudioLibraryPage"
-    Padding="20">
-    <StackLayout IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}" >
+    Padding="20"
+    IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
+    <StackLayout>
         <StackLayout IsVisible="{Binding Authenticated}">
             <Button
                 Text="Por Título"
