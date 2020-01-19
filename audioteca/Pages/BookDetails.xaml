@@ -10,19 +10,38 @@
         <StackLayout>
             <StackLayout>
                 <Label Text="{Binding AudioBook.Title}" FontSize="Large" FontAttributes="Bold"></Label>
-                <Label Text="{Binding AudioBook.Author.Name}"></Label>
-                <Label Text="{Binding AudioBook, Converter={Helpers:GetDuration}}"></Label>
+                <Label Text="{Binding AudioBook.Author.Name}" FontSize="Medium"></Label>
+                <Label Text="{Binding AudioBook, Converter={Helpers:GetDuration}}" FontSize="Medium"></Label>
             </StackLayout>
             <StackLayout Padding="0,20,0,0">
-                <Label Text="{Binding AudioBook.Comments}"></Label>
+                <Label Text="{Binding AudioBook.Comments}" FontSize="Medium"></Label>
             </StackLayout>
-            <StackLayout Padding="0,20,0,0">
+            <StackLayout Padding="0,20,0,0" IsVisible="{Binding ShowStatus}">
+                <Label Text="{Binding StatusDescription}" FontSize="Medium" HorizontalTextAlignment="Center"></Label>
+            </StackLayout>
+            <StackLayout Padding="0,20,0,0" IsVisible="{Binding ShowDownload}">
                 <Button
                     Text="Descargar"
                     FontSize="Large"
-                    BackgroundColor="Black"
+                    BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_Download" FontAttributes="Bold"></Button>
+            </StackLayout>
+            <StackLayout Padding="0,20,0,0" IsVisible="{Binding ShowCancel}">
+                <Button
+                    Text="Cancelar"
+                    FontSize="Large"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    Clicked="ButtonClick_Cancel" FontAttributes="Bold"></Button>
+            </StackLayout>
+            <StackLayout Padding="0,20,0,0" IsVisible="{Binding ShowListen}">
+                <Button
+                    Text="Escuchar"
+                    FontSize="Large"
+                    BackgroundColor="OliveDrab"
+                    TextColor="White"
+                    Clicked="ButtonClick_Listen" FontAttributes="Bold"></Button>
             </StackLayout>
         </StackLayout>
     </ScrollView>

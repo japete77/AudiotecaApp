@@ -1,12 +1,12 @@
-﻿using System;
-
-using Android.App;
-using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Android.OS;
+﻿
 using Acr.UserDialogs;
+using Android.App;
+using Android.Content;
+using Android.Content.PM;
+using Android.OS;
+using Android.Runtime;
+using audioteca.Helpers;
+using System.Linq;
 
 namespace audioteca.Droid
 {
@@ -23,6 +23,10 @@ namespace audioteca.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             UserDialogs.Init(this);
+
+            var externalDir = Application.Context.GetExternalFilesDirs(null).FirstOrDefault();
+            AudioBookDataDir.DataDir = externalDir?.AbsolutePath;
+
             LoadApplication(new App());
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

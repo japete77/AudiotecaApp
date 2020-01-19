@@ -11,13 +11,13 @@
             <Button
                 Text="Por Título"
                 FontSize="Large"
-                BackgroundColor="Black"
+                BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Clicked="ButtonClick_ByTitle" FontAttributes="Bold"></Button>
             <Button
                 Text="Por Autor"
                 FontSize="Large"
-                BackgroundColor="Black"
+                BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Clicked="ButtonClick_ByAuthor" FontAttributes="Bold"></Button>
         </StackLayout>

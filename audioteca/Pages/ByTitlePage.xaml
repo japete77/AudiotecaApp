@@ -20,11 +20,5 @@
 			    </DataTemplate>
 		    </ListView.ItemTemplate>
 	    </ListView>
-        <Button
-            Text="Ver Más"
-            FontSize="Large"
-            BackgroundColor="Black"
-            TextColor="White"
-            Clicked="ButtonClick_LoadMore" FontAttributes="Bold"></Button>  
     </StackLayout>
 </ContentPage>

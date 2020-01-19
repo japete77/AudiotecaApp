@@ -10,7 +10,7 @@ namespace audioteca
 {
     public partial class AudioLibraryPage : ContentPage, INotifyPropertyChanged
     {
-        private AudioLibraryPageViewModel _model;
+        private readonly AudioLibraryPageViewModel _model;
 
         public AudioLibraryPage()
         {            
@@ -23,9 +23,9 @@ namespace audioteca
             InitializeComponent();
         }
 
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
-            _model.Authenticated = Session.Instance.IsAuthenticated();
+            _model.Authenticated = await Session.Instance.IsAuthenticated();
             _model.Loading = false;
             UserDialogs.Instance.HideLoading();
         }
@@ -40,36 +40,33 @@ namespace audioteca
             await this.Navigation.PushAsync(new ByAuthorPage(), true);
         }
 
-        public void ButtonClick_Login(object sender, EventArgs e)
+        public async void ButtonClick_Login(object sender, EventArgs e)
         {
             UserDialogs.Instance.ShowLoading("Comprobando credenciales");
-            Task.Run(() =>
+            try
             {
-                try
+                if (Int32.TryParse(_model.Username, out int iUsername))
                 {
-                    int iUsername;
-                    if (Int32.TryParse(_model.Username, out iUsername))
+                    var result = await Session.Instance.Login(iUsername, _model.Password);
+                    if (result)
                     {
-                        if (Session.Instance.Login(iUsername, _model.Password))
-                        {
-                            _model.Authenticated = true;
-                        }
-                        else
-                        {
-                            _model.ErrorMessage = "Usuario o contraseña incorrectos";
-                        }
+                        _model.Authenticated = true;
                     }
                     else
                     {
                         _model.ErrorMessage = "Usuario o contraseña incorrectos";
                     }
                 }
-                catch
+                else
                 {
-                    _model.ErrorMessage = "Audioteca no disponible";
+                    _model.ErrorMessage = "Usuario o contraseña incorrectos";
                 }
-                UserDialogs.Instance.HideLoading();
-            });
+            }
+            catch
+            {
+                _model.ErrorMessage = "Audioteca no disponible";
+            }
+            UserDialogs.Instance.HideLoading();
         }
     }
 }

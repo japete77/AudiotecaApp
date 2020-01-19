@@ -30,46 +30,50 @@ namespace audioteca.Services
 
         public Session()
         {
-            object data;
-            Application.Current.Properties.TryGetValue(SESSION_INFO_KEY, out data);
+            Application.Current.Properties.TryGetValue(SESSION_INFO_KEY, out object data);
             if (data != null) _sessionInfo = JsonConvert.DeserializeObject<SessionInfo>(data.ToString());
         }
 
-        public bool Login(int user, string password)
+        public async Task<bool> Login(int user, string password)
         {
-            var request = new RestRequest("login", DataFormat.Json);
-            request.Method = Method.POST;
-            request.AddJsonBody(new LoginRequest { User = user, Password = password });
-
-            var result = ApiClient.Instance.Client.Post<LoginResult>(request);
-            if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            return await Task.Run<bool>(() =>
             {
-                throw new UnauthorizedException();
-            }
-            else if (result.ResponseStatus != ResponseStatus.Completed)
-            {
-                throw new UnavailableException();
-            }
+                RestRequest request = new RestRequest("login", DataFormat.Json)
+                {
+                    Method = Method.POST
+                };
+                request.AddJsonBody(new LoginRequest { User = user, Password = password });
 
-            _sessionInfo = new SessionInfo
-            {
-                Username = user,
-                Password = password,
-                Session = result.Data.Session
-            };
+                var result = ApiClient.Instance.Client.Post<LoginResult>(request);
+                if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    throw new UnauthorizedException();
+                }
+                else if (result.ResponseStatus != ResponseStatus.Completed)
+                {
+                    throw new UnavailableException();
+                }
 
-            _lastError = result.Data.Message;
+                _sessionInfo = new SessionInfo
+                {
+                    Username = user,
+                    Password = password,
+                    Session = result.Data.Session
+                };
 
-            if (result.Data.Success)
-            {
-                Application.Current.Properties[SESSION_INFO_KEY] = JsonConvert.SerializeObject(_sessionInfo);
-                AsyncHelper.RunSync(() => Application.Current.SavePropertiesAsync());
-            }
+                _lastError = result.Data.Message;
 
-            return result.Data.Success;
+                if (result.Data.Success)
+                {
+                    Application.Current.Properties[SESSION_INFO_KEY] = JsonConvert.SerializeObject(_sessionInfo);
+                    AsyncHelper.RunSync(() => Application.Current.SavePropertiesAsync());
+                }
+
+                return result.Data.Success;
+            });
         }
 
-        public bool IsAuthenticated()
+        public async Task<bool> IsAuthenticated()
         {
             if (_sessionInfo == null) return false;
 
@@ -78,14 +82,15 @@ namespace audioteca.Services
                 // Check if session is still valid
                 try
                 {
-                    AsyncHelper.RunSync(() => AudioLibrary.Instance.GetBooksByTitle(1, 1));
+                    await AudioLibrary.Instance.GetBooksByTitle(1, 1);
                     return true;
                 }
                 catch (UnauthorizedException)
                 {
                     try
                     {
-                        if (Login(_sessionInfo.Username, _sessionInfo.Password))
+                        var result = await Login(_sessionInfo.Username, _sessionInfo.Password);
+                        if (result)
                         {
                             return true;
                         }

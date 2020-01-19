@@ -1,5 +1,4 @@
-﻿using System;
-namespace audioteca.ViewModels
+﻿namespace audioteca.ViewModels
 {
     public class AudioLibraryPageViewModel : ViewModelBase
     {
