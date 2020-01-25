@@ -28,7 +28,7 @@
             <Button
                 Text="Acceder"
                 FontSize="Large"
-                BackgroundColor="Black"
+                BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Clicked="ButtonClick_Login" FontAttributes="Bold"></Button>
             <Label Text="{Binding ErrorMessage}" FontSize="Medium" HorizontalTextAlignment="Center" TextColor="Red"></Label>

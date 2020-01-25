@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace audioteca
@@ -20,8 +15,9 @@ namespace audioteca
             InitializeComponent();
         }
 
-        public void ButtonClick_MyAudiobooks(object sender, EventArgs e)
+        public async void ButtonClick_MyAudiobooks(object sender, EventArgs e)
         {
+            await this.Navigation.PushAsync(new MyAudioBooksPage(), true);
         }
 
         public async void ButtonClick_Audiobooks(object sender, EventArgs e)

@@ -57,9 +57,13 @@
   </Compile>
 </ItemGroup>
 <ItemGroup>
-    <Folder Include="Pages\" />
     <Folder Include="Models\Api\" />
     <Folder Include="Models\Session\" />
     <Folder Include="Exceptions\" />
   </ItemGroup>
+<ItemGroup>
+  <EmbeddedResource Update="Pages\MyAudioBooksPage.xaml">
+    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+  </EmbeddedResource>
+</ItemGroup>
 </Project>

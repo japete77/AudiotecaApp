@@ -85,8 +85,6 @@ namespace audioteca
                     _model.ShowDownload = false;
                     _model.ShowListen = true;
                     _model.ShowStatus = false;
-
-                    NavigationPage.SetHasBackButton(this, true);
                 }
 
                 _model.StatusDescription = abook.StatusDescription;
@@ -104,15 +102,34 @@ namespace audioteca
 
         protected override bool OnBackButtonPressed()
         {
-            ButtonClick_Cancel(this, null);
+            if (_model.ShowCancel)
+            {
+                UserDialogs.Instance.Confirm(
+                    new ConfirmConfig
+                    {
+                        Title = "Aviso",
+                        Message = "Salir de esta pantalla cancelará la descarga ¿desea continuar?",
+                        OkText = "Si",
+                        CancelText = "No",
+                        OnAction = async (action) =>
+                        {
+                            if (action)
+                            {
+                                ButtonClick_Cancel(this, null);
+                                await this.Navigation.PopAsync();
+                            }
+                        }
+                    }
+                );
 
-            return base.OnBackButtonPressed();
+                return true;
+            }
+
+            return false;
         }
 
         public async void ButtonClick_Download(object sender, EventArgs e)
         {
-            NavigationPage.SetHasBackButton(this, false);
-
             AudioBookStore.Instance.OnProgress += Download_OnProgress;
             await AudioBookStore.Instance.Download(_model.AudioBook);
         }
@@ -130,8 +147,6 @@ namespace audioteca
             );
 
             AudioBookStore.Instance.Cancel(_model.AudioBook.Id);
-
-            NavigationPage.SetHasBackButton(this, true);
         }
 
         public void ButtonClick_Listen(object sender, EventArgs e)

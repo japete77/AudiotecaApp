@@ -44,7 +44,7 @@ namespace audioteca.Services
 
         // audio navigation helper
         private List<Sequence> _sequence = new List<Sequence>();
-        private List<Sequence> Sequence { get { return _sequence; } }
+        public List<Sequence> Sequence { get { return _sequence; } }
 
         public DaisyBook(string filename)
         {

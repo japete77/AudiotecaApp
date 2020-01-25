@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using Acr.UserDialogs;
+﻿using Acr.UserDialogs;
 using audioteca.Services;
 using audioteca.ViewModels;
+using System;
+using System.ComponentModel;
 using Xamarin.Forms;
 
 namespace audioteca
@@ -13,7 +12,7 @@ namespace audioteca
         private readonly AudioLibraryPageViewModel _model;
 
         public AudioLibraryPage()
-        {            
+        {
             UserDialogs.Instance.ShowLoading("Verificando credenciales");
 
             _model = new AudioLibraryPageViewModel();

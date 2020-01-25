@@ -190,6 +190,11 @@ namespace audioteca.Services
                         }
                     }
 
+                    // Read daisy format and generate a ncc.json file with all the book content prepared for the audio player
+                    DaisyBook dbook = new DaisyBook($"{AudioBookDataDir.DataDir}/{_currentAudioBook.Book.Id}/ncc.html");
+                    string dbookStr = JsonConvert.SerializeObject(dbook);
+                    File.WriteAllText($"{AudioBookDataDir.DataDir}/{_currentAudioBook.Book.Id}/ncc.json", dbookStr);
+
                     // clean up .zip file
                     File.Delete($"{AudioBookDataDir.DataDir}/{_currentAudioBook.Book.Id}.zip");
 
