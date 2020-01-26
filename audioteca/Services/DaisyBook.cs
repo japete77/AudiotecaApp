@@ -20,23 +20,23 @@ namespace audioteca.Services
         public static int NAV_LEVEL_PAGE = 8;
 
         // Metadata info
-        private string _id;
-        private string _creator;
-        private string _date;
-        private string _format;
-        private string _identifier;
-        private string _publisher;
-        private string _subject;
-        private string _source;
-        private string _title;
-        private string _charset;
-        private string _generator;
-        private string _narrator;
-        private string _producer;
-        private string _totalTime;
+        public string Id { get; set; }
+        public string Creator { get; set; }
+        public string Date { get; set; }
+        public string Format { get; set; }
+        public string Identifier { get; set; }
+        public string Publisher { get; set; }
+        public string Subject { get; set; }
+        public string Source { get; set; }
+        public string Title { get; set; }
+        public string Charset { get; set; }
+        public string Generator { get; set; }
+        public string Narrator { get; set; }
+        public string Producer { get; set; }
+        public string TotalTime { get; set; }
 
-        private int _maxLevels = 0;
-        private bool _hasPages = false;
+        public int MaxLevels { get; set; } = 0;
+        public bool HasPages { get; set; } = false;
 
         // body smil info
         private List<SmilInfo> _body = new List<SmilInfo>();
@@ -46,7 +46,7 @@ namespace audioteca.Services
         private List<Sequence> _sequence = new List<Sequence>();
         public List<Sequence> Sequence { get { return _sequence; } }
 
-        public DaisyBook(string filename)
+        public void Load(string filename)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(filename);
@@ -58,31 +58,31 @@ namespace audioteca.Services
                 if (meta.Item(i).Attributes.GetNamedItem("name") != null)
                 {
                     if (meta.Item(i).Attributes.GetNamedItem("name").Value == "dc:creator")
-                        this._creator = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Creator = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "dc:date")
-                        this._date = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Date = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "dc:format")
-                        this._format = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Format = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "dc:identifier")
-                        this._identifier = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Identifier = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "dc:publisher")
-                        this._publisher = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Publisher = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "dc:subject")
-                        this._subject = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Subject = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "dc:source")
-                        this._source = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Source = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "dc:title")
-                        this._title = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Title = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "ncc:charset")
-                        this._charset = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Charset = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "ncc:generator")
-                        this._generator = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Generator = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "ncc:narrator")
-                        this._narrator = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Narrator = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "ncc:producer")
-                        this._producer = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.Producer = meta.Item(i).Attributes.GetNamedItem("content").Value;
                     else if (meta.Item(i).Attributes.GetNamedItem("name").Value == "ncc:totalTime")
-                        this._totalTime = meta.Item(i).Attributes.GetNamedItem("content").Value;
+                        this.TotalTime = meta.Item(i).Attributes.GetNamedItem("content").Value;
                 }
             }
 
@@ -114,17 +114,17 @@ namespace audioteca.Services
                         break;
                     case "span":
                         level = NAV_LEVEL_PAGE;
-                        this._hasPages = true;
+                        this.HasPages = true;
                         break;
                     case "div":
                         level = NAV_LEVEL_PAGE;
-                        this._hasPages = true;
+                        this.HasPages = true;
                         break;
                 }
 
-                if (level <= NAV_LEVEL_6 && this._maxLevels < level)
+                if (level <= NAV_LEVEL_6 && this.MaxLevels < level)
                 {
-                    this._maxLevels = level;
+                    this.MaxLevels = level;
                 }
 
                 var tmpSmil = new SmilInfo

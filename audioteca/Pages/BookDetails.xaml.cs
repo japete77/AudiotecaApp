@@ -149,8 +149,9 @@ namespace audioteca
             AudioBookStore.Instance.Cancel(_model.AudioBook.Id);
         }
 
-        public void ButtonClick_Listen(object sender, EventArgs e)
+        public async void ButtonClick_Listen(object sender, EventArgs e)
         {
+            await this.Navigation.PushAsync(new AudioPlayerPage(_model.AudioBook.Id), true);
         }
     }
 }

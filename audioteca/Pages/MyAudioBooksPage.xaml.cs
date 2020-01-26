@@ -37,7 +37,7 @@ namespace audioteca
             // de-select the row
             ((ListView)sender).SelectedItem = null;
 
-            // await Navigation.PushAsync(new BookDetails((e.SelectedItem as MyAudioBook).Book.Id), true);
+            await Navigation.PushAsync(new AudioPlayerPage((e.SelectedItem as MyAudioBook).Book.Id), true);
         }
     }
 }

@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Plugin.MediaManager" Version="0.9.6" />
     <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
     <PackageReference Include="RestSharp" Version="106.10.0" />
@@ -62,6 +63,9 @@
     <Folder Include="Exceptions\" />
   </ItemGroup>
 <ItemGroup>
+  <EmbeddedResource Update="Pages\AudioPlayerPage.xaml">
+    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+  </EmbeddedResource>
   <EmbeddedResource Update="Pages\MyAudioBooksPage.xaml">
     <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
   </EmbeddedResource>

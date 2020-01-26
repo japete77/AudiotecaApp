@@ -6,6 +6,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using audioteca.Helpers;
+using MediaManager;
 using System.Linq;
 
 namespace audioteca.Droid
@@ -26,6 +27,8 @@ namespace audioteca.Droid
 
             var externalDir = Application.Context.GetExternalFilesDirs(null).FirstOrDefault();
             AudioBookDataDir.DataDir = externalDir?.AbsolutePath;
+
+            CrossMediaManager.Current.Init(this);
 
             LoadApplication(new App());
         }
