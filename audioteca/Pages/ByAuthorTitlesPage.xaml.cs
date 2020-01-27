@@ -13,7 +13,7 @@ namespace audioteca
     {
         private const int PAGE_SIZE = 25;
 
-        private string _authorId;
+        private readonly string _authorId;
 
         private readonly ByTitlePageViewModel _model;
 

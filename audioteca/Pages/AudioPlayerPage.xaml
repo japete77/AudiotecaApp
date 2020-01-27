@@ -42,6 +42,38 @@
             <Label Text="Level 1" FontSize="Medium" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="2" />
         </Grid>
         <StackLayout>
+            <Button
+                    Text="Índice"
+                    FontSize="Default"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    Clicked="ButtonClick_Index" FontAttributes="Bold"></Button>
+            <Button
+                    Text="Niveles de navegación"
+                    FontSize="Default"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    Clicked="ButtonClick_Levels" FontAttributes="Bold"></Button>
+            <Button
+                    Text="Crear marcador"
+                    FontSize="Default"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    Clicked="ButtonClick_CreateBookmark" FontAttributes="Bold"></Button>
+            <Button
+                    Text="Ir a marcador"
+                    FontSize="Default"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    Clicked="ButtonClick_GoToBookmark" FontAttributes="Bold"></Button>
+            <Button
+                    Text="Más información"
+                    FontSize="Default"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    Clicked="ButtonClick_Info" FontAttributes="Bold"></Button>
+        </StackLayout>
+        <StackLayout Padding="0, 10, 0, 0">
             <Label Text="{Binding Title}" FontSize="Medium" HorizontalTextAlignment="Start" />
             <Label Text="{Binding Chapter}" FontSize="Medium" HorizontalTextAlignment="Start" />
         </StackLayout>

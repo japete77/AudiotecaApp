@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -24,7 +25,7 @@ namespace audioteca
 
         public AudioPlayerPage(string id)
         {
-            UserDialogs.Instance.ShowLoading("Carghando");
+            UserDialogs.Instance.ShowLoading("Cargando");
 
             this._id = id;
 
@@ -61,8 +62,9 @@ namespace audioteca
             }
         }
 
-        public void ButtonClick_Backward(object sender, EventArgs e)
+        public async void ButtonClick_Backward(object sender, EventArgs e)
         {
+            await DaisyPlayer.Instance.Move(-1);
         }
 
         public void ButtonClick_PlayStop(object sender, EventArgs e)
@@ -70,8 +72,9 @@ namespace audioteca
             DaisyPlayer.Instance.PlayPause();
         }
 
-        public void ButtonClick_Forward(object sender, EventArgs e)
+        public async void ButtonClick_Forward(object sender, EventArgs e)
         {
+            await DaisyPlayer.Instance.Move(1);
         }
 
         private void Instance_TimeCodeUpdate(System.TimeSpan e)
@@ -92,6 +95,26 @@ namespace audioteca
             UserDialogs.Instance.HideLoading();
 
             _model.Loading = false;
+        }
+
+        public void ButtonClick_Index(object sender, EventArgs e)
+        {
+        }
+
+        public void ButtonClick_Levels(object sender, EventArgs e)
+        {
+        }
+
+        public void ButtonClick_CreateBookmark(object sender, EventArgs e)
+        {
+        }
+
+        public void ButtonClick_GoToBookmark(object sender, EventArgs e)
+        {
+        }
+
+        public void ButtonClick_Info(object sender, EventArgs e)
+        {
         }
     }
 }

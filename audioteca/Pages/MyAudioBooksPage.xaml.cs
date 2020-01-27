@@ -1,4 +1,5 @@
-﻿using audioteca.Models.Audiobook;
+﻿using Acr.UserDialogs;
+using audioteca.Models.Audiobook;
 using audioteca.Services;
 using audioteca.ViewModels;
 using System.Collections.ObjectModel;
@@ -14,19 +15,27 @@ namespace audioteca
 
         public MyAudioBooksPage()
         {
+            UserDialogs.Instance.ShowLoading("Cargando");
+
             _model = new MyAudioBooksPageViewModel();
             this.BindingContext = _model;
+            _model.Loading = true;
+
             Title = "Mis audio libros";
+            
             InitializeComponent();
         }
 
         protected override void OnAppearing()
         {
-            _model.Loading = true;
             _model.Items = new ObservableCollection<MyAudioBook>(AudioBookStore.Instance.GetMyAudioBooks());
+            
             listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
             listView.BindingContext = _model.Items;
+            
             _model.Loading = false;
+
+            UserDialogs.Instance.HideLoading();
         }
 
         public async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)

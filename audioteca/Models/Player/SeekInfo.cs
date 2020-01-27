@@ -8,9 +8,8 @@ namespace audioteca.Models.Player
     {
         public int CurrentIndex { get; set; }
         public string CurrentTitle { get; set; }
-        public float CurrentTC { get; set; }
-        public string AbsoluteTC { get; set; }
-        public float CurrentSOM { get; set; }
+        public double CurrentTC { get; set; }
+        public double CurrentSOM { get; set; }
         public int NavigationLevel { get; set; }
     }
 }

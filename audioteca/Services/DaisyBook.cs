@@ -39,11 +39,11 @@ namespace audioteca.Services
         public bool HasPages { get; set; } = false;
 
         // body smil info
-        private List<SmilInfo> _body = new List<SmilInfo>();
+        private readonly List<SmilInfo> _body = new List<SmilInfo>();
         public List<SmilInfo> Body { get { return _body; } }
 
         // audio navigation helper
-        private List<Sequence> _sequence = new List<Sequence>();
+        private readonly List<Sequence> _sequence = new List<Sequence>();
         public List<Sequence> Sequence { get { return _sequence; } }
 
         public void Load(string filename)
