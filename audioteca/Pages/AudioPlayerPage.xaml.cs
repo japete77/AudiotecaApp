@@ -2,6 +2,7 @@
 using Acr.UserDialogs;
 using audioteca.Helpers;
 using audioteca.Models.Audiobook;
+using audioteca.Models.Player;
 using audioteca.Services;
 using audioteca.ViewModels;
 using MediaManager.Player;
@@ -9,6 +10,7 @@ using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -21,7 +23,6 @@ namespace audioteca
         private readonly string _id;
         private DaisyBook _dbook;
         private readonly AudioPlayerPageViewModel _model;
-
 
         public AudioPlayerPage(string id)
         {
@@ -50,16 +51,35 @@ namespace audioteca
             _model.Chapter = chapter;
         }
 
-        private void Instance_StatusUpdate(MediaPlayerState state)
+        private void Instance_StatusUpdate(PlayerInfo state)
         {
-            if (state == MediaPlayerState.Playing)
+            if (state == null) return;
+
+            if (state.Status == MediaPlayerState.Playing)
             {
                 _model.PlayStopCaption = "Parar";
             }
-            else if (state == MediaPlayerState.Paused)
+            else if (state.Status == MediaPlayerState.Paused)
             {
                 _model.PlayStopCaption = "Iniciar";
             }
+
+            var currentLevel = DaisyPlayer.Instance.GetNavigationLevels()
+                .Where(w => w.Level == state.Position.NavigationLevel)
+                .FirstOrDefault();
+
+            if (currentLevel != null)
+            {
+                _model.NavigationLevel = currentLevel.Label;
+            }
+
+            Instance_TimeCodeUpdate(
+                new TimeSpan()
+                    .Add(TimeSpan.FromSeconds(state.Position.CurrentTC))
+                    .Add(TimeSpan.FromSeconds(state.Position.CurrentSOM))
+            );
+
+            _model.Chapter = state.Position.CurrentTitle;
         }
 
         public async void ButtonClick_Backward(object sender, EventArgs e)
@@ -84,25 +104,35 @@ namespace audioteca
 
         protected override void OnAppearing()
         {
-            var abookJson = File.ReadAllText($"{AudioBookDataDir.DataDir}/{this._id}/ncc.json");
+            _dbook = DaisyPlayer.Instance.GetDaisyBook();
 
-            _dbook = JsonConvert.DeserializeObject<DaisyBook>(abookJson);
+            if (_dbook == null || _dbook.Id != _id)
+            {
+                var abookJson = File.ReadAllText($"{AudioBookDataDir.DataDir}/{this._id}/ncc.json");
 
-            DaisyPlayer.Instance.LoadBook(_dbook);
+                _dbook = JsonConvert.DeserializeObject<DaisyBook>(abookJson);
+
+                DaisyPlayer.Instance.LoadBook(_dbook);
+            }
 
             _model.Title = _dbook.Title;
 
             UserDialogs.Instance.HideLoading();
 
             _model.Loading = false;
+
+            // Update status
+            Instance_StatusUpdate(DaisyPlayer.Instance.GetPlayerInfo());
         }
 
-        public void ButtonClick_Index(object sender, EventArgs e)
+        public async void ButtonClick_Index(object sender, EventArgs e)
         {
+            await Navigation.PushAsync(new AudioBookIndexPage(), true);
         }
 
-        public void ButtonClick_Levels(object sender, EventArgs e)
+        public async void ButtonClick_Levels(object sender, EventArgs e)
         {
+            await Navigation.PushAsync(new NavigationLevelsPage(), true);
         }
 
         public void ButtonClick_CreateBookmark(object sender, EventArgs e)
@@ -113,8 +143,9 @@ namespace audioteca
         {
         }
 
-        public void ButtonClick_Info(object sender, EventArgs e)
+        public async void ButtonClick_Info(object sender, EventArgs e)
         {
+            await Navigation.PushAsync(new AudioBookInformationPage(), true);
         }
     }
 }

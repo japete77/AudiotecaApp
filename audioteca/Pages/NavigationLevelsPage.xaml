@@ -1,0 +1,26 @@
+﻿<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Helpers="clr-namespace:audioteca.Helpers"
+    x:Class="audioteca.NavigationLevelsPage"
+    Padding="20"
+    IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
+    <StackLayout>
+        <StackLayout Padding="0, 0, 0, 20">
+            <Label Text="Seleccione el nivel de navegación" FontSize="Medium" HorizontalTextAlignment="Start"></Label>
+        </StackLayout>
+        <ListView x:Name="listView" ItemSelected="OnItemSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
+                            <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                                <Label Text="{Binding Label}" VerticalTextAlignment="Center" FontSize="Medium" />
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

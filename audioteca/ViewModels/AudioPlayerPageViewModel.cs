@@ -60,5 +60,16 @@ namespace audioteca.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        private string _navigationLevel;
+        public string NavigationLevel
+        {
+            get { return _navigationLevel; }
+            set
+            {
+                _navigationLevel = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

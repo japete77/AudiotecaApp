@@ -63,10 +63,27 @@
     <Folder Include="Exceptions\" />
   </ItemGroup>
 <ItemGroup>
+  <Compile Update="Pages\AudioBookIndexPage.xaml.cs">
+    <DependentUpon>AudioBookIndexPage.xaml</DependentUpon>
+  </Compile>
+  <Compile Update="Pages\AudioBookInformationPage.xaml.cs">
+    <DependentUpon>AudioBookInformationPage.xaml</DependentUpon>
+  </Compile>
+</ItemGroup>
+<ItemGroup>
+  <EmbeddedResource Update="Pages\AudioBookIndexPage.xaml">
+    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+  </EmbeddedResource>
+  <EmbeddedResource Update="Pages\AudioBookInformationPage.xaml">
+    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+  </EmbeddedResource>
   <EmbeddedResource Update="Pages\AudioPlayerPage.xaml">
     <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
   </EmbeddedResource>
   <EmbeddedResource Update="Pages\MyAudioBooksPage.xaml">
+    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+  </EmbeddedResource>
+  <EmbeddedResource Update="Pages\NavigationLevelsPage.xaml">
     <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
   </EmbeddedResource>
 </ItemGroup>

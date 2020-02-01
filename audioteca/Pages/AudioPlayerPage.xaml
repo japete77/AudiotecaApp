@@ -39,7 +39,7 @@
                     Clicked="ButtonClick_Forward" FontAttributes="Bold"
                     Grid.Row="0" Grid.Column="2"></Button>
             <Label Text="{Binding CurrentTC}" FontSize="Medium" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="1" />
-            <Label Text="Level 1" FontSize="Medium" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="2" />
+            <Label Text="{Binding NavigationLevel}" FontSize="Medium" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="2" />
         </Grid>
         <StackLayout>
             <Button

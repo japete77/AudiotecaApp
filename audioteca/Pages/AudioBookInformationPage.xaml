@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="audioteca.AudioBookInformationPage"
+             Padding="20">
+    <StackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="35*" />
+                <ColumnDefinition Width="65*" />
+            </Grid.ColumnDefinitions>
+            <Label Text="Título" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="0" />
+            <Label Text="{Binding Title}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="1" />
+            <Label Text="Autor" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="1" Grid.Column="0" />
+            <Label Text="{Binding Creator}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="1" Grid.Column="1" />
+            <Label Text="Tema" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="2" Grid.Column="0" />
+            <Label Text="{Binding Subject}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="2" Grid.Column="1" />
+            <Label Text="Duración" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="3" Grid.Column="0" />
+            <Label Text="{Binding TotalTime}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="3" Grid.Column="1" />
+            <Label Text="Fecha" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="4" Grid.Column="0" />
+            <Label Text="{Binding Date}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="4" Grid.Column="1" />
+            <Label Text="Identificador" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="5" Grid.Column="0" />
+            <Label Text="{Binding Identifier}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="5" Grid.Column="1" />
+            <Label Text="Publicador por" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="6" Grid.Column="0" />
+            <Label Text="{Binding Publisher}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="6" Grid.Column="1" />
+            <Label Text="Generado por" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="7" Grid.Column="0" />
+            <Label Text="{Binding Generator}" LineBreakMode="NoWrap"  FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="7" Grid.Column="1" />
+            <Label Text="Narrado por" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="8" Grid.Column="0" />
+            <Label Text="{Binding Narrator}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="8" Grid.Column="1" />
+            <Label Text="Producido por" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="9" Grid.Column="0" />
+            <Label Text="{Binding Producer}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="9" Grid.Column="1" />
+            <Label Text="ISBN" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="10" Grid.Column="0" />
+            <Label Text="{Binding Source}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="10" Grid.Column="1" />
+            <Label Text="Formato texto" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="11" Grid.Column="0" />
+            <Label Text="{Binding Charset}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="11" Grid.Column="1" />
+            <Label Text="Formato" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="12" Grid.Column="0" />
+            <Label Text="{Binding Format}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="12" Grid.Column="1" />
+        </Grid>
+        <StackLayout Padding="0,20,0,0">
+            <Button
+                    Text="Eliminar audio libro"
+                    FontSize="Large"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    Clicked="ButtonClick_Delete" FontAttributes="Bold"></Button>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

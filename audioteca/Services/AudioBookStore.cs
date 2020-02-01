@@ -270,6 +270,19 @@ namespace audioteca.Services
             return _audioBooks;
         }
 
+        public async Task Delete(string id)
+        {
+            _audioBooks = _audioBooks.Where(w => w.Book.Id != id).ToList();
+
+            await SaveBooks();
+
+            var tmp = $"{AudioBookDataDir.DataDir}/{id}";
+            if (Directory.Exists(tmp))
+            {
+                Directory.Delete(tmp, true);
+            }
+        }
+
         private async Task CleanUp()
         {
             // Calculate books to delete

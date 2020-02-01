@@ -10,14 +10,14 @@ namespace audioteca.Services
 {
     public class DaisyBook
     {
-        public static int NAV_LEVEL_1 = 1;
-        public static int NAV_LEVEL_2 = 2;
-        public static int NAV_LEVEL_3 = 3;
-        public static int NAV_LEVEL_4 = 4;
-        public static int NAV_LEVEL_5 = 5;
-        public static int NAV_LEVEL_6 = 6;
-        public static int NAV_LEVEL_PHRASE = 7;
-        public static int NAV_LEVEL_PAGE = 8;
+        public const int NAV_LEVEL_1 = 1;
+        public const int NAV_LEVEL_2 = 2;
+        public const int NAV_LEVEL_3 = 3;
+        public const int NAV_LEVEL_4 = 4;
+        public const int NAV_LEVEL_5 = 5;
+        public const int NAV_LEVEL_6 = 6;
+        public const int NAV_LEVEL_PHRASE = 7;
+        public const int NAV_LEVEL_PAGE = 8;
 
         // Metadata info
         public string Id { get; set; }

@@ -2,13 +2,17 @@
 using audioteca.Models.Player;
 using MediaManager;
 using MediaManager.Player;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using Xamarin.Essentials;
+using Xamarin.Forms;
+using static audioteca.ViewModels.NavigationLevelsPageViewModel;
 
 namespace audioteca.Services
 {
@@ -34,29 +38,33 @@ namespace audioteca.Services
         public delegate void OnTimeCodeUpdate(TimeSpan e);
 
         public event OnStatusUpdate StatusUpdate;
-        public delegate void OnStatusUpdate(MediaPlayerState state);
+        public delegate void OnStatusUpdate(PlayerInfo state);
 
         public event OnChapterUpdate ChapterUpdate;
         public delegate void OnChapterUpdate(string title, string chapter);
 
         private PlayerInfo _playerInfo;
         private DaisyBook _book;
-        private readonly Timer _timer;
+        private readonly System.Timers.Timer _timer;
+        private bool _seekToCurrentTC = false;
+
+        private const string PLAYER_STATUS_FILE = "status.json";
 
         public DaisyPlayer()
         {
-            _timer = new Timer(500)
+            _timer = new System.Timers.Timer(500)
             {
                 AutoReset = false
             };
             _timer.Elapsed += PlayCurrentFile;
 
+            CrossMediaManager.Current.Volume.CurrentVolume = CrossMediaManager.Current.Volume.MaxVolume;
             CrossMediaManager.Current.PositionChanged += Current_PositionChanged;
             CrossMediaManager.Current.StateChanged += Current_StateChanged;
             CrossMediaManager.Current.MediaItemFinished += Current_MediaItemFinished;
         }
 
-        private void PlayCurrentFile(object sender, ElapsedEventArgs e)
+        private void PlayCurrentFile(object sender, System.Timers.ElapsedEventArgs e)
         {
             MainThread.BeginInvokeOnMainThread(async () =>
             {
@@ -73,10 +81,16 @@ namespace audioteca.Services
             }
         }
 
-        private void Current_StateChanged(object sender, MediaManager.Playback.StateChangedEventArgs e)
+        private async void Current_StateChanged(object sender, MediaManager.Playback.StateChangedEventArgs e)
         {
+            if (_seekToCurrentTC && e.State == MediaPlayerState.Playing)
+            {
+                await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                _seekToCurrentTC = false;
+            }
+
             _playerInfo.Status = e.State;
-            StatusUpdate?.Invoke(e.State);
+            StatusUpdate?.Invoke(_playerInfo);
         }
 
         private void Current_PositionChanged(object sender, MediaManager.Playback.PositionChangedEventArgs e)
@@ -91,8 +105,6 @@ namespace audioteca.Services
                         .Add(TimeSpan.FromSeconds(_playerInfo.Position.CurrentSOM))
                 );
             }
-
-            Debug.WriteLine($"Player: {e.Position.TotalSeconds}, Status: {CrossMediaManager.Current.State}, SOM: {_playerInfo.Position.CurrentSOM}");
         }
 
         public async void LoadBook(DaisyBook book)
@@ -100,7 +112,7 @@ namespace audioteca.Services
             // Save status of a previous book loaded
             if (_playerInfo != null)
             {
-                //await saveStatus(playerInfo);
+                SaveStatus();
             }
 
             _book = book;
@@ -114,10 +126,15 @@ namespace audioteca.Services
             };
             _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[_playerInfo.Position.CurrentIndex].Filename}";
 
-            //await loadStatus();
+            LoadStatus();
+
             //await loadBookmarks();
+
             ChapterUpdate?.Invoke(_book.Title, _book.Sequence[0].Title);
+
+
             await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+            _seekToCurrentTC = true;
 
             //createPlayerControls();
         }
@@ -148,7 +165,7 @@ namespace audioteca.Services
                 ChapterUpdate?.Invoke(_book.Title, _playerInfo.Position.CurrentTitle);
                 await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
 
-                //await saveStatus(playerInfo);
+                SaveStatus();
                 return true;
             }
             else
@@ -157,16 +174,16 @@ namespace audioteca.Services
             }
         }
 
-        public void Play(SeekInfo position)
+        public async Task Play(SeekInfo position)
         {
             if (_playerInfo != null)
             {
                 if (CrossMediaManager.Current.IsStopped())
                 {
-                    CrossMediaManager.Current.PlayPause();
+                    await CrossMediaManager.Current.PlayPause();
                 }
 
-                CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(position.CurrentTC * 1000));
+                await CrossMediaManager.Current.SeekTo(TimeSpan.FromMilliseconds(position.CurrentTC * 1000));
 
                 //musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
             }
@@ -175,23 +192,26 @@ namespace audioteca.Services
         public async void PlayPause()
         {
             await CrossMediaManager.Current.PlayPause();
+            SaveStatus();
         }
 
-        public void Stop()
+        public async void Stop()
         {
             if (_playerInfo != null)
             {
-                CrossMediaManager.Current.Stop();
+                await CrossMediaManager.Current.Stop();
+                SaveStatus();
 
                 // musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
             }
         }
 
-        public void Pause()
+        public async void Pause()
         {
             if (_playerInfo != null)
             {
-                CrossMediaManager.Current.Pause();
+                await CrossMediaManager.Current.Pause();
+                SaveStatus();
 
                 //musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
             }
@@ -201,9 +221,6 @@ namespace audioteca.Services
         {
             _timer.Stop();
 
-            await CrossMediaManager.Current.Pause();
-            Debug.WriteLine($"Paused");
-
             // Calculate index position
             var sequence = _book.Sequence.Where(
                                 w => w.Filename == Path.GetFileName(_playerInfo.Filename) &&
@@ -212,12 +229,9 @@ namespace audioteca.Services
             if (sequence != null)
             {
                 _playerInfo.Position.CurrentIndex = _book.Sequence.IndexOf(sequence);
-                Debug.WriteLine($"Index by sequence: {_playerInfo.Position.CurrentIndex}");
             }
 
             var index = _playerInfo.Position.CurrentIndex;
-
-            Debug.WriteLine($"Index Before: {_playerInfo.Position.CurrentIndex}");
 
             do
             {
@@ -228,10 +242,12 @@ namespace audioteca.Services
             if (index < 0)
             {
                 index = 0;
+                return;
             }
             else if (index > _book.Sequence.Count - 1)
             {
                 index = _book.Sequence.Count - 1;
+                return;
             }
             else
             {
@@ -250,6 +266,9 @@ namespace audioteca.Services
                 );
             }
 
+            await CrossMediaManager.Current.Pause();
+            Debug.WriteLine($"Paused");
+
             if (_book.Sequence[index].Filename != _playerInfo.Filename)
             {
                 _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[index].Filename}";
@@ -260,15 +279,102 @@ namespace audioteca.Services
             {
                 if (_playerInfo.Position.CurrentTC > 0)
                 {
-                    await CrossMediaManager.Current.SeekTo(TimeSpan.FromMilliseconds(_playerInfo.Position.CurrentTC * 1000));
-                    Debug.WriteLine($"Seek to: {_playerInfo.Position.CurrentTC * 1000}");
+                    await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                    Debug.WriteLine($"Seek to: {_playerInfo.Position.CurrentTC}");
                 }
             }
 
-            //await saveStatus(playerInfo);
+            SaveStatus();
 
             //musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
             //musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
         }
+
+        public async Task Seek(int index)
+        {
+            _playerInfo.Position.CurrentIndex = index;
+            _playerInfo.Position.CurrentSOM = _book.Sequence[index].SOM;
+            _playerInfo.Position.CurrentTitle = _book.Sequence[index].Title;
+            _playerInfo.Position.CurrentTC = _book.Sequence[index].TCIn;
+
+            if (_book.Sequence[index].Filename != _playerInfo.Filename)
+            {
+                _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[index].Filename}";
+                await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+            }
+            else
+            {
+                if (_playerInfo.Position.CurrentTC > 0)
+                {
+                    await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                }
+            }
+        }
+
+        public void SetLevel(int level)
+        {
+            if (_playerInfo != null && _playerInfo.Position != null)
+            {
+                _playerInfo.Position.NavigationLevel = level;
+            }
+        }
+
+        public PlayerInfo GetPlayerInfo()
+        {
+            return _playerInfo;
+        }
+
+        public DaisyBook GetDaisyBook()
+        {
+            return _book;
+        }
+
+        public void SaveStatus()
+        {
+            File.WriteAllText(
+                $"{AudioBookDataDir.DataDir}/{_book.Id}/{PLAYER_STATUS_FILE}",
+                JsonConvert.SerializeObject(_playerInfo)
+            );
+        }
+
+        public void LoadStatus()
+        {
+            string statusPath = $"{AudioBookDataDir.DataDir}/{_book.Id}/{PLAYER_STATUS_FILE}";
+            if (File.Exists(statusPath))
+            {
+                _playerInfo = JsonConvert.DeserializeObject<PlayerInfo>(File.ReadAllText(statusPath));
+            }
+        }
+
+        public List<NavigationLevel> GetNavigationLevels()
+        {
+            var levels = new List<NavigationLevel>();
+            if (_book != null)
+            {
+                for (var i = 1; i <= _book.MaxLevels; i++)
+                {
+                    levels.Add(new NavigationLevel
+                    {
+                        Label = $"Nivel {i}",
+                        Level = i
+                    });
+                }
+
+                levels.Add(new NavigationLevel
+                {
+                    Label = $"Frase",
+                    Level = DaisyBook.NAV_LEVEL_PHRASE
+                });
+
+                levels.Add(new NavigationLevel
+                {
+                    Label = $"Página",
+                    Level = DaisyBook.NAV_LEVEL_PAGE
+                });
+            }
+
+            return levels;
+        }
+
     }
 }
