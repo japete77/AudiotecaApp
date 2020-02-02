@@ -169,24 +169,27 @@ namespace audioteca.Services
 
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
-                            string fileName = Path.Combine($"{targetPath}", Path.GetFileName(entry.FullName));
-
-                            using (Stream inputStream = entry.Open())
-                            using (Stream outputStream = File.OpenWrite(fileName))
+                            if (!string.IsNullOrEmpty(entry.Name))
                             {
-                                Stream progressStream = new StreamWithProgress(outputStream, null,
-                                    new BasicProgress<int>(i =>
-                                    {
-                                        currentBytes += i;
-                                        _currentAudioBook.Progress = (int)(currentBytes / totalBytes);
-                                        OnProgress?.Invoke(_currentAudioBook);
-                                    })
-                                );
+                                string fileName = Path.Combine($"{targetPath}", Path.GetFileName(entry.FullName));
 
-                                inputStream.CopyTo(progressStream);
+                                using (Stream inputStream = entry.Open())
+                                using (Stream outputStream = File.OpenWrite(fileName))
+                                {
+                                    Stream progressStream = new StreamWithProgress(outputStream, null,
+                                        new BasicProgress<int>(i =>
+                                        {
+                                            currentBytes += i;
+                                            _currentAudioBook.Progress = (int)(currentBytes / totalBytes);
+                                            OnProgress?.Invoke(_currentAudioBook);
+                                        })
+                                    );
+
+                                    inputStream.CopyTo(progressStream);
+                                }
+
+                                File.SetLastWriteTime(fileName, entry.LastWriteTime.LocalDateTime);
                             }
-
-                            File.SetLastWriteTime(fileName, entry.LastWriteTime.LocalDateTime);
                         }
                     }
 

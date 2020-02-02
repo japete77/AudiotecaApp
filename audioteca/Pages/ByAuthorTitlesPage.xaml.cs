@@ -11,7 +11,7 @@ namespace audioteca
 {
     public partial class ByAuthorTitlesPage : ContentPage, INotifyPropertyChanged
     {
-        private const int PAGE_SIZE = 25;
+        private const int PAGE_SIZE = 100;
 
         private readonly string _authorId;
 
@@ -81,5 +81,11 @@ namespace audioteca
 
             _model.Loading = false;
         }
+
+        public async void GoToHome_Click(object sender, EventArgs e)
+        {
+            await Navigation.PopToRootAsync();
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 using audioteca.Models.Audiobook;
 using audioteca.Services;
 using audioteca.ViewModels;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Xamarin.Forms;
@@ -48,5 +49,11 @@ namespace audioteca
 
             await Navigation.PushAsync(new AudioPlayerPage((e.SelectedItem as MyAudioBook).Book.Id), true);
         }
+
+        public async void GoToHome_Click(object sender, EventArgs e)
+        {
+            await Navigation.PopToRootAsync();
+        }
+
     }
 }

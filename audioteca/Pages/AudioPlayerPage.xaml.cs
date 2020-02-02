@@ -59,7 +59,7 @@ namespace audioteca
             {
                 _model.PlayStopCaption = "Parar";
             }
-            else if (state.Status == MediaPlayerState.Paused)
+            else if (state.Status == MediaPlayerState.Paused || state.Status == MediaPlayerState.Stopped)
             {
                 _model.PlayStopCaption = "Iniciar";
             }
@@ -200,5 +200,11 @@ namespace audioteca
         {
             await Navigation.PushAsync(new AudioBookInformationPage(), true);
         }
+
+        public async void GoToHome_Click(object sender, EventArgs e)
+        {
+            await Navigation.PopToRootAsync();
+        }
+
     }
 }

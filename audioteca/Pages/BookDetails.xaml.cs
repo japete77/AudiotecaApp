@@ -153,5 +153,11 @@ namespace audioteca
         {
             await this.Navigation.PushAsync(new AudioPlayerPage(_model.AudioBook.Id), true);
         }
+
+        public async void GoToHome_Click(object sender, EventArgs e)
+        {
+            await Navigation.PopToRootAsync();
+        }
+
     }
 }

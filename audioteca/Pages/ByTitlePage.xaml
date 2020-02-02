@@ -6,6 +6,9 @@
     x:Class="audioteca.ByTitlePage"
     Padding="20"
     IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
+    </ContentPage.ToolbarItems>
     <StackLayout>
         <ListView x:Name="listView" ItemSelected="OnItemSelected">
 		    <ListView.ItemTemplate>

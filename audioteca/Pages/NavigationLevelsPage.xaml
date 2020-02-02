@@ -5,6 +5,9 @@
     x:Class="audioteca.NavigationLevelsPage"
     Padding="20"
     IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
+    </ContentPage.ToolbarItems>
     <StackLayout>
         <StackLayout Padding="0, 0, 0, 20">
             <Label Text="Seleccione el nivel de navegación" FontSize="Medium" HorizontalTextAlignment="Start"></Label>

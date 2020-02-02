@@ -67,5 +67,11 @@ namespace audioteca
 
             await Navigation.PopAsync(true);
         }
+
+        public async void GoToHome_Click(object sender, EventArgs e)
+        {
+            await Navigation.PopToRootAsync();
+        }
+
     }
 }

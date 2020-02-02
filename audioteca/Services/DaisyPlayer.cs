@@ -1,6 +1,7 @@
 ﻿using audioteca.Helpers;
 using audioteca.Models.Player;
 using MediaManager;
+using MediaManager.Library;
 using MediaManager.Player;
 using Newtonsoft.Json;
 using System;
@@ -128,15 +129,10 @@ namespace audioteca.Services
 
             LoadStatus();
 
-            //await loadBookmarks();
-
             ChapterUpdate?.Invoke(_book.Title, _book.Sequence[0].Title);
-
 
             await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
             _seekToCurrentTC = true;
-
-            //createPlayerControls();
         }
 
         private async Task<bool> LoadNextFile()
@@ -184,8 +180,6 @@ namespace audioteca.Services
                 }
 
                 await CrossMediaManager.Current.SeekTo(TimeSpan.FromMilliseconds(position.CurrentTC * 1000));
-
-                //musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
             }
         }
 
@@ -201,8 +195,6 @@ namespace audioteca.Services
             {
                 await CrossMediaManager.Current.Stop();
                 SaveStatus();
-
-                // musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
             }
         }
 
@@ -212,8 +204,6 @@ namespace audioteca.Services
             {
                 await CrossMediaManager.Current.Pause();
                 SaveStatus();
-
-                //musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
             }
         }
 
@@ -256,8 +246,6 @@ namespace audioteca.Services
                 _playerInfo.Position.CurrentTC = _book.Sequence[index].TCIn;
                 _playerInfo.Position.CurrentTitle = _book.Sequence[index].Title;
 
-                Debug.WriteLine($"Moved Index: {_playerInfo.Position.CurrentIndex}, SOM: {_playerInfo.Position.CurrentSOM}, CurrentTC: {_playerInfo.Position.CurrentTC}");
-
                 ChapterUpdate?.Invoke(_book.Title, _playerInfo.Position.CurrentTitle);
                 TimeCodeUpdate?.Invoke(
                     new TimeSpan()
@@ -267,27 +255,21 @@ namespace audioteca.Services
             }
 
             await CrossMediaManager.Current.Pause();
-            Debug.WriteLine($"Paused");
 
             if (_book.Sequence[index].Filename != _playerInfo.Filename)
             {
                 _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[index].Filename}";
                 _timer.Start();
-                Debug.WriteLine($"Changed file: {_playerInfo.Filename}");
             }
             else
             {
                 if (_playerInfo.Position.CurrentTC > 0)
                 {
                     await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
-                    Debug.WriteLine($"Seek to: {_playerInfo.Position.CurrentTC}");
                 }
             }
 
             SaveStatus();
-
-            //musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
-            //musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
         }
 
         public async Task Seek(int index, double tc = 0)

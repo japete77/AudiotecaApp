@@ -6,6 +6,9 @@
              mc:Ignorable="d"
              x:Class="audioteca.AudioBookInformationPage"
              Padding="20">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
+    </ContentPage.ToolbarItems>
     <StackLayout>
         <Grid>
             <Grid.RowDefinitions>
