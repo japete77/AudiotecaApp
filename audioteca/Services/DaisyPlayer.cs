@@ -290,17 +290,18 @@ namespace audioteca.Services
             //musicControls.updateIsPlaying(playerInfo.status == media.MEDIA_RUNNING);
         }
 
-        public async Task Seek(int index)
+        public async Task Seek(int index, double tc = 0)
         {
             _playerInfo.Position.CurrentIndex = index;
             _playerInfo.Position.CurrentSOM = _book.Sequence[index].SOM;
             _playerInfo.Position.CurrentTitle = _book.Sequence[index].Title;
-            _playerInfo.Position.CurrentTC = _book.Sequence[index].TCIn;
+            _playerInfo.Position.CurrentTC = tc > 0 ? tc :  _book.Sequence[index].TCIn;
 
             if (_book.Sequence[index].Filename != _playerInfo.Filename)
             {
                 _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[index].Filename}";
                 await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+                _seekToCurrentTC = true;
             }
             else
             {
@@ -327,6 +328,25 @@ namespace audioteca.Services
         public DaisyBook GetDaisyBook()
         {
             return _book;
+        }
+
+        public void AddBookmark(Bookmark bookmark)
+        {
+            if (_playerInfo != null)
+            {
+                if (_playerInfo.Bookmarks == null) _playerInfo.Bookmarks = new List<Bookmark>();
+                _playerInfo.Bookmarks.Add(bookmark);
+                SaveStatus();
+            }
+        }
+
+        public void RemoveBookmark(Bookmark bookmark)
+        {
+            if (_playerInfo != null && _playerInfo.Bookmarks != null)
+            {
+                _playerInfo.Bookmarks = _playerInfo.Bookmarks.Where(w => w.Id != bookmark.Id).ToList();
+                SaveStatus();
+            }
         }
 
         public void SaveStatus()

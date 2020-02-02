@@ -99,7 +99,12 @@ namespace audioteca
 
         private void Instance_TimeCodeUpdate(System.TimeSpan e)
         {
-            _model.CurrentTC = string.Format("{0:00}:{1:00}:{2:00} / {3}", e.Hours, e.Minutes, e.Seconds, _dbook.TotalTime);
+            _model.CurrentTC = $"{GetTimeCode(e)} / {_dbook.TotalTime}";
+        }
+
+        private string GetTimeCode(System.TimeSpan e)
+        {
+            return string.Format("{0:00}:{1:00}:{2:00}", e.Hours, e.Minutes, e.Seconds);
         }
 
         protected override void OnAppearing()
@@ -137,10 +142,58 @@ namespace audioteca
 
         public void ButtonClick_CreateBookmark(object sender, EventArgs e)
         {
+            var info = DaisyPlayer.Instance.GetPlayerInfo();
+
+            int counter = 1;
+            if (info.Bookmarks != null && info.Bookmarks.Count > 0)
+            {
+                for (var i = 0; i < info.Bookmarks.Count; i++)
+                {
+                    if (counter < info.Bookmarks[i].Id)
+                    {
+                        counter = info.Bookmarks[i].Id;
+                    }
+                }
+                counter++;
+            }
+
+            var bookmark = new Bookmark
+            {
+                Id = counter,
+                Index = info.Position.CurrentIndex,
+                Title = $"Marcador {counter}",
+                TC = info.Position.CurrentTC,
+                SOM = info.Position.CurrentSOM,
+                AbsoluteTC = GetTimeCode(
+                                TimeSpan.FromSeconds(info.Position.CurrentSOM)
+                                        .Add(TimeSpan.FromSeconds(info.Position.CurrentTC))
+                            )
+            };
+
+            UserDialogs.Instance.Prompt(
+                new PromptConfig
+                {
+                    Title = "Crear marcador",
+                    Message = $"Marcador en {bookmark.AbsoluteTC}",
+                    OkText = "Crear",
+                    CancelText = "Cancelar",
+                    Placeholder = "Marcador",
+                    Text = bookmark.Title,
+                    OnAction = (action) =>
+                    {
+                        if (action.Ok)
+                        {
+                            bookmark.Title = action.Text;
+                            DaisyPlayer.Instance.AddBookmark(bookmark);
+                        }
+                    }
+                }
+            );
         }
 
-        public void ButtonClick_GoToBookmark(object sender, EventArgs e)
+        public async void ButtonClick_GoToBookmark(object sender, EventArgs e)
         {
+            await Navigation.PushAsync(new BookmarksPage(), true);
         }
 
         public async void ButtonClick_Info(object sender, EventArgs e)

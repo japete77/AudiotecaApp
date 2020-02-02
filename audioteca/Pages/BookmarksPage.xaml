@@ -3,7 +3,7 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:Helpers="clr-namespace:audioteca.Helpers"
-    x:Class="audioteca.MyAudioBooksPage"
+    x:Class="audioteca.BookmarksPage"
     Padding="20"
     IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
     <StackLayout>
@@ -18,9 +18,20 @@
                                         <RowDefinition Height="40" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100*" />
+                                        <ColumnDefinition Width="22*" />
+                                        <ColumnDefinition Width="48*" />
+                                        <ColumnDefinition Width="30*" />
                                     </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding Book.Title}" VerticalTextAlignment="Center" FontSize="Medium" />
+                                    <Label Text="{Binding AbsoluteTC}" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="0" />
+                                    <Label Text="{Binding Title}" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation" Grid.Row="0" Grid.Column="1" />
+                                    <Button
+                                        Text="Eliminar"
+                                        FontSize="Medium"
+                                        BackgroundColor="Red"
+                                        TextColor="White"                                        
+                                        Clicked="ButtonClick_Delete" FontAttributes="Bold"
+                                        CommandParameter="{Binding Id}"
+                                        Grid.Row="0" Grid.Column="2" ></Button>
                                 </Grid>
                             </StackLayout>
                         </StackLayout>

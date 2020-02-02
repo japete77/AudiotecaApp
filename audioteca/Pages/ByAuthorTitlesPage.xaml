@@ -13,7 +13,15 @@
                     <ViewCell>
                         <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
                             <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                                <Label Text="{Binding Title}" VerticalTextAlignment="Center" FontSize="Medium" />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="40" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding Title}" VerticalTextAlignment="Center" FontSize="Medium" />
+                                </Grid>
                             </StackLayout>
                         </StackLayout>
                     </ViewCell>

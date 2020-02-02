@@ -10,6 +10,6 @@ namespace audioteca.Models.Player
         public MediaPlayerState Status { get; set; }
         public string Filename { get; set; }
         public SeekInfo Position { get; set; }
-        public List<BookMark> Bookmarks { get; set; }
+        public List<Bookmark> Bookmarks { get; set; }
     }
 }

@@ -80,6 +80,9 @@
   <EmbeddedResource Update="Pages\AudioPlayerPage.xaml">
     <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
   </EmbeddedResource>
+  <EmbeddedResource Update="Pages\BookmarksPage.xaml">
+    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+  </EmbeddedResource>
   <EmbeddedResource Update="Pages\MyAudioBooksPage.xaml">
     <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
   </EmbeddedResource>
