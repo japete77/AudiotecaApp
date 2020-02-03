@@ -18,7 +18,7 @@
                     <ViewCell>
                         <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
                             <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                                <Label Text="{Binding Label}" VerticalTextAlignment="Center" FontSize="Medium" />
+                                <Label Text="{Binding Label}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
                             </StackLayout>
                         </StackLayout>
                     </ViewCell>

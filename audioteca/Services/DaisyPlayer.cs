@@ -59,7 +59,6 @@ namespace audioteca.Services
             };
             _timer.Elapsed += PlayCurrentFile;
 
-            CrossMediaManager.Current.Volume.CurrentVolume = CrossMediaManager.Current.Volume.MaxVolume;
             CrossMediaManager.Current.PositionChanged += Current_PositionChanged;
             CrossMediaManager.Current.StateChanged += Current_StateChanged;
             CrossMediaManager.Current.MediaItemFinished += Current_MediaItemFinished;
@@ -70,7 +69,16 @@ namespace audioteca.Services
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 // Code to run on the main thread
-                await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+                //await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+                await CrossMediaManager.Current.Play(
+                    new MediaItem
+                    {
+                        Title = _playerInfo.Position.CurrentTitle,
+                        FileName = "filename",
+                        MediaLocation = MediaLocation.FileSystem,
+                        MediaUri = _playerInfo.Filename
+                    }
+                );
             });
         }
 
@@ -131,7 +139,16 @@ namespace audioteca.Services
 
             ChapterUpdate?.Invoke(_book.Title, _book.Sequence[0].Title);
 
-            await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+            // await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+            await CrossMediaManager.Current.Play(
+                new MediaItem
+                {
+                    Title = _playerInfo.Position.CurrentTitle,
+                    FileName = "filename",
+                    MediaLocation = MediaLocation.FileSystem,
+                    MediaUri = _playerInfo.Filename
+                }
+            );
             _seekToCurrentTC = true;
         }
 
@@ -159,7 +176,17 @@ namespace audioteca.Services
                 _playerInfo.Position.CurrentTitle = _book.Sequence[newIndex].Title;
 
                 ChapterUpdate?.Invoke(_book.Title, _playerInfo.Position.CurrentTitle);
-                await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+                //await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+                await CrossMediaManager.Current.Play(
+                    new MediaItem
+                    {
+                        Title = _playerInfo.Position.CurrentTitle,
+                        FileName = "filename",
+                        MediaLocation = MediaLocation.FileSystem,
+                        MediaUri = _playerInfo.Filename
+                    }
+                );
+
 
                 SaveStatus();
                 return true;
@@ -282,7 +309,16 @@ namespace audioteca.Services
             if (_book.Sequence[index].Filename != _playerInfo.Filename)
             {
                 _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[index].Filename}";
-                await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+                //await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
+                await CrossMediaManager.Current.Play(
+                    new MediaItem
+                    {
+                        Title = _playerInfo.Position.CurrentTitle,
+                        FileName = "filename",
+                        MediaLocation = MediaLocation.FileSystem,
+                        MediaUri = _playerInfo.Filename
+                    }
+                );
                 _seekToCurrentTC = true;
             }
             else

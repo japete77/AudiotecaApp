@@ -10,25 +10,25 @@
     <StackLayout>
         <Button
             Text="Mis audiolibros"
-            FontSize="Large"
+            FontSize="Medium"
             BackgroundColor="DodgerBlue"
             TextColor="White"
             Clicked="ButtonClick_MyAudiobooks" FontAttributes="Bold"></Button>
         <Button
             Text="Audioteca"
-            FontSize="Large"
+            FontSize="Medium"
             BackgroundColor="DodgerBlue"
             TextColor="White"
             Clicked="ButtonClick_Audiobooks" FontAttributes="Bold"></Button>
         <Button
             Text="Notificaciones"
-            FontSize="Large"
+            FontSize="Medium"
             BackgroundColor="DodgerBlue"
             TextColor="White"
             Clicked="ButtonClick_Notificacions" FontAttributes="Bold"></Button>
         <Button
             Text="Configuración"
-            FontSize="Large"
+            FontSize="Medium"
             BackgroundColor="DodgerBlue"
             TextColor="White"
             Clicked="ButtonClick_Configuration" FontAttributes="Bold"></Button>

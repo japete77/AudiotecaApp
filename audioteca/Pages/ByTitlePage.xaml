@@ -23,7 +23,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="100*" />
                                     </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding Title}" VerticalTextAlignment="Center" FontSize="Medium" />
+                                    <Label Text="{Binding Title}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
                                 </Grid>
 						    </StackLayout>
 					    </StackLayout>

@@ -25,7 +25,7 @@
             <StackLayout Padding="0,20,0,0" IsVisible="{Binding ShowDownload}">
                 <Button
                     Text="Descargar"
-                    FontSize="Large"
+                    FontSize="Medium"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_Download" FontAttributes="Bold"></Button>
@@ -33,7 +33,7 @@
             <StackLayout Padding="0,20,0,0" IsVisible="{Binding ShowCancel}">
                 <Button
                     Text="Cancelar"
-                    FontSize="Large"
+                    FontSize="Medium"
                     BackgroundColor="Red"
                     TextColor="White"
                     Clicked="ButtonClick_Cancel" FontAttributes="Bold"></Button>
@@ -41,7 +41,7 @@
             <StackLayout Padding="0,20,0,0" IsVisible="{Binding ShowListen}">
                 <Button
                     Text="Escuchar"
-                    FontSize="Large"
+                    FontSize="Medium"
                     BackgroundColor="OliveDrab"
                     TextColor="White"
                     Clicked="ButtonClick_Listen" FontAttributes="Bold"></Button>

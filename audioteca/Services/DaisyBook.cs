@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Linq;
 using System.IO;
+using System.Globalization;
 
 namespace audioteca.Services
 {
@@ -175,15 +176,15 @@ namespace audioteca.Services
         {
             value = value.Replace("npt=", "");
             value = value.Replace("s", "");
-            return float.Parse(value);
+            return float.Parse(value, CultureInfo.InvariantCulture);
         }
 
         private float Tc2Secs(string value)
         {
             var parts = value.Split(':');
-            return float.Parse(parts[0]) * 3600 +
-                    float.Parse(parts[1]) * 60 +
-                    float.Parse(parts[2]);
+            return float.Parse(parts[0], CultureInfo.InvariantCulture) * 3600 +
+                    float.Parse(parts[1], CultureInfo.InvariantCulture) * 60 +
+                    float.Parse(parts[2], CultureInfo.InvariantCulture);
         }
     }
 }

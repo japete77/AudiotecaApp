@@ -9,76 +9,86 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
     </ContentPage.ToolbarItems>
-    <StackLayout>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*" />
-                <ColumnDefinition Width="50*" />
-                <ColumnDefinition Width="25*" />
-            </Grid.ColumnDefinitions>
-            <Button
+    <ScrollView>
+        <StackLayout>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="33*" />
+                    <ColumnDefinition Width="33*" />
+                    <ColumnDefinition Width="33*" />
+                </Grid.ColumnDefinitions>
+                <Button
                     Text="Atrás"
-                    FontSize="Default"
+                    FontSize="Small"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_Backward" FontAttributes="Bold"
                     Grid.Row="0" Grid.Column="0"></Button>
-            <Button
+                <Button
                     Text="{Binding PlayStopCaption}"
-                    FontSize="Default"
+                    FontSize="Small"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_PlayStop" FontAttributes="Bold"
                      Grid.Row="0" Grid.Column="1"></Button>
-            <Button
-                    Text="Avanzar"
-                    FontSize="Default"
+                <Button
+                    Text="Avanza"
+                    FontSize="Small"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_Forward" FontAttributes="Bold"
                     Grid.Row="0" Grid.Column="2"></Button>
-            <Label Text="{Binding CurrentTC}" FontSize="Medium" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="1" />
-            <Label Text="{Binding NavigationLevel}" FontSize="Medium" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="2" />
-        </Grid>
-        <StackLayout>
-            <Button
+            </Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="75*" />
+                    <ColumnDefinition Width="25*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="{Binding CurrentTC}" FontSize="Medium" HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="0" />
+                <Label Text="{Binding NavigationLevel}" FontSize="Medium" HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="1" />
+            </Grid>
+            <StackLayout>
+                <Button
                     Text="Índice"
                     FontSize="Default"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_Index" FontAttributes="Bold"></Button>
-            <Button
+                <Button
                     Text="Niveles de navegación"
                     FontSize="Default"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_Levels" FontAttributes="Bold"></Button>
-            <Button
+                <Button
                     Text="Crear marcador"
                     FontSize="Default"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_CreateBookmark" FontAttributes="Bold"></Button>
-            <Button
+                <Button
                     Text="Ir a marcador"
                     FontSize="Default"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_GoToBookmark" FontAttributes="Bold"></Button>
-            <Button
+                <Button
                     Text="Más información"
                     FontSize="Default"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_Info" FontAttributes="Bold"></Button>
+            </StackLayout>
+            <StackLayout Padding="0, 10, 0, 0">
+                <Label Text="{Binding Title}" FontSize="Medium" HorizontalTextAlignment="Start" />
+                <Label Text="{Binding Chapter}" FontSize="Medium" HorizontalTextAlignment="Start" />
+            </StackLayout>
         </StackLayout>
-        <StackLayout Padding="0, 10, 0, 0">
-            <Label Text="{Binding Title}" FontSize="Medium" HorizontalTextAlignment="Start" />
-            <Label Text="{Binding Chapter}" FontSize="Medium" HorizontalTextAlignment="Start" />
-        </StackLayout>
-    </StackLayout>
+    </ScrollView>
 </ContentPage>
