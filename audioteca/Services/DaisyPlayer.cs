@@ -378,5 +378,10 @@ namespace audioteca.Services
             return levels;
         }
 
+        public void SetSpeed(float speed)
+        {
+            CrossMediaManager.Current.Speed = speed;
+        }
+
     }
 }

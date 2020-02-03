@@ -29,8 +29,9 @@ namespace audioteca
         {
         }
 
-        public void ButtonClick_Configuration(object sender, EventArgs e)
+        public async void ButtonClick_Configuration(object sender, EventArgs e)
         {
+            await this.Navigation.PushAsync(new ConfigurationPage(), true);
         }
     }
 }

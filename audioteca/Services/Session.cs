@@ -65,8 +65,7 @@ namespace audioteca.Services
 
                 if (result.Data.Success)
                 {
-                    Application.Current.Properties[SESSION_INFO_KEY] = JsonConvert.SerializeObject(_sessionInfo);
-                    AsyncHelper.RunSync(() => Application.Current.SavePropertiesAsync());
+                    SaveSession();
                 }
 
                 return result.Data.Success;
@@ -114,6 +113,29 @@ namespace audioteca.Services
         public string GetLastError()
         {
             return _lastError;
+        }
+
+        public double GetSpeed()
+        {
+            return _sessionInfo.Speed;
+        }
+
+        public void SetSpeed(double speed)
+        {
+            _sessionInfo.Speed = speed;
+        }
+
+        public void CleanCredentials()
+        {
+            _sessionInfo.Username = 0;
+            _sessionInfo.Password = null;
+            _sessionInfo.Session = null;
+        }
+
+        public void SaveSession()
+        {
+            Application.Current.Properties[SESSION_INFO_KEY] = JsonConvert.SerializeObject(_sessionInfo);
+            AsyncHelper.RunSync(() => Application.Current.SavePropertiesAsync());
         }
     }
 }

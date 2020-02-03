@@ -96,9 +96,7 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\splash.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\drawable\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\audioteca\audioteca.csproj">
       <Project>{6448B5BE-3121-49A8-97D1-15F28E1F3766}</Project>

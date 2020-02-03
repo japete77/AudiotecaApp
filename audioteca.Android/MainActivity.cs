@@ -35,7 +35,7 @@ namespace audioteca.Droid
             var externalDir = Application.Context.GetExternalFilesDirs(null).FirstOrDefault();
             AudioBookDataDir.DataDir = externalDir?.AbsolutePath;
 
-            CrossMediaManager.Current.Init(this);
+            CrossMediaManager.Current.Init();
 
             LoadApplication(new App());
         }
