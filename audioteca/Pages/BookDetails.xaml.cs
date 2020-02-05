@@ -4,12 +4,13 @@ using audioteca.Models.Audiobook;
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
-using System.ComponentModel;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace audioteca
 {
-    public partial class BookDetails : ContentPage, INotifyPropertyChanged
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class BookDetails : ContentPage
     {
         private readonly string bookId;
 

@@ -3,13 +3,14 @@ using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace audioteca
 {
-    public partial class ByAuthorPage : ContentPage, INotifyPropertyChanged
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class ByAuthorPage : ContentPage
     {
         private const int PAGE_SIZE = 100;
 

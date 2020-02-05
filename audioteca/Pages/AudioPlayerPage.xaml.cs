@@ -1,24 +1,21 @@
 ﻿
 using Acr.UserDialogs;
 using audioteca.Helpers;
-using audioteca.Models.Audiobook;
 using audioteca.Models.Player;
 using audioteca.Services;
 using audioteca.ViewModels;
 using MediaManager.Player;
 using Newtonsoft.Json;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace audioteca
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AudioPlayerPage : ContentPage, INotifyPropertyChanged
+    public partial class AudioPlayerPage : ContentPage
     {
         private readonly string _id;
         private DaisyBook _dbook;
@@ -35,7 +32,7 @@ namespace audioteca
             this.BindingContext = _model;
 
             _model.Loading = true;
-            
+
             Title = "Reproductor";
 
             DaisyPlayer.Instance.TimeCodeUpdate += Instance_TimeCodeUpdate;

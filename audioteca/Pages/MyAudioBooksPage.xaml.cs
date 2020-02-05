@@ -6,10 +6,12 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace audioteca
 {
     [DesignTimeVisible(false)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MyAudioBooksPage : ContentPage
     {
         private readonly MyAudioBooksPageViewModel _model;

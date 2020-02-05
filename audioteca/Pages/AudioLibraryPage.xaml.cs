@@ -2,12 +2,13 @@
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
-using System.ComponentModel;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace audioteca
 {
-    public partial class AudioLibraryPage : ContentPage, INotifyPropertyChanged
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class AudioLibraryPage : ContentPage
     {
         private readonly AudioLibraryPageViewModel _model;
 

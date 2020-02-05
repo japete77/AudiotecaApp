@@ -3,11 +3,7 @@ using audioteca.Models.Daisy;
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -61,7 +57,7 @@ namespace audioteca
 
             var selectedItem = (e.SelectedItem as SmilInfo);
 
-            var selectedSequence =_book.Sequence.Where(w => w.Id == selectedItem.Id).First();
+            var selectedSequence = _book.Sequence.Where(w => w.Id == selectedItem.Id).First();
 
             await DaisyPlayer.Instance.Seek(_book.Sequence.IndexOf(selectedSequence));
 

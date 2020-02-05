@@ -48,6 +48,7 @@ namespace audioteca.Services
         private DaisyBook _book;
         private readonly System.Timers.Timer _timer;
         private bool _seekToCurrentTC = false;
+        private bool _fileChanged = false;
 
         private const string PLAYER_STATUS_FILE = "status.json";
 
@@ -66,19 +67,33 @@ namespace audioteca.Services
 
         private void PlayCurrentFile(object sender, System.Timers.ElapsedEventArgs e)
         {
+            // Code to run on the main thread
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                // Code to run on the main thread
-                //await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
-                await CrossMediaManager.Current.Play(
-                    new MediaItem
+                if (_fileChanged)
+                {
+                    await CrossMediaManager.Current.Play(
+                        new MediaItem
+                        {
+                            Title = _playerInfo.Position.CurrentTitle,
+                            FileName = "filename",
+                            MediaLocation = MediaLocation.FileSystem,
+                            MediaUri = _playerInfo.Filename
+                        }
+                    );
+                    await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+
+                    _fileChanged = false;
+                }
+                else
+                {
+                    if (CrossMediaManager.Current.State == MediaPlayerState.Paused)
                     {
-                        Title = _playerInfo.Position.CurrentTitle,
-                        FileName = "filename",
-                        MediaLocation = MediaLocation.FileSystem,
-                        MediaUri = _playerInfo.Filename
+                        await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                        await CrossMediaManager.Current.PlayPause();
                     }
-                );
+                }
+
             });
         }
 
@@ -130,7 +145,7 @@ namespace audioteca.Services
                 Position = new SeekInfo
                 {
                     CurrentIndex = 0,
-                    NavigationLevel = DaisyBook.NAV_LEVEL_1
+                    NavigationLevel = DaisyBook.NAV_LEVEL_SECTION
                 },
             };
             _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[_playerInfo.Position.CurrentIndex].Filename}";
@@ -176,7 +191,6 @@ namespace audioteca.Services
                 _playerInfo.Position.CurrentTitle = _book.Sequence[newIndex].Title;
 
                 ChapterUpdate?.Invoke(_book.Title, _playerInfo.Position.CurrentTitle);
-                //await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
                 await CrossMediaManager.Current.Play(
                     new MediaItem
                     {
@@ -242,7 +256,7 @@ namespace audioteca.Services
             var sequence = _book.Sequence.Where(
                                 w => w.Filename == Path.GetFileName(_playerInfo.Filename) &&
                                      w.TCIn <= _playerInfo.Position.CurrentTC &&
-                                     w.TCOut >= _playerInfo.Position.CurrentTC).FirstOrDefault();
+                                     w.TCOut > _playerInfo.Position.CurrentTC).FirstOrDefault();
             if (sequence != null)
             {
                 _playerInfo.Position.CurrentIndex = _book.Sequence.IndexOf(sequence);
@@ -279,22 +293,18 @@ namespace audioteca.Services
                         .Add(TimeSpan.FromSeconds(_playerInfo.Position.CurrentSOM))
                         .Add(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC))
                 );
+
             }
 
             await CrossMediaManager.Current.Pause();
 
-            if (_book.Sequence[index].Filename != _playerInfo.Filename)
+            if (_book.Sequence[index].Filename != Path.GetFileName(_playerInfo.Filename))
             {
                 _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[index].Filename}";
-                _timer.Start();
+                _fileChanged = true;
             }
-            else
-            {
-                if (_playerInfo.Position.CurrentTC > 0)
-                {
-                    await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
-                }
-            }
+
+            _timer.Start();
 
             SaveStatus();
         }
@@ -389,12 +399,30 @@ namespace audioteca.Services
             var levels = new List<NavigationLevel>();
             if (_book != null)
             {
-                for (var i = 1; i <= _book.MaxLevels; i++)
+                if (_book.MaxLevels >= DaisyBook.NAV_LEVEL_SECTION)
                 {
                     levels.Add(new NavigationLevel
                     {
-                        Label = $"Nivel {i}",
-                        Level = i
+                        Label = $"Sección",
+                        Level = DaisyBook.NAV_LEVEL_SECTION
+                    });
+                }
+
+                if (_book.MaxLevels >= DaisyBook.NAV_LEVEL_CHAPTER)
+                {
+                    levels.Add(new NavigationLevel
+                    {
+                        Label = $"Capítulo",
+                        Level = DaisyBook.NAV_LEVEL_CHAPTER
+                    });
+                }
+
+                if (_book.MaxLevels >= DaisyBook.NAV_LEVEL_SUBSECTION)
+                {
+                    levels.Add(new NavigationLevel
+                    {
+                        Label = $"Apartado",
+                        Level = DaisyBook.NAV_LEVEL_SUBSECTION
                     });
                 }
 
@@ -404,11 +432,6 @@ namespace audioteca.Services
                     Level = DaisyBook.NAV_LEVEL_PHRASE
                 });
 
-                levels.Add(new NavigationLevel
-                {
-                    Label = $"Página",
-                    Level = DaisyBook.NAV_LEVEL_PAGE
-                });
             }
 
             return levels;

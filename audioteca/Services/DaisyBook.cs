@@ -11,14 +11,11 @@ namespace audioteca.Services
 {
     public class DaisyBook
     {
-        public const int NAV_LEVEL_1 = 1;
-        public const int NAV_LEVEL_2 = 2;
-        public const int NAV_LEVEL_3 = 3;
-        public const int NAV_LEVEL_4 = 4;
-        public const int NAV_LEVEL_5 = 5;
-        public const int NAV_LEVEL_6 = 6;
-        public const int NAV_LEVEL_PHRASE = 7;
-        public const int NAV_LEVEL_PAGE = 8;
+        public const int NAV_LEVEL_TITLE = 1;
+        public const int NAV_LEVEL_SECTION = 2;
+        public const int NAV_LEVEL_CHAPTER = 3;
+        public const int NAV_LEVEL_SUBSECTION = 4;
+        public const int NAV_LEVEL_PHRASE = 5;
 
         // Metadata info
         public string Id { get; set; }
@@ -93,37 +90,27 @@ namespace audioteca.Services
             {
                 var href = bodyElements.Item(i).FirstChild.Attributes.GetNamedItem("href").Value.Split('#');
                 int level = -1;
-                switch (bodyElements.Item(i).Name)
+                var classAttribute = bodyElements.Item(i).Attributes.GetNamedItem("class");
+                if (classAttribute != null)
                 {
-                    case "h1":
-                        level = NAV_LEVEL_1;
-                        break;
-                    case "h2":
-                        level = NAV_LEVEL_2;
-                        break;
-                    case "h3":
-                        level = NAV_LEVEL_3;
-                        break;
-                    case "h4":
-                        level = NAV_LEVEL_4;
-                        break;
-                    case "h5":
-                        level = NAV_LEVEL_5;
-                        break;
-                    case "h6":
-                        level = NAV_LEVEL_6;
-                        break;
-                    case "span":
-                        level = NAV_LEVEL_PAGE;
-                        this.HasPages = true;
-                        break;
-                    case "div":
-                        level = NAV_LEVEL_PAGE;
-                        this.HasPages = true;
-                        break;
+                    switch (classAttribute.Value)
+                    {
+                        case "title":
+                            level = NAV_LEVEL_TITLE;
+                            break;
+                        case "section":
+                            level = NAV_LEVEL_SECTION;
+                            break;
+                        case "chapter":
+                            level = NAV_LEVEL_CHAPTER;
+                            break;
+                        case "sub-section":
+                            level = NAV_LEVEL_SUBSECTION;
+                            break;
+                    }
                 }
 
-                if (level <= NAV_LEVEL_6 && this.MaxLevels < level)
+                if (level <= NAV_LEVEL_SUBSECTION && this.MaxLevels < level)
                 {
                     this.MaxLevels = level;
                 }
