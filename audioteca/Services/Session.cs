@@ -71,33 +71,25 @@ namespace audioteca.Services
 
         public async Task<bool> IsAuthenticated()
         {
-            if (_sessionInfo == null) return false;
+            if (_sessionInfo == null ||
+                _sessionInfo.Username == 0 ||
+                _sessionInfo.Password == null) return false;
 
-            if (!string.IsNullOrEmpty(_sessionInfo.Session))
+            if (_sessionInfo != null && _sessionInfo.Session != null) return true;
+
+            try
             {
-                // Check if session is still valid
-                try
+                var result = await Login(_sessionInfo.Username, _sessionInfo.Password);
+                if (result)
                 {
-                    await AudioLibrary.Instance.GetBooksByTitle(1, 1);
                     return true;
                 }
-                catch (UnauthorizedException)
-                {
-                    try
-                    {
-                        var result = await Login(_sessionInfo.Username, _sessionInfo.Password);
-                        if (result)
-                        {
-                            return true;
-                        }
-                    }
-                    catch
-                    {
-                    }
-
-                    return false;
-                }
             }
+            catch
+            {
+            }
+
+            CleanCredentials();
 
             return false;
         }
@@ -137,6 +129,11 @@ namespace audioteca.Services
         public void SetDataDir(string dataDir)
         {
             _sessionInfo.DataDir = dataDir;
+        }
+
+        public void SetSession(string session)
+        {
+            _sessionInfo.Session = session;
         }
 
         public void SaveSession()

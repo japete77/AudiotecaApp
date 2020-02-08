@@ -15,7 +15,7 @@
             TextColor="White"
             Clicked="ButtonClick_MyAudiobooks" FontAttributes="Bold"></Button>
         <Button
-            Text="Audioteca"
+            Text="Fonoteca"
             FontSize="Medium"
             BackgroundColor="DodgerBlue"
             TextColor="White"

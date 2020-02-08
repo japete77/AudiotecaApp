@@ -60,8 +60,9 @@ namespace audioteca
             _model.Loading = false;
 
             var result = await AudioLibrary.Instance.GetAuthors(_model.Items.Count + 1, PAGE_SIZE);
+            if (result == null) return;
 
-            if (result != null && result.Authors != null)
+            if (result.Authors != null)
             {
                 result.Authors.ForEach(v => _model.Items.Add(v));
             }

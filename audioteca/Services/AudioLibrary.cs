@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using audioteca.Exceptions;
 using audioteca.Models.Api;
 using RestSharp;
+using Xamarin.Forms;
 
 namespace audioteca.Services
 {
@@ -127,12 +128,22 @@ namespace audioteca.Services
                 }
                 else if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    throw new UnauthorizedException();
+                    Session.Instance.SetSession(null);
+                    Session.Instance.SaveSession();
+                    Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Application.Current.MainPage.Navigation.PushAsync(new AudioLibraryPage());
+                    });
                 }
                 else
                 {
-                    throw new UnavailableException();
+                    Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Application.Current.MainPage.Navigation.PopToRootAsync();
+                    });
                 }
+
+                return default;
             });
         }
     }

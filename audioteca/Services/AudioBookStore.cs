@@ -109,6 +109,7 @@ namespace audioteca.Services
                 _cancel = false;
 
                 var link = AsyncHelper.RunSync(() => AudioLibrary.Instance.GetAudioBookLink(_currentAudioBook.Book.Id));
+                if (link == null) return;
 
                 // download file
                 var zipFile = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}.zip";

@@ -60,8 +60,9 @@ namespace audioteca
             _model.Loading = false;
 
             var result = await AudioLibrary.Instance.GetBooksByTitle(_model.Items.Count + 1, PAGE_SIZE);
+            if (result == null) return;
 
-            if (result != null && result.Titles != null)
+            if (result.Titles != null)
             {
                 result.Titles.ForEach(v => _model.Items.Add(v));
             }
