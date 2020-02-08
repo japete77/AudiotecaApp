@@ -1,6 +1,7 @@
 ﻿using audioteca.Helpers;
 using MediaManager;
 using System;
+using System.Collections.Generic;
 using UIKit;
 
 namespace audioteca.iOS
@@ -11,11 +12,14 @@ namespace audioteca.iOS
         static void Main(string[] args)
         {
             // DataDir
-            AudioBookDataDir.StorageDirs.Add(new StorageDir
+            AudioBookDataDir.StorageDirs = new List<StorageDir>
             {
-                Name = "Memoria principal",
-                AbsolutePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-            });
+                new StorageDir
+                {
+                    Name = "Memoria principal",
+                    AbsolutePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                }
+            };
 
             CrossMediaManager.Current.Init();
 

@@ -49,6 +49,7 @@ namespace audioteca.Services
         private readonly System.Timers.Timer _timer;
         private bool _seekToCurrentTC = false;
         private bool _fileChanged = false;
+        private bool _loadNextFile = false;
 
         private const string PLAYER_STATUS_FILE = "status.json";
 
@@ -76,7 +77,6 @@ namespace audioteca.Services
                         new MediaItem
                         {
                             Title = _playerInfo.Position.CurrentTitle,
-                            FileName = "filename",
                             MediaLocation = MediaLocation.FileSystem,
                             MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
                         }
@@ -97,11 +97,11 @@ namespace audioteca.Services
             });
         }
 
-        private async void Current_MediaItemFinished(object sender, MediaManager.Media.MediaItemEventArgs e)
+        private void Current_MediaItemFinished(object sender, MediaManager.Media.MediaItemEventArgs e)
         {
             if (CrossMediaManager.Current.Position.Ticks != 0)
             {
-                await LoadNextFile();
+                _loadNextFile = true;
             }
         }
 
@@ -111,6 +111,11 @@ namespace audioteca.Services
             {
                 await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
                 _seekToCurrentTC = false;
+            }
+            else if (_loadNextFile && e.State == MediaPlayerState.Stopped)
+            {
+                _loadNextFile = false;
+                await LoadNextFile();
             }
 
             _playerInfo.Status = e.State;
@@ -189,16 +194,16 @@ namespace audioteca.Services
                 _playerInfo.Position.CurrentTitle = _book.Sequence[newIndex].Title;
 
                 ChapterUpdate?.Invoke(_book.Title, _playerInfo.Position.CurrentTitle);
+
                 await CrossMediaManager.Current.Play(
                     new MediaItem
                     {
                         Title = _playerInfo.Position.CurrentTitle,
-                        FileName = "filename",
                         MediaLocation = MediaLocation.FileSystem,
+                        MediaType = MediaType.Audio,
                         MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
                     }
                 );
-
 
                 SaveStatus();
                 return true;
@@ -328,7 +333,6 @@ namespace audioteca.Services
                     new MediaItem
                     {
                         Title = _playerInfo.Position.CurrentTitle,
-                        FileName = "filename",
                         MediaLocation = MediaLocation.FileSystem,
                         MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
                     }
