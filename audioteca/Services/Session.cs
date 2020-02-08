@@ -11,7 +11,7 @@ namespace audioteca.Services
 {
     public class Session
     {
-        private SessionInfo _sessionInfo = new SessionInfo();
+        private readonly SessionInfo _sessionInfo = new SessionInfo();
         private string _lastError;
         private const string SESSION_INFO_KEY = "SessionInfo";
 

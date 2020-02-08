@@ -66,8 +66,10 @@ namespace audioteca.Services
 
         public async Task<AudioBookLinkResult> GetAudioBookLink(string id)
         {
-            var request = new RestRequest("getaudiobooklink", DataFormat.Json);
-            request.Method = Method.GET;
+            var request = new RestRequest("getaudiobooklink", DataFormat.Json)
+            {
+                Method = Method.GET
+            };
             request.AddParameter("session", Session.Instance.GetSession());
             request.AddParameter("id", id);
 
@@ -76,8 +78,10 @@ namespace audioteca.Services
 
         public async Task<AudioBookDetailResult> GetBookDetail(string id)
         {
-            var request = new RestRequest("getaudiobookdetail", DataFormat.Json);
-            request.Method = Method.GET;
+            var request = new RestRequest("getaudiobookdetail", DataFormat.Json)
+            {
+                Method = Method.GET
+            };
             request.AddParameter("session", Session.Instance.GetSession());
             request.AddParameter("id", id);
 
@@ -86,8 +90,10 @@ namespace audioteca.Services
 
         private async Task<TitleResult> GetTitlesByAuthor(string id, int index, int count)
         {
-            var request = new RestRequest("gettitlesbyauthor", DataFormat.Json);
-            request.Method = Method.GET;
+            var request = new RestRequest("gettitlesbyauthor", DataFormat.Json)
+            {
+                Method = Method.GET
+            };
             request.AddParameter("session", Session.Instance.GetSession());
             request.AddParameter("id", id);
             request.AddParameter("index", index);
@@ -98,8 +104,10 @@ namespace audioteca.Services
 
         private async Task<T> Get<T>(string method, string text, int index, int count, string filter) where T : new()
         {
-            var request = new RestRequest(method, DataFormat.Json);
-            request.Method = Method.GET;
+            var request = new RestRequest(method, DataFormat.Json)
+            {
+                Method = Method.GET
+            };
             request.AddParameter("session", Session.Instance.GetSession());
             request.AddParameter("index", index);
             request.AddParameter("count", count);

@@ -19,7 +19,7 @@ namespace audioteca
             _model = new AudioLibraryPageViewModel();
             this.BindingContext = _model;
             _model.Loading = true;
-            Title = "Audioteca";
+            Title = "Fonoteca";
             InitializeComponent();
         }
 
@@ -64,7 +64,7 @@ namespace audioteca
             }
             catch
             {
-                _model.ErrorMessage = "Audioteca no disponible";
+                _model.ErrorMessage = "Fonoteca no disponible";
             }
             UserDialogs.Instance.HideLoading();
         }
