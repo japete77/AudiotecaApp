@@ -84,9 +84,17 @@ namespace audioteca
             await DaisyPlayer.Instance.Move(-1);
         }
 
-        public void ButtonClick_PlayStop(object sender, EventArgs e)
+        public async void ButtonClick_PlayStop(object sender, EventArgs e)
         {
-            DaisyPlayer.Instance.PlayPause();
+            var info = DaisyPlayer.Instance.GetPlayerInfo();
+            if (info.Status == MediaPlayerState.Stopped)
+            {
+                await DaisyPlayer.Instance.Play(info.Position);
+            }
+            else
+            {
+                DaisyPlayer.Instance.PlayPause();
+            }
         }
 
         public async void ButtonClick_Forward(object sender, EventArgs e)
@@ -110,7 +118,7 @@ namespace audioteca
 
             if (_dbook == null || _dbook.Id != _id)
             {
-                var abookJson = File.ReadAllText($"{AudioBookDataDir.DataDir}/{this._id}/ncc.json");
+                var abookJson = File.ReadAllText($"{Session.Instance.GetDataDir()}/{this._id}/ncc.json");
 
                 _dbook = JsonConvert.DeserializeObject<DaisyBook>(abookJson);
 

@@ -78,7 +78,7 @@ namespace audioteca.Services
                             Title = _playerInfo.Position.CurrentTitle,
                             FileName = "filename",
                             MediaLocation = MediaLocation.FileSystem,
-                            MediaUri = _playerInfo.Filename
+                            MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
                         }
                     );
                     await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
@@ -148,20 +148,18 @@ namespace audioteca.Services
                     NavigationLevel = DaisyBook.NAV_LEVEL_SECTION
                 },
             };
-            _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[_playerInfo.Position.CurrentIndex].Filename}";
+            _playerInfo.CurrentFilename = $"{_book.Sequence[_playerInfo.Position.CurrentIndex].Filename}";
 
             LoadStatus();
 
             ChapterUpdate?.Invoke(_book.Title, _book.Sequence[0].Title);
 
-            // await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
             await CrossMediaManager.Current.Play(
                 new MediaItem
                 {
                     Title = _playerInfo.Position.CurrentTitle,
-                    FileName = "filename",
                     MediaLocation = MediaLocation.FileSystem,
-                    MediaUri = _playerInfo.Filename
+                    MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
                 }
             );
             _seekToCurrentTC = true;
@@ -184,7 +182,7 @@ namespace audioteca.Services
 
             if (newFile != null)
             {
-                _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{newFile}";
+                _playerInfo.CurrentFilename = $"{newFile}";
                 _playerInfo.Position.CurrentIndex = newIndex;
                 _playerInfo.Position.CurrentSOM = _book.Sequence[newIndex].SOM;
                 _playerInfo.Position.CurrentTC = 0;
@@ -197,7 +195,7 @@ namespace audioteca.Services
                         Title = _playerInfo.Position.CurrentTitle,
                         FileName = "filename",
                         MediaLocation = MediaLocation.FileSystem,
-                        MediaUri = _playerInfo.Filename
+                        MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
                     }
                 );
 
@@ -211,16 +209,22 @@ namespace audioteca.Services
             }
         }
 
-        public async Task Play(SeekInfo position)
+        public async Task Play(SeekInfo position = null)
         {
             if (_playerInfo != null)
             {
-                if (CrossMediaManager.Current.IsStopped())
-                {
-                    await CrossMediaManager.Current.PlayPause();
-                }
+                if (position != null) _playerInfo.Position = position;
 
-                await CrossMediaManager.Current.SeekTo(TimeSpan.FromMilliseconds(position.CurrentTC * 1000));
+                await CrossMediaManager.Current.Play(
+                    new MediaItem
+                    {
+                        Title = _playerInfo.Position.CurrentTitle,
+                        MediaLocation = MediaLocation.FileSystem,
+                        MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
+                    }
+                );
+
+                _seekToCurrentTC = true;
             }
         }
 
@@ -254,7 +258,7 @@ namespace audioteca.Services
 
             // Calculate index position
             var sequence = _book.Sequence.Where(
-                                w => w.Filename == Path.GetFileName(_playerInfo.Filename) &&
+                                w => w.Filename == _playerInfo.CurrentFilename &&
                                      w.TCIn <= _playerInfo.Position.CurrentTC &&
                                      w.TCOut > _playerInfo.Position.CurrentTC).FirstOrDefault();
             if (sequence != null)
@@ -298,9 +302,9 @@ namespace audioteca.Services
 
             await CrossMediaManager.Current.Pause();
 
-            if (_book.Sequence[index].Filename != Path.GetFileName(_playerInfo.Filename))
+            if (_book.Sequence[index].Filename != _playerInfo.CurrentFilename)
             {
-                _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[index].Filename}";
+                _playerInfo.CurrentFilename = $"{_book.Sequence[index].Filename}";
                 _fileChanged = true;
             }
 
@@ -316,9 +320,9 @@ namespace audioteca.Services
             _playerInfo.Position.CurrentTitle = _book.Sequence[index].Title;
             _playerInfo.Position.CurrentTC = tc > 0 ? tc :  _book.Sequence[index].TCIn;
 
-            if (_book.Sequence[index].Filename != _playerInfo.Filename)
+            if (_book.Sequence[index].Filename != _playerInfo.CurrentFilename)
             {
-                _playerInfo.Filename = $"{AudioBookDataDir.DataDir}/{_book.Id}/{_book.Sequence[index].Filename}";
+                _playerInfo.CurrentFilename = $"{_book.Sequence[index].Filename}";
                 //await CrossMediaManager.Current.Play(new FileInfo($"{_playerInfo.Filename}"));
                 await CrossMediaManager.Current.Play(
                     new MediaItem
@@ -326,7 +330,7 @@ namespace audioteca.Services
                         Title = _playerInfo.Position.CurrentTitle,
                         FileName = "filename",
                         MediaLocation = MediaLocation.FileSystem,
-                        MediaUri = _playerInfo.Filename
+                        MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
                     }
                 );
                 _seekToCurrentTC = true;
@@ -380,14 +384,14 @@ namespace audioteca.Services
         public void SaveStatus()
         {
             File.WriteAllText(
-                $"{AudioBookDataDir.DataDir}/{_book.Id}/{PLAYER_STATUS_FILE}",
+                $"{Session.Instance.GetDataDir()}/{_book.Id}/{PLAYER_STATUS_FILE}",
                 JsonConvert.SerializeObject(_playerInfo)
             );
         }
 
         public void LoadStatus()
         {
-            string statusPath = $"{AudioBookDataDir.DataDir}/{_book.Id}/{PLAYER_STATUS_FILE}";
+            string statusPath = $"{Session.Instance.GetDataDir()}/{_book.Id}/{PLAYER_STATUS_FILE}";
             if (File.Exists(statusPath))
             {
                 _playerInfo = JsonConvert.DeserializeObject<PlayerInfo>(File.ReadAllText(statusPath));

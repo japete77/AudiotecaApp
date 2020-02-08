@@ -111,7 +111,7 @@ namespace audioteca.Services
                 var link = AsyncHelper.RunSync(() => AudioLibrary.Instance.GetAudioBookLink(_currentAudioBook.Book.Id));
 
                 // download file
-                var zipFile = $"{AudioBookDataDir.DataDir}/{_currentAudioBook.Book.Id}.zip";
+                var zipFile = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}.zip";
 
                 if (File.Exists(zipFile)) File.Delete(zipFile);
 
@@ -160,7 +160,7 @@ namespace audioteca.Services
                         double totalBytes = archive.Entries.Sum(e => e.Length);
                         long currentBytes = 0;
 
-                        var targetPath = $"{AudioBookDataDir.DataDir}/{_currentAudioBook.Book.Id}";
+                        var targetPath = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}";
 
                         // clean up if exists
                         if (Directory.Exists(targetPath)) Directory.Delete(targetPath, true);
@@ -195,13 +195,13 @@ namespace audioteca.Services
 
                     // Read daisy format and generate a ncc.json file with all the book content prepared for the audio player
                     DaisyBook dbook = new DaisyBook();
-                    dbook.Load($"{AudioBookDataDir.DataDir}/{_currentAudioBook.Book.Id}/ncc.html");
+                    dbook.Load($"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}/ncc.html");
                     dbook.Id = _currentAudioBook.Book.Id;
                     string dbookStr = JsonConvert.SerializeObject(dbook);
-                    File.WriteAllText($"{AudioBookDataDir.DataDir}/{_currentAudioBook.Book.Id}/ncc.json", dbookStr);
+                    File.WriteAllText($"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}/ncc.json", dbookStr);
 
                     // clean up .zip file
-                    File.Delete($"{AudioBookDataDir.DataDir}/{_currentAudioBook.Book.Id}.zip");
+                    File.Delete($"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}.zip");
 
                     _currentAudioBook.StatusKey = STATUS_COMPLETED;
                     _currentAudioBook.StatusDescription = "Completado";
@@ -225,7 +225,7 @@ namespace audioteca.Services
             MyAudioBook newBook = new MyAudioBook
             {
                 Book = book,
-                Path = $"{AudioBookDataDir.DataDir}",
+                Path = $"{Session.Instance.GetDataDir()}",
                 Filename = $"{book.Id}.zip",
                 TmpFolder = null,
                 Progress = 0,
@@ -279,7 +279,7 @@ namespace audioteca.Services
 
             await SaveBooks();
 
-            var tmp = $"{AudioBookDataDir.DataDir}/{id}";
+            var tmp = $"{Session.Instance.GetDataDir()}/{id}";
             if (Directory.Exists(tmp))
             {
                 Directory.Delete(tmp, true);
@@ -301,13 +301,13 @@ namespace audioteca.Services
             {
                 if (!string.IsNullOrEmpty(item.Path))
                 {
-                    var tmp = $"{AudioBookDataDir.DataDir}/{item.Filename}";
+                    var tmp = $"{Session.Instance.GetDataDir()}/{item.Filename}";
                     if (File.Exists(tmp))
                     {
                         File.Delete(tmp);
                     }
 
-                    tmp = $"{AudioBookDataDir.DataDir}/{item.Book.Id}";
+                    tmp = $"{Session.Instance.GetDataDir()}/{item.Book.Id}";
                     if (Directory.Exists(tmp))
                     {
                         Directory.Delete(tmp, true);
@@ -316,7 +316,7 @@ namespace audioteca.Services
 
                 if (!string.IsNullOrEmpty(item.TmpFolder))
                 {
-                    var tmp = $"{AudioBookDataDir.DataDir}/{item.TmpFolder}";
+                    var tmp = $"{Session.Instance.GetDataDir()}/{item.TmpFolder}";
                     if (Directory.Exists(tmp))
                     {
                         Directory.Delete(tmp, true);

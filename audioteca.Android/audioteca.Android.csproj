@@ -37,7 +37,7 @@
     <BundleAssemblies>false</BundleAssemblies>
     <MandroidI18n />
     <AndroidDexTool>d8</AndroidDexTool>
-    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+    <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
     <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
     <AndroidSupportedAbis>x86;x86_64;arm64-v8a</AndroidSupportedAbis>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>

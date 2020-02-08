@@ -32,8 +32,16 @@ namespace audioteca.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             UserDialogs.Init(this);
 
-            var externalDir = Application.Context.GetExternalFilesDirs(null).FirstOrDefault();
-            AudioBookDataDir.DataDir = externalDir?.AbsolutePath;
+            AudioBookDataDir.StorageDirs = Application.Context.GetExternalFilesDirs(null)
+                .Where(w => w.IsDirectory)
+                .Select((s, index) => new StorageDir
+                {
+                    Name = $"Memoria {index} de {SizeHelper.SizeSuffix(s.TotalSpace)}",
+                    AbsolutePath = s.AbsolutePath,
+                    FreeSpace = s.FreeSpace,
+                    TotalSpace = s.TotalSpace
+                })
+                .ToList();
 
             CrossMediaManager.Current.Init();
 

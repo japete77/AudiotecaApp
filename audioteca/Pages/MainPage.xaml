@@ -20,12 +20,12 @@
             BackgroundColor="DodgerBlue"
             TextColor="White"
             Clicked="ButtonClick_Audiobooks" FontAttributes="Bold"></Button>
-        <Button
+        <!--<Button
             Text="Notificaciones"
             FontSize="Medium"
             BackgroundColor="DodgerBlue"
             TextColor="White"
-            Clicked="ButtonClick_Notificacions" FontAttributes="Bold"></Button>
+            Clicked="ButtonClick_Notificacions" FontAttributes="Bold"></Button>-->
         <Button
             Text="Configuración"
             FontSize="Medium"

@@ -11,7 +11,11 @@ namespace audioteca.iOS
         static void Main(string[] args)
         {
             // DataDir
-            AudioBookDataDir.DataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            AudioBookDataDir.StorageDirs.Add(new StorageDir
+            {
+                Name = "Memoria principal",
+                AbsolutePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+            });
 
             CrossMediaManager.Current.Init();
 

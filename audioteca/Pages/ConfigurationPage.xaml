@@ -4,8 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:Helpers="clr-namespace:audioteca.Helpers"
     x:Class="audioteca.ConfigurationPage"
-    Padding="20"
-    IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
+    Padding="20">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
     </ContentPage.ToolbarItems>
@@ -15,17 +14,18 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
                     <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50*" />
-                    <ColumnDefinition Width="50*" />
+                    <ColumnDefinition Width="40*" />
+                    <ColumnDefinition Width="60*" />
                 </Grid.ColumnDefinitions>
-                <Label Text="Velocidad" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="0" />
-                <Picker x:Name="picker"
-                        Title="Seleccione un valor"
+                <Label Text="Velocidad" FontSize="Medium" VerticalTextAlignment="Center" LineBreakMode="TailTruncation" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="0" />
+                <Picker x:Name="pickerSpeed"
+                        Title="Seleccione velocidad"
                         HorizontalOptions="FillAndExpand"
                         TitleColor="Black"
-                        SelectedIndexChanged="picker_SelectedIndexChanged"
+                        SelectedIndexChanged="pickerSpeed_SelectedIndexChanged"
                         SelectedItem="{Binding Speed}"
                         Grid.Row="0" Grid.Column="1">
                     <Picker.ItemsSource>
@@ -40,15 +40,24 @@
                         </x:Array>
                     </Picker.ItemsSource>
                 </Picker>
+                <Label Text="Almacenamiento" FontSize="Medium" VerticalTextAlignment="Center" LineBreakMode="TailTruncation" HorizontalTextAlignment="Start" Grid.Row="1" Grid.Column="0" />
+                <Picker x:Name="picker" 
+                    Title="Seleccione almacenamiento" 
+                        HorizontalOptions="FillAndExpand"
+                    ItemsSource="{Binding Items}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedIndexChanged="pickerStorage_SelectedIndexChanged"
+                    SelectedItem="{Binding Storage}"
+                    Grid.Row="1" Grid.Column="1"/>
                 <Label Text="Credenciales" FontSize="Medium" VerticalTextAlignment="Center" 
-                       HorizontalTextAlignment="Start" Grid.Row="1" Grid.Column="0" />
+                       HorizontalTextAlignment="Start" Grid.Row="2" Grid.Column="0" />
                 <Button
                     Text="Reiniciar"
                     FontSize="Medium"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"
                     Clicked="ButtonClick_ClearCredentials" FontAttributes="Bold"
-                    Grid.Row="1" Grid.Column="1"></Button>
+                    Grid.Row="2" Grid.Column="1"></Button>
             </Grid>
         </StackLayout>
     </ScrollView>

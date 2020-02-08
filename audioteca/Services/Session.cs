@@ -11,11 +11,11 @@ namespace audioteca.Services
 {
     public class Session
     {
-        private static Session _instance;
         private SessionInfo _sessionInfo = new SessionInfo();
         private string _lastError;
         private const string SESSION_INFO_KEY = "SessionInfo";
 
+        private static Session _instance;
         public static Session Instance {
             get
             {
@@ -54,12 +54,9 @@ namespace audioteca.Services
                     throw new UnavailableException();
                 }
 
-                _sessionInfo = new SessionInfo
-                {
-                    Username = user,
-                    Password = password,
-                    Session = result.Data.Session
-                };
+                _sessionInfo.Username = user;
+                _sessionInfo.Password = password;
+                _sessionInfo.Session = result.Data.Session;
 
                 _lastError = result.Data.Message;
 
@@ -120,6 +117,11 @@ namespace audioteca.Services
             return _sessionInfo.Speed;
         }
 
+        public string GetDataDir()
+        {
+            return _sessionInfo.DataDir;
+        }
+
         public void SetSpeed(double speed)
         {
             _sessionInfo.Speed = speed;
@@ -130,6 +132,11 @@ namespace audioteca.Services
             _sessionInfo.Username = 0;
             _sessionInfo.Password = null;
             _sessionInfo.Session = null;
+        }
+
+        public void SetDataDir(string dataDir)
+        {
+            _sessionInfo.DataDir = dataDir;
         }
 
         public void SaveSession()

@@ -1,5 +1,8 @@
-﻿using System;
+﻿using audioteca.Helpers;
+using audioteca.Services;
+using System;
 using System.ComponentModel;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,6 +18,14 @@ namespace audioteca
         {
             Title = "Inicio";
             InitializeComponent();
+
+            // Setup data dir if not set
+            var currentDataDir = Session.Instance.GetDataDir();
+            if (string.IsNullOrEmpty(currentDataDir))
+            {
+                Session.Instance.SetDataDir(AudioBookDataDir.StorageDirs.First().AbsolutePath);
+                Session.Instance.SaveSession();
+            }
         }
 
         public async void ButtonClick_MyAudiobooks(object sender, EventArgs e)
