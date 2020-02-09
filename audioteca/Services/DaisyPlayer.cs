@@ -62,8 +62,17 @@ namespace audioteca.Services
             _timer.Elapsed += PlayCurrentFile;
 
             CrossMediaManager.Current.PositionChanged += Current_PositionChanged;
-            CrossMediaManager.Current.StateChanged += Current_StateChanged;
-            CrossMediaManager.Current.MediaItemFinished += Current_MediaItemFinished;
+
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                CrossMediaManager.Current.StateChanged += Current_StateChangediOS;
+                CrossMediaManager.Current.MediaItemFinished += Current_MediaItemFinishediOS;
+            }
+            else if (Device.RuntimePlatform == Device.Android)
+            {
+                CrossMediaManager.Current.StateChanged += Current_StateChangedAndroid;
+                CrossMediaManager.Current.MediaItemFinished += Current_MediaItemFinishedAndroid;
+            }
         }
 
         private void PlayCurrentFile(object sender, System.Timers.ElapsedEventArgs e)
@@ -97,7 +106,7 @@ namespace audioteca.Services
             });
         }
 
-        private void Current_MediaItemFinished(object sender, MediaManager.Media.MediaItemEventArgs e)
+        private void Current_MediaItemFinishediOS(object sender, MediaManager.Media.MediaItemEventArgs e)
         {
             if (CrossMediaManager.Current.Position.Ticks != 0)
             {
@@ -105,7 +114,7 @@ namespace audioteca.Services
             }
         }
 
-        private async void Current_StateChanged(object sender, MediaManager.Playback.StateChangedEventArgs e)
+        private async void Current_StateChangediOS(object sender, MediaManager.Playback.StateChangedEventArgs e)
         {
             if (_seekToCurrentTC && e.State == MediaPlayerState.Playing)
             {
@@ -116,6 +125,26 @@ namespace audioteca.Services
             {
                 _loadNextFile = false;
                 await LoadNextFile();
+            }
+
+            _playerInfo.Status = e.State;
+            StatusUpdate?.Invoke(_playerInfo);
+        }
+
+        private async void Current_MediaItemFinishedAndroid(object sender, MediaManager.Media.MediaItemEventArgs e)
+        {
+            if (CrossMediaManager.Current.Position.Ticks != 0)
+            {
+                await LoadNextFile();
+            }
+        }
+
+        private async void Current_StateChangedAndroid(object sender, MediaManager.Playback.StateChangedEventArgs e)
+        {
+            if (_seekToCurrentTC && e.State == MediaPlayerState.Playing)
+            {
+                await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                _seekToCurrentTC = false;
             }
 
             _playerInfo.Status = e.State;
