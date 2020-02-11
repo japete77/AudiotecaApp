@@ -243,7 +243,9 @@ namespace audioteca.Services
             await SaveBooks();
 
             // process download queue
+#pragma warning disable 4014
             Task.Run(() => ProcessDownloadQueue());
+#pragma warning restore 4014
         }
 
         public void Cancel(string id)

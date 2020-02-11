@@ -12,7 +12,14 @@ using System.Linq;
 
 namespace audioteca.Droid
 {
-    [Activity(Label = "Audioteca Nuyeva Luz", Theme = "@style/Theme.Splash", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, LaunchMode = LaunchMode.SingleTop)]
+    [Activity(
+        Label = "Fonoteca Nueva Luz", 
+        Theme = "@style/Theme.Splash", 
+        Icon = "@drawable/icon",
+        MainLauncher = true, 
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, 
+        LaunchMode = LaunchMode.SingleTop
+    )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
