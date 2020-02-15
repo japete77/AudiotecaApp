@@ -14,6 +14,7 @@
     <AssemblyName>audioteca.iOS</AssemblyName>
     <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
+    <NeutralLanguage>es-ES</NeutralLanguage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,6 +27,9 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchSdkVersion>13.2</MtouchSdkVersion>
+    <MtouchFloat32>true</MtouchFloat32>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -35,6 +39,7 @@
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
+    <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,12 +49,17 @@
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchArch>ARMv7, ARMv7s, ARM64</MtouchArch>
+    <CodesignKey>Apple Development: David Padilla (6MXZ9RA746)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <MtouchLink>None</MtouchLink>
-    <MtouchInterpreter>-all</MtouchInterpreter>
+    <MtouchLink>SdkOnly</MtouchLink>
+<BuildIpa>true</BuildIpa>
+<IpaPackageName>Fonoteca</IpaPackageName>
+<MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+<MtouchFastDev>true</MtouchFastDev>
+<MtouchFloat32>true</MtouchFloat32>
+<MtouchEnableSGenConc>false</MtouchEnableSGenConc>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -57,9 +67,11 @@
     <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchArch>ARMv7, ARMv7s, ARM64</MtouchArch>
+    <CodesignKey>Apple Development: David Padilla (6MXZ9RA746)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <BuildIpa>true</BuildIpa>
+    <IpaPackageName>Fonoteca</IpaPackageName>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -75,58 +87,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon1024.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon180.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon167.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon152.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon120.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon87.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon80.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon76.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon60.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon58.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon40.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon29.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon20.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.991640" />
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -135,5 +102,40 @@
       <Project>{6448B5BE-3121-49A8-97D1-15F28E1F3766}</Project>
       <Name>audioteca</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Media.xcassets\Contents.json" />
+    <ImageAsset Include="Media.xcassets\Logo.imageset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\Logo.imageset\nuevaluz.pdf" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Contents.json" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon40.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon60.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon58.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon87.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon80.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon120.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon120-1.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon180.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon20.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon40-1.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon29.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon58-1.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon40-2.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon80-1.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon76.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon152.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon167.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon1024.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon120-2.png" />
+    <ImageAsset Include="Media.xcassets\AppIcon.appiconset\Icon180-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\Logo.imageset\nuevaluz-1.pdf" />
+    <ImageAsset Include="Resources\Media.xcassets\Logo.imageset\nuevaluz-2.pdf" />
+    <ImageAsset Include="Resources\Media.xcassets\Logo.imageset\nuevaluz-3.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Media.xcassets\Logo.imageset\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="LaunchScreen.storyboard" />
   </ItemGroup>
 </Project>
