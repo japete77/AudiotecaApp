@@ -39,7 +39,8 @@
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Distribution: David Padilla (JNM343SE4U)</CodesignKey>
+    <CodesignProvision>Automatic:AppStore</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,14 +50,13 @@
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchArch>ARMv7, ARMv7s, ARM64</MtouchArch>
-    <CodesignKey>Apple Development: David Padilla (6MXZ9RA746)</CodesignKey>
+    <MtouchArch>ARM64</MtouchArch>
+    <CodesignKey>iPhone Distribution: David Padilla (JNM343SE4U)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>SdkOnly</MtouchLink>
 <BuildIpa>true</BuildIpa>
 <IpaPackageName>Fonoteca</IpaPackageName>
-<MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
 <MtouchFastDev>true</MtouchFastDev>
 <MtouchFloat32>true</MtouchFloat32>
 <MtouchEnableSGenConc>false</MtouchEnableSGenConc>
@@ -67,11 +67,12 @@
     <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchArch>ARMv7, ARMv7s, ARM64</MtouchArch>
-    <CodesignKey>Apple Development: David Padilla (6MXZ9RA746)</CodesignKey>
+    <MtouchArch>ARM64</MtouchArch>
+    <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <BuildIpa>true</BuildIpa>
     <IpaPackageName>Fonoteca</IpaPackageName>
+    <CodesignProvision>NuevaLuzDesarrollo</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -137,5 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <ITunesArtwork Include="iTunesArtwork%402x" />
+    <ITunesArtwork Include="iTunesArtwork" />
   </ItemGroup>
 </Project>
