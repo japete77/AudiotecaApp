@@ -16,6 +16,17 @@ namespace audioteca.ViewModels
             }
         }
 
+        private bool _hasExternalMemory;
+        public bool HasExternalMemory
+        {
+            get { return _hasExternalMemory; }
+            set
+            {
+                _hasExternalMemory = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private StorageDir _storage;
         public StorageDir Storage
         {

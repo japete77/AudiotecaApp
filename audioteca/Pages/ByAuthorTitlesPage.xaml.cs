@@ -26,7 +26,11 @@ namespace audioteca
 
         public ByAuthorTitlesPage(string id)
         {
-            _model = new ByTitlePageViewModel() { Loading = true };
+            _model = new ByTitlePageViewModel()
+            {
+                Loading = true,
+                Items = new ObservableCollection<Grouping<string, TitleModel>>()
+            };
             this.BindingContext = _model;
             Title = "Títulos";
             _authorId = id;
@@ -52,14 +56,17 @@ namespace audioteca
                                 .GroupBy(g => g.TitleSort)
                                 .Select(s => new Grouping<string, TitleModel>(s.Key, s));
 
-                //create a new collection of groups
-                _model.Items = new ObservableCollection<Grouping<string, TitleModel>>(sorted);
-
                 listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
                 listView.BindingContext = _model.Items;
                 listView.IsGroupingEnabled = true;
                 listView.GroupDisplayBinding = new Binding("Key");
                 listView.GroupShortNameBinding = new Binding("Key");
+
+                listView.BeginRefresh();
+
+                sorted.ToList().ForEach(item => _model.Items.Add(item));
+
+                listView.EndRefresh();
 
                 UserDialogs.Instance.HideLoading();
 

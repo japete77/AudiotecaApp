@@ -23,6 +23,7 @@ namespace audioteca
             _model = new ConfigurationPageViewModel();
             BindingContext = _model;
             _model.Items = new ObservableCollection<StorageDir>(AudioBookDataDir.StorageDirs);
+            _model.HasExternalMemory = _model.Items.Count > 1;
             Title = "Configuración";
             InitializeComponent();
         }
@@ -39,15 +40,7 @@ namespace audioteca
         public async void GoToHome_Click(object sender, EventArgs e)
         {
             await Navigation.PopToRootAsync();
-        }
-
-
-        private void pickerStorage_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        
+        }        
 
         public void ButtonClick_ClearCredentials(object sender, EventArgs e)
         {

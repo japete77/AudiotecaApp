@@ -17,6 +17,7 @@
                 TextColor="White"
                 Clicked="ButtonClick_SelectSpeeed"  FontAttributes="Bold"></Button>
             <Button
+                IsVisible="{Binding HasExternalMemory}"
                 Text="Memoria de almacenamiento"
                 FontSize="Medium"
                 BackgroundColor="DodgerBlue"
