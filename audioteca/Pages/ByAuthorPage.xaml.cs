@@ -1,8 +1,12 @@
 ﻿using Acr.UserDialogs;
+using audioteca.Helpers;
 using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -12,13 +16,15 @@ namespace audioteca
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ByAuthorPage : ContentPage
     {
-        private const int PAGE_SIZE = 100;
+        private const int PAGE_SIZE = 9999;
 
         private readonly ByAuthorPageViewModel _model;
 
+        private AuthorsResult _authors;
+
         public ByAuthorPage()
         {
-            _model = new ByAuthorPageViewModel();
+            _model = new ByAuthorPageViewModel() { Loading = true };
             this.BindingContext = _model;
             Title = "Por Autor";
             InitializeComponent();
@@ -26,7 +32,36 @@ namespace audioteca
 
         protected override async void OnAppearing()
         {
-            await LoadMore();
+            if (_model.Loading)
+            {
+                UserDialogs.Instance.ShowLoading("Cargando");
+
+                _authors = await AudioLibrary.Instance.GetAuthors(1, PAGE_SIZE);
+
+                if (_authors == null)
+                {
+                    UserDialogs.Instance.HideLoading();
+                    return;
+                }
+
+                var sorted = _authors.Authors
+                                .OrderBy(o => o.Name)
+                                .GroupBy(g => g.NameSort)
+                                .Select(s => new Grouping<string, AuthorModel>(s.Key, s));
+
+                //create a new collection of groups
+                _model.Items = new ObservableCollection<Grouping<string, AuthorModel>>(sorted);
+
+                listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
+                listView.BindingContext = _model.Items;
+                listView.IsGroupingEnabled = true;
+                listView.GroupDisplayBinding = new Binding("Key");
+                listView.GroupShortNameBinding = new Binding("Key");
+
+                UserDialogs.Instance.HideLoading();
+
+                _model.Loading = false;
+            }
         }
 
         public async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -39,46 +74,10 @@ namespace audioteca
 
             var authorId = (e.SelectedItem as AuthorModel).Id;
 
-            if (string.IsNullOrEmpty(authorId))
-            {
-                // Clicked fake (View more) item
-                await LoadMore();
-            }
-            else
+            if (!string.IsNullOrEmpty(authorId))
             {
                 await Navigation.PushAsync(new ByAuthorTitlesPage((e.SelectedItem as AuthorModel).Id), true);
             }
-        }
-
-        private async Task LoadMore()
-        {
-            UserDialogs.Instance.ShowLoading("Cargando");
-
-            // Remove fake item (View more)
-            if (_model.Items.Count > 0) _model.Items.RemoveAt(_model.Items.Count - 1);
-
-            _model.Loading = false;
-
-            var result = await AudioLibrary.Instance.GetAuthors(_model.Items.Count + 1, PAGE_SIZE);
-            if (result == null) return;
-
-            if (result.Authors != null)
-            {
-                result.Authors.ForEach(v => _model.Items.Add(v));
-            }
-
-            // Add fake item (View more) at the end of the list
-            if (_model.Items.Count < result.Total)
-            {
-                _model.Items.Add(new AuthorModel { Name = "Ver mas autores" });
-            }
-
-            listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
-            listView.BindingContext = _model.Items;
-
-            UserDialogs.Instance.HideLoading();
-
-            _model.Loading = false;
         }
 
         public async void GoToHome_Click(object sender, EventArgs e)
@@ -86,5 +85,33 @@ namespace audioteca
             await Navigation.PopToRootAsync();
         }
 
+        private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            IEnumerable<Grouping<string, AuthorModel>> sorted;
+
+            listView.BeginRefresh();
+
+            if (string.IsNullOrEmpty(e.NewTextValue))
+            {
+                sorted = _authors.Authors
+                    .OrderBy(o => o.Name)
+                    .GroupBy(g => g.NameSort)
+                    .Select(s => new Grouping<string, AuthorModel>(s.Key, s));
+            }
+            else
+            {
+                sorted = _authors.Authors
+                    .Where(s => TextHelper.RemoveDiacritics(s.Name).ToUpper().Contains(TextHelper.RemoveDiacritics(e.NewTextValue).ToUpper()))
+                    .OrderBy(o => o.Name)
+                    .GroupBy(g => g.NameSort)
+                    .Select(s => new Grouping<string, AuthorModel>(s.Key, s));
+            }
+
+            // Update items
+            _model.Items.Clear();
+            sorted.ToList().ForEach(item => _model.Items.Add(item));
+
+            listView.EndRefresh();
+        }
     }
 }

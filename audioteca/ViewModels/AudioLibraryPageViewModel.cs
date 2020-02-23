@@ -13,6 +13,28 @@
             }
         }
 
+        private bool _isAccesible = false;
+        public bool IsAccesible
+        {
+            get { return _isAccesible; }
+            set
+            {
+                _isAccesible = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _mustChangePassword = false;
+        public bool MustChangePassword
+        {
+            get { return _mustChangePassword; }
+            set
+            {
+                _mustChangePassword = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _loading = false;
         public bool Loading
         {
@@ -42,6 +64,28 @@
             set
             {
                 _password = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _newPassword;
+        public string NewPassword
+        {
+            get { return _newPassword; }
+            set
+            {
+                _newPassword = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _reNewPassword;
+        public string ReNewPassword
+        {
+            get { return _reNewPassword; }
+            set
+            {
+                _reNewPassword = value;
                 RaisePropertyChanged();
             }
         }

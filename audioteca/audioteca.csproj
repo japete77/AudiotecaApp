@@ -58,7 +58,6 @@
   </Compile>
 </ItemGroup>
 <ItemGroup>
-    <Folder Include="Models\Api\" />
     <Folder Include="Models\Session\" />
     <Folder Include="Exceptions\" />
   </ItemGroup>
@@ -83,7 +82,13 @@
   <EmbeddedResource Update="Pages\BookmarksPage.xaml">
     <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
   </EmbeddedResource>
+  <EmbeddedResource Update="Pages\ConfigurationMemoryPage.xaml">
+    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+  </EmbeddedResource>
   <EmbeddedResource Update="Pages\ConfigurationPage.xaml">
+    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+  </EmbeddedResource>
+  <EmbeddedResource Update="Pages\ConfigurationSpeedPage.xaml">
     <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
   </EmbeddedResource>
   <EmbeddedResource Update="Pages\MyAudioBooksPage.xaml">

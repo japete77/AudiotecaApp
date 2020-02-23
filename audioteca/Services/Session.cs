@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using audioteca.Exceptions;
 using audioteca.Helpers;
 using audioteca.Models.Api;
@@ -69,6 +70,24 @@ namespace audioteca.Services
             });
         }
 
+        public async Task ChangePassword(string newPassword)
+        {
+            await Task.Run(() =>
+            {
+                RestRequest request = new RestRequest("change-password", DataFormat.Json)
+                {
+                    Method = Method.POST
+                };
+                request.AddJsonBody(new ChangePasswordRequest { Session = _sessionInfo.Session, NewPassword = newPassword });
+
+                var result = ApiClient.Instance.Client.Post<ChangePasswordRequest>(request);
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    throw new Exception("No se ha podido cambiar la contraseña");
+                }
+            });
+        }
+
         public async Task<bool> IsAuthenticated()
         {
             if (_sessionInfo == null ||
@@ -99,6 +118,11 @@ namespace audioteca.Services
             return _sessionInfo.Session;
         }
 
+        public string GetPassword()
+        {
+            return _sessionInfo.Password;
+        }
+
         public string GetLastError()
         {
             return _lastError;
@@ -117,6 +141,11 @@ namespace audioteca.Services
         public void SetSpeed(double speed)
         {
             _sessionInfo.Speed = speed;
+        }
+
+        public void SetPassword(string password)
+        {
+            _sessionInfo.Password = password;
         }
 
         public void CleanCredentials()

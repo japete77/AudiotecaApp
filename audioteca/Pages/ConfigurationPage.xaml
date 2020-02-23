@@ -10,6 +10,27 @@
     </ContentPage.ToolbarItems>
     <ScrollView>
         <StackLayout>
+            <Button
+                Text="Velocidad de reproducción"
+                FontSize="Medium"
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                Clicked="ButtonClick_SelectSpeeed"  FontAttributes="Bold"></Button>
+            <Button
+                Text="Memoria de almacenamiento"
+                FontSize="Medium"
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                Clicked="ButtonClick_SelectMemory" FontAttributes="Bold"></Button>
+            <Button
+                Text="Reiniciar credenciales"
+                FontSize="Medium"
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                Clicked="ButtonClick_ClearCredentials" FontAttributes="Bold"></Button>
+        </StackLayout>
+
+        <!--<StackLayout>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
@@ -59,6 +80,6 @@
                     Clicked="ButtonClick_ClearCredentials" FontAttributes="Bold"
                     Grid.Row="2" Grid.Column="1"></Button>
             </Grid>
-        </StackLayout>
+        </StackLayout>-->
     </ScrollView>
 </ContentPage>

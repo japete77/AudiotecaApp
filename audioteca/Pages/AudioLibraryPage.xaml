@@ -10,16 +10,16 @@
         <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
     </ContentPage.ToolbarItems>
     <StackLayout>
-        <StackLayout IsVisible="{Binding Authenticated}">
+        <StackLayout IsVisible="{Binding IsAccesible}">
             <Button
                 Text="Por Título"
-                FontSize="Large"
+                FontSize="Medium"
                 BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Clicked="ButtonClick_ByTitle" FontAttributes="Bold"></Button>
             <Button
                 Text="Por Autor"
-                FontSize="Large"
+                FontSize="Medium"
                 BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Clicked="ButtonClick_ByAuthor" FontAttributes="Bold"></Button>
@@ -30,10 +30,22 @@
             <Entry Placeholder="Contraseña" FontSize="Medium" IsPassword="True" Text="{Binding Password}"/>
             <Button
                 Text="Acceder"
-                FontSize="Large"
+                FontSize="Medium"
                 BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Clicked="ButtonClick_Login" FontAttributes="Bold"></Button>
+            <Label Text="{Binding ErrorMessage}" FontSize="Medium" HorizontalTextAlignment="Center" TextColor="Red"></Label>
+        </StackLayout>
+        <StackLayout IsVisible="{Binding MustChangePassword}">
+            <Label Text="Cambie su contraseña" FontSize="Medium" HorizontalTextAlignment="Center"></Label>
+            <Entry Placeholder="Nueva Contraseña" FontSize="Medium" IsPassword="True" Text="{Binding NewPassword}"/>
+            <Entry Placeholder="Repita Contraseña" FontSize="Medium" IsPassword="True" Text="{Binding ReNewPassword}"/>
+            <Button
+                Text="Aceptar"
+                FontSize="Medium"
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                Clicked="ButtonClick_ChangePassword" FontAttributes="Bold"></Button>
             <Label Text="{Binding ErrorMessage}" FontSize="Medium" HorizontalTextAlignment="Center" TextColor="Red"></Label>
         </StackLayout>
     </StackLayout>

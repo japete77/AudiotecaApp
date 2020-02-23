@@ -25,7 +25,7 @@ namespace audioteca.Services
 
         public ApiClient()
         {
-            Client = new RestClient("https://jvrr26o3jl.execute-api.eu-west-1.amazonaws.com/production/");
+            Client = new RestClient("https://1dbbwygss8.execute-api.eu-west-1.amazonaws.com/Prod/api/v1/fonoteca/");
             Client.UseSerializer(() => new JsonNetSerializer());
         }
     }

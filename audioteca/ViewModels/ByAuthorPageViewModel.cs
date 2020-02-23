@@ -6,8 +6,8 @@ namespace audioteca.ViewModels
 {
     public class ByAuthorPageViewModel : ViewModelBase
     {
-        private ObservableCollection<AuthorModel> _items = new ObservableCollection<AuthorModel>();
-        public ObservableCollection<AuthorModel> Items
+        private ObservableCollection<Grouping<string, AuthorModel>> _items = new ObservableCollection<Grouping<string, AuthorModel>>();
+        public ObservableCollection<Grouping<string, AuthorModel>> Items
         {
             get { return _items; }
             set

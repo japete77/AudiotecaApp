@@ -6,13 +6,24 @@ namespace audioteca.ViewModels
 {
     public class ByTitlePageViewModel : ViewModelBase
     {
-        private ObservableCollection<TitleModel> _items = new ObservableCollection<TitleModel>();
-        public ObservableCollection<TitleModel> Items
+        private ObservableCollection<Grouping<string, TitleModel>> _items = new ObservableCollection<Grouping<string, TitleModel>>();
+        public ObservableCollection<Grouping<string, TitleModel>> Items
         {
             get { return _items; }
             set
             {
                 _items = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _searchText;
+        public bool SearchText
+        {
+            get { return _searchText; }
+            set
+            {
+                _searchText = value;
                 RaisePropertyChanged();
             }
         }
