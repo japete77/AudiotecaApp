@@ -49,7 +49,20 @@ namespace audioteca
             // de-select the row
             ((ListView)sender).SelectedItem = null;
 
-            await Navigation.PushAsync(new AudioPlayerPage((e.SelectedItem as MyAudioBook).Book.Id), true);
+            var selectedBook = (e.SelectedItem as MyAudioBook);
+
+            if (selectedBook != null)
+            {
+                if (selectedBook.StatusKey == AudioBookStore.STATUS_COMPLETED)
+                {
+                    await Navigation.PushAsync(new AudioPlayerPage(selectedBook.Book.Id), true);
+                }
+                else
+                {
+                    await Navigation.PushAsync(new BookDetails(selectedBook.Book.Id), true);
+                }
+            }
+
         }
 
         public async void GoToHome_Click(object sender, EventArgs e)
