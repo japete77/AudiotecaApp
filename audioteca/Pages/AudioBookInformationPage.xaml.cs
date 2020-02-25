@@ -60,6 +60,8 @@ namespace audioteca
 
                             await AudioBookStore.Instance.Delete(daisyBook.Id);
 
+                            DaisyPlayer.Instance.CleanupPlayerInfo();
+
                             await Navigation.PopToRootAsync(true);
                         }
                     }

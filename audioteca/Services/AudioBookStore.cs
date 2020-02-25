@@ -64,9 +64,19 @@ namespace audioteca.Services
         {
             if (_currentAudioBook != null)
             {
-                _currentAudioBook.Progress = 100;
-                _currentAudioBook.StatusKey = STATUS_DOWNLOADED;
-                _currentAudioBook.StatusDescription = $"Descarga completada";
+                if (e.Error == null)
+                {
+                    _currentAudioBook.Progress = 100;
+                    _currentAudioBook.StatusKey = STATUS_DOWNLOADED;
+                    _currentAudioBook.StatusDescription = $"Descarga completada";
+                }
+                else
+                {
+                    _currentAudioBook.Progress = 0;
+                    _currentAudioBook.StatusKey = STATUS_ERROR;
+                    _currentAudioBook.StatusDescription = $"Error descargando audiolibro";
+                    _cancel = true;
+                }
                 OnProgress?.Invoke(_currentAudioBook);
             }
         }
@@ -155,43 +165,51 @@ namespace audioteca.Services
                     AsyncHelper.RunSync(() => SaveBooks());
                     OnProgress?.Invoke(_currentAudioBook);
 
-                    // Unzip
-                    using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                    try
                     {
-                        double totalBytes = archive.Entries.Sum(e => e.Length);
-                        long currentBytes = 0;
-
-                        var targetPath = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}";
-
-                        // clean up if exists
-                        if (Directory.Exists(targetPath)) Directory.Delete(targetPath, true);
-
-                        Directory.CreateDirectory(targetPath);
-
-                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        // Unzip
+                        using (ZipArchive archive = ZipFile.OpenRead(zipFile))
                         {
-                            if (!string.IsNullOrEmpty(entry.Name))
+                            double totalBytes = archive.Entries.Sum(e => e.Length);
+                            long currentBytes = 0;
+
+                            var targetPath = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}";
+
+                            // clean up if exists
+                            if (Directory.Exists(targetPath)) Directory.Delete(targetPath, true);
+
+                            Directory.CreateDirectory(targetPath);
+
+                            foreach (ZipArchiveEntry entry in archive.Entries)
                             {
-                                string fileName = Path.Combine($"{targetPath}", Path.GetFileName(entry.FullName));
-
-                                using (Stream inputStream = entry.Open())
-                                using (Stream outputStream = File.OpenWrite(fileName))
+                                if (!string.IsNullOrEmpty(entry.Name))
                                 {
-                                    Stream progressStream = new StreamWithProgress(outputStream, null,
-                                        new BasicProgress<int>(i =>
-                                        {
-                                            currentBytes += i;
-                                            _currentAudioBook.Progress = (int)(currentBytes / totalBytes);
-                                            OnProgress?.Invoke(_currentAudioBook);
-                                        })
-                                    );
+                                    string fileName = Path.Combine($"{targetPath}", Path.GetFileName(entry.FullName));
 
-                                    inputStream.CopyTo(progressStream);
+                                    using (Stream inputStream = entry.Open())
+                                    using (Stream outputStream = File.OpenWrite(fileName))
+                                    {
+                                        Stream progressStream = new StreamWithProgress(outputStream, null,
+                                            new BasicProgress<int>(i =>
+                                            {
+                                                currentBytes += i;
+                                                _currentAudioBook.Progress = (int)(currentBytes / totalBytes);
+                                                OnProgress?.Invoke(_currentAudioBook);
+                                            })
+                                        );
+
+                                        inputStream.CopyTo(progressStream);
+                                    }
+
+                                    File.SetLastWriteTime(fileName, entry.LastWriteTime.LocalDateTime);
                                 }
-
-                                File.SetLastWriteTime(fileName, entry.LastWriteTime.LocalDateTime);
                             }
                         }
+                    }
+                    catch
+                    {
+                        _isProcessingDownload = false;
+                        return;
                     }
 
                     // Read daisy format and generate a ncc.json file with all the book content prepared for the audio player

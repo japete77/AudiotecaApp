@@ -3,6 +3,7 @@ using audioteca.Services;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -21,7 +22,7 @@ namespace audioteca
 
             // Setup data dir if not set
             var currentDataDir = Session.Instance.GetDataDir();
-            if (string.IsNullOrEmpty(currentDataDir))
+            if (string.IsNullOrEmpty(currentDataDir) || DeviceInfo.Platform == DevicePlatform.iOS)
             {
                 Session.Instance.SetDataDir(AudioBookDataDir.StorageDirs.First().AbsolutePath);
                 Session.Instance.SaveSession();

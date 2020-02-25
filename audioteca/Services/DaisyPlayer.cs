@@ -390,6 +390,11 @@ namespace audioteca.Services
             return _playerInfo;
         }
 
+        public void CleanupPlayerInfo()
+        {
+            _playerInfo = null;
+        }
+
         public DaisyBook GetDaisyBook()
         {
             return _book;
