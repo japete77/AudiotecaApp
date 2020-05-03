@@ -1,5 +1,4 @@
-﻿using Acr.UserDialogs;
-using audioteca.Helpers;
+﻿using audioteca.Helpers;
 using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
@@ -7,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -16,7 +14,7 @@ namespace audioteca
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ByTitlePage : ContentPage
     {
-        private const int PAGE_SIZE = 9999;
+        private const int PAGE_SIZE = Int32.MaxValue;
 
         private readonly ByTitlePageViewModel _model;
 
@@ -24,13 +22,16 @@ namespace audioteca
 
         public ByTitlePage()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
+
             _model = new ByTitlePageViewModel
             {
                 Loading = true,
                 Items = new ObservableCollection<Grouping<string, TitleModel>>()
             };
+
             this.BindingContext = _model;
-            Title = "Por Título";
+
             InitializeComponent();
         }
 
@@ -38,13 +39,10 @@ namespace audioteca
         {
             if (_model.Loading)
             {
-                UserDialogs.Instance.ShowLoading("Cargando");
-
                 _titles = await AudioLibrary.Instance.GetBooksByTitle(1, PAGE_SIZE);
 
                 if (_titles == null)
                 {
-                    UserDialogs.Instance.HideLoading();
                     return;
                 }
 
@@ -66,8 +64,6 @@ namespace audioteca
 
                 listView.EndRefresh();
 
-                UserDialogs.Instance.HideLoading();
-
                 _model.Loading = false;
             }
         }
@@ -88,9 +84,9 @@ namespace audioteca
             }
         }
 
-        public async void GoToHome_Click(object sender, EventArgs e)
+        private async void ButtonClick_Back(object sender, EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            await this.Navigation.PopAsync();
         }
 
         private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)

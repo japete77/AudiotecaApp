@@ -3,11 +3,8 @@ using audioteca.Helpers;
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -20,11 +17,13 @@ namespace audioteca
 
         public ConfigurationPage()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
+
             _model = new ConfigurationPageViewModel();
             BindingContext = _model;
             _model.Items = new ObservableCollection<StorageDir>(AudioBookDataDir.StorageDirs);
             _model.HasExternalMemory = _model.Items.Count > 1;
-            Title = "Configuración";
+
             InitializeComponent();
         }
 
@@ -37,11 +36,6 @@ namespace audioteca
             _model.Storage = storage;
         }
 
-        public async void GoToHome_Click(object sender, EventArgs e)
-        {
-            await Navigation.PopToRootAsync();
-        }        
-
         public void ButtonClick_ClearCredentials(object sender, EventArgs e)
         {
             UserDialogs.Instance.Confirm(
@@ -51,12 +45,17 @@ namespace audioteca
                     Message = $"Esto limpiará las credenciales de usuario y tendrá que iniciar sesión de nuevo con un usuario y contraseña ¿desea continuar?",
                     OkText = "Si",
                     CancelText = "No",
-                    OnAction = (action) =>
+                    OnAction = async (action) =>
                     {
                         if (action)
                         {
                             Session.Instance.CleanCredentials();
                             Session.Instance.SaveSession();
+
+                            // Navigate to login page and clean up stack 
+                            var pages = Navigation.NavigationStack.ToList();
+                            await Navigation.PushAsync(new LoginPage(), true);
+                            pages.ForEach(item => Navigation.RemovePage(item));
                         }
                     }
                 }
@@ -71,6 +70,11 @@ namespace audioteca
         private async void ButtonClick_SelectMemory(object sender, EventArgs e)
         {
             await this.Navigation.PushAsync(new ConfigurationMemoryPage(), true);
+        }
+
+        private async void ButtonClick_Back(object sender, EventArgs e)
+        {
+            await this.Navigation.PopAsync();
         }
     }
 }

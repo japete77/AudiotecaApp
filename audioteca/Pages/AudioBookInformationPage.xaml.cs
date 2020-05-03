@@ -14,6 +14,8 @@ namespace audioteca
 
         public AudioBookInformationPage()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
+
             _model = new AudioBookInformationViewModel();
             this.BindingContext = _model;
 
@@ -35,8 +37,6 @@ namespace audioteca
                 _model.Title = daisyBook.Title;
                 _model.TotalTime = daisyBook.TotalTime;
             }
-
-            Title = "Información";
 
             InitializeComponent();
         }
@@ -69,10 +69,9 @@ namespace audioteca
             );
         }
 
-        public async void GoToHome_Click(object sender, EventArgs e)
+        private async void ButtonClick_Back(object sender, EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            await this.Navigation.PopAsync();
         }
-
     }
 }

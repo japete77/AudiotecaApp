@@ -8,30 +8,45 @@
              x:Class="audioteca.AudioBookIndexPage"
              Padding="20"
              IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
-    </ContentPage.ToolbarItems>
-    <StackLayout>
-        <ListView x:Name="listView" ItemSelected="OnItemSelected">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
-                            <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="40" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding Title}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
-                                </Grid>
+     <StackLayout Padding="0, 40, 0, 0">
+        <StackLayout>
+            <Button
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText=""
+                Text="Volver al reproductor"
+                x:Name="Volver"
+                FontSize="Medium"
+                BackgroundColor="SlateGray"
+                TextColor="White"
+                Clicked="ButtonClick_Back" FontAttributes="Bold"></Button>
+        </StackLayout>
+        <StackLayout>
+            <ListView
+                x:Name="listView"
+                AutomationProperties.Name="Índice del audio libro"
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Seleccione un elemento del índice para saltar a dicha sección"
+                ItemSelected="OnItemSelected">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
+                                <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="40" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding Title}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
+                                    </Grid>
+                                </StackLayout>
                             </StackLayout>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
     </StackLayout>
 </ContentPage>

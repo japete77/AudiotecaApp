@@ -18,14 +18,13 @@ namespace audioteca
 
         public AudioBookIndexPage()
         {
-            UserDialogs.Instance.ShowLoading("Cargando");
+            NavigationPage.SetHasNavigationBar(this, false);
 
             _model = new AudioBookIndexViewModel();
             this.BindingContext = _model;
 
             _model.Loading = true;
 
-            Title = "Índice";
             InitializeComponent();
         }
 
@@ -64,10 +63,9 @@ namespace audioteca
             await Navigation.PopAsync(true);
         }
 
-        public async void GoToHome_Click(object sender, EventArgs e)
+        private async void ButtonClick_Back(object sender, EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            await this.Navigation.PopAsync();
         }
-
     }
 }

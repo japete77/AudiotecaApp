@@ -6,11 +6,19 @@
     x:Class="audioteca.BookDetails"
     Padding="20"
     IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
-    </ContentPage.ToolbarItems>
     <ScrollView>
         <StackLayout>
+            <StackLayout Padding="0, 20, 0, 20">
+                <Button
+                    AutomationProperties.IsInAccessibleTree="true"
+                    AutomationProperties.HelpText=""
+                    Text="Volver atrás"
+                    x:Name="Volver"
+                    FontSize="Medium"
+                    BackgroundColor="SlateGray"
+                    TextColor="White"
+                    Clicked="ButtonClick_Back" FontAttributes="Bold"></Button>
+            </StackLayout>
             <StackLayout>
                 <Label Text="{Binding AudioBook.Title}" FontSize="Large" FontAttributes="Bold"></Label>
                 <Label Text="{Binding AudioBook.Author.Name}" FontSize="Medium"></Label>

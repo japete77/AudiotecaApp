@@ -13,12 +13,22 @@ namespace audioteca
         public App()
         {
             InitializeComponent();
-
-            MainPage = new NavigationPage(new MainPage());
         }
 
-        protected override void OnStart()
+        protected async override void OnStart()
         {
+            // Try to login
+            var isAuthenticated = await Session.Instance.IsAuthenticated();
+            if (isAuthenticated)
+            {
+                await AudioLibrary.Instance.WarmUp();
+
+                MainPage = new NavigationPage(new MainPage());
+            }
+            else
+            {
+                MainPage = new NavigationPage(new LoginPage());
+            }
         }
 
         protected override void OnSleep()

@@ -21,13 +21,11 @@ namespace audioteca
 
         public NavigationLevelsPage()
         {
-            UserDialogs.Instance.ShowLoading("Cargando");
+            NavigationPage.SetHasNavigationBar(this, false);
 
             _model = new NavigationLevelsPageViewModel();
             this.BindingContext = _model;
             _model.Loading = true;
-
-            Title = "Niveles de navegación";
 
             InitializeComponent();
         }
@@ -42,8 +40,6 @@ namespace audioteca
             listView.BindingContext = _model.Items;
 
             _model.Loading = false;
-
-            UserDialogs.Instance.HideLoading();
         }
 
         public async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -60,10 +56,10 @@ namespace audioteca
 
             await Navigation.PopAsync(true);
         }
-        public async void GoToHome_Click(object sender, EventArgs e)
-        {
-            await Navigation.PopToRootAsync();
-        }
 
+        private async void ButtonClick_Back(object sender, EventArgs e)
+        {
+            await this.Navigation.PopAsync();
+        }
     }
 }

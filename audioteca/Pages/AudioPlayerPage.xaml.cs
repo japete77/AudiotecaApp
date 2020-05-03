@@ -23,7 +23,7 @@ namespace audioteca
 
         public AudioPlayerPage(string id)
         {
-            UserDialogs.Instance.ShowLoading("Cargando");
+            NavigationPage.SetHasNavigationBar(this, false);
 
             this._id = id;
 
@@ -32,8 +32,6 @@ namespace audioteca
             this.BindingContext = _model;
 
             _model.Loading = true;
-
-            Title = "Reproductor";
 
             DaisyPlayer.Instance.TimeCodeUpdate += Instance_TimeCodeUpdate;
             DaisyPlayer.Instance.StatusUpdate += Instance_StatusUpdate;
@@ -127,8 +125,6 @@ namespace audioteca
 
             _model.Title = _dbook.Title;
 
-            UserDialogs.Instance.HideLoading();
-
             _model.Loading = false;
 
             // Update status
@@ -206,10 +202,9 @@ namespace audioteca
             await Navigation.PushAsync(new AudioBookInformationPage(), true);
         }
 
-        public async void GoToHome_Click(object sender, EventArgs e)
+        private async void ButtonClick_Back(object sender, EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            await this.Navigation.PopAsync();
         }
-
     }
 }

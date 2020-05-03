@@ -94,8 +94,6 @@ namespace audioteca.Services
                 _sessionInfo.Username == 0 ||
                 _sessionInfo.Password == null) return false;
 
-            if (_sessionInfo != null && _sessionInfo.Session != null) return true;
-
             try
             {
                 var result = await Login(_sessionInfo.Username, _sessionInfo.Password);

@@ -1,10 +1,8 @@
 ﻿using Acr.UserDialogs;
 using audioteca.Helpers;
-using audioteca.Models.Player;
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -19,9 +17,10 @@ namespace audioteca
 
         public ConfigurationMemoryPage()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
+
             _model = new ConfigurationMemoryPageViewModel();
             this.BindingContext = _model;
-            Title = "Memoria";
 
             InitializeComponent();
         }
@@ -132,6 +131,11 @@ namespace audioteca
             Session.Instance.SaveSession();
 
             UserDialogs.Instance.HideLoading();
+        }
+
+        private async void ButtonClick_Back(object sender, EventArgs e)
+        {
+            await this.Navigation.PopAsync();
         }
     }
 }

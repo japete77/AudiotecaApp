@@ -16,7 +16,7 @@ namespace audioteca
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ByAuthorPage : ContentPage
     {
-        private const int PAGE_SIZE = 9999;
+        private const int PAGE_SIZE = Int32.MaxValue;
 
         private readonly ByAuthorPageViewModel _model;
 
@@ -24,13 +24,16 @@ namespace audioteca
 
         public ByAuthorPage()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
+
             _model = new ByAuthorPageViewModel()
             {
                 Loading = true,
                 Items = new ObservableCollection<Grouping<string, AuthorModel>>()
             };
+
             this.BindingContext = _model;
-            Title = "Por Autor";
+
             InitializeComponent();
         }
 
@@ -38,8 +41,6 @@ namespace audioteca
         {
             if (_model.Loading)
             {
-                UserDialogs.Instance.ShowLoading("Cargando");
-
                 _authors = await AudioLibrary.Instance.GetAuthors(1, PAGE_SIZE);
 
                 if (_authors == null)
@@ -66,8 +67,6 @@ namespace audioteca
 
                 listView.EndRefresh();
 
-                UserDialogs.Instance.HideLoading();
-
                 _model.Loading = false;
             }
         }
@@ -88,9 +87,9 @@ namespace audioteca
             }
         }
 
-        public async void GoToHome_Click(object sender, EventArgs e)
+        private async void ButtonClick_Back(object sender, EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            await this.Navigation.PopAsync();
         }
 
         private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)

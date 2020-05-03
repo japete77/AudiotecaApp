@@ -29,11 +29,17 @@ namespace audioteca.Services
         AuthorsResult _authors;
         DateTime _expireAuthors;
 
-        private const int ExpirySecs = 3600;
-
+        private const int ExpirySecs = Int32.MaxValue;
+        
         public AudioLibrary()
         {
 
+        }
+
+        public async Task WarmUp()
+        {
+            await GetBooksByTitle(1, Int32.MaxValue);
+            await GetAuthors(1, Int32.MaxValue);
         }
 
         public async Task<TitleResult> GetBooksByTitle(int index, int count)
@@ -118,7 +124,7 @@ namespace audioteca.Services
 
         private async Task<T> Call<T>(RestRequest request) where T : new()
         {
-            return await Task.Run<T>(() =>
+            return await Task.Run<T>(async () =>
             {
                 var result = ApiClient.Instance.Client.Get<T>(request);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
@@ -129,6 +135,15 @@ namespace audioteca.Services
                 {
                     Session.Instance.SetSession(null);
                     Session.Instance.SaveSession();
+
+                    if (!await Session.Instance.IsAuthenticated())
+                    {
+                        Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            await Application.Current.MainPage.Navigation.PushAsync(new LoginPage());
+                        });
+                    }
+
                     Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         await Application.Current.MainPage.Navigation.PushAsync(new AudioLibraryPage());

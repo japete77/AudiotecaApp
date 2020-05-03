@@ -18,7 +18,7 @@ namespace audioteca
 
         public BookDetails(string id)
         {
-            UserDialogs.Instance.ShowLoading("Cargando");
+            NavigationPage.SetHasNavigationBar(this, false);
 
             this.bookId = id;
 
@@ -96,8 +96,6 @@ namespace audioteca
         {
             _model.AudioBook = await AudioLibrary.Instance.GetBookDetail(this.bookId);
 
-            UserDialogs.Instance.HideLoading();
-
             _model.Loading = false;
         }
 
@@ -152,13 +150,15 @@ namespace audioteca
 
         public async void ButtonClick_Listen(object sender, EventArgs e)
         {
-            await this.Navigation.PushAsync(new AudioPlayerPage(_model.AudioBook.Id), true);
+            await Navigation.PushAsync(new AudioPlayerPage(_model.AudioBook.Id), true);
         }
 
-        public async void GoToHome_Click(object sender, EventArgs e)
+        private async void ButtonClick_Back(object sender, EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            if (!OnBackButtonPressed())
+            {
+                await Navigation.PopAsync();
+            }
         }
-
     }
 }

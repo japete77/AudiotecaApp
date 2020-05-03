@@ -17,7 +17,8 @@ namespace audioteca
     {
         public MainPage()
         {
-            Title = "Inicio";
+            NavigationPage.SetHasNavigationBar(this, false);
+
             InitializeComponent();
 
             // Setup data dir if not set
@@ -27,6 +28,11 @@ namespace audioteca
                 Session.Instance.SetDataDir(AudioBookDataDir.StorageDirs.First().AbsolutePath);
                 Session.Instance.SaveSession();
             }
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
         }
 
         public async void ButtonClick_MyAudiobooks(object sender, EventArgs e)

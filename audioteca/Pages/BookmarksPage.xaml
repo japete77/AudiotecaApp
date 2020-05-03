@@ -6,41 +6,56 @@
     x:Class="audioteca.BookmarksPage"
     Padding="20"
     IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
-    </ContentPage.ToolbarItems>
-    <StackLayout>
-        <ListView x:Name="listView" ItemSelected="OnItemSelected">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
-                            <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="40" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="22*" />
-                                        <ColumnDefinition Width="48*" />
-                                        <ColumnDefinition Width="30*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding AbsoluteTC}" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="0" />
-                                    <Label Text="{Binding Title}" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation" Grid.Row="0" Grid.Column="1" />
-                                    <Button
-                                        Text="Eliminar"
-                                        FontSize="Medium"
-                                        BackgroundColor="Red"
-                                        TextColor="White"                                        
-                                        Clicked="ButtonClick_Delete" FontAttributes="Bold"
-                                        CommandParameter="{Binding Id}"
-                                        Grid.Row="0" Grid.Column="2" ></Button>
-                                </Grid>
+    <StackLayout Padding="0, 40, 0, 0">
+       <StackLayout>
+            <Button
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText=""
+                Text="Volver al reproductor"
+                x:Name="Volver"
+                FontSize="Medium"
+                BackgroundColor="SlateGray"
+                TextColor="White"
+                Clicked="ButtonClick_Back" FontAttributes="Bold"></Button>
+        </StackLayout>
+        <StackLayout>
+            <ListView
+                AutomationProperties.Name="Lista de marcadores"
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Seleccione un marcador de la lista para saltar a esa posición en el audio libro"
+                x:Name="listView"
+                ItemSelected="OnItemSelected">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
+                                <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="40" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="22*" />
+                                            <ColumnDefinition Width="70*" />
+                                            <ColumnDefinition Width="24*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding AbsoluteTC}" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="0" />
+                                        <Label Text="{Binding Title}" FontSize="Medium" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation" Grid.Row="0" Grid.Column="1" />
+                                        <Button
+                                            Text="Eliminar"
+                                            FontSize="Medium"
+                                            BackgroundColor="Red"
+                                            TextColor="White"                                        
+                                            Clicked="ButtonClick_Delete" FontAttributes="Bold"
+                                            CommandParameter="{Binding Id}"
+                                            Grid.Row="0" Grid.Column="2" ></Button>
+                                    </Grid>
+                                </StackLayout>
                             </StackLayout>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
     </StackLayout>
 </ContentPage>

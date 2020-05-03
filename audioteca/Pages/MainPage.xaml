@@ -7,30 +7,35 @@
     mc:Ignorable="d"
     x:Class="audioteca.MainPage"
     Padding="20">
-    <StackLayout>
-        <Button
-            Text="Mis audiolibros"
-            FontSize="Medium"
-            BackgroundColor="DodgerBlue"
-            TextColor="White"
-            Clicked="ButtonClick_MyAudiobooks" FontAttributes="Bold"></Button>
-        <Button
-            Text="Fonoteca"
-            FontSize="Medium"
-            BackgroundColor="DodgerBlue"
-            TextColor="White"
-            Clicked="ButtonClick_Audiobooks" FontAttributes="Bold"></Button>
-        <!--<Button
-            Text="Notificaciones"
-            FontSize="Medium"
-            BackgroundColor="DodgerBlue"
-            TextColor="White"
-            Clicked="ButtonClick_Notificacions" FontAttributes="Bold"></Button>-->
-        <Button
-            Text="Configuración"
-            FontSize="Medium"
-            BackgroundColor="DodgerBlue"
-            TextColor="White"
-            Clicked="ButtonClick_Configuration" FontAttributes="Bold"></Button>
-    </StackLayout>
+    <ScrollView Padding="0, 20, 0, 0">
+        <StackLayout>
+            <Button
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Acceso a mis audio libros descargados"
+                Text="Mis audiolibros"
+                x:Name="MyAudiobooks"
+                FontSize="Medium"
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                Clicked="ButtonClick_MyAudiobooks" FontAttributes="Bold"></Button>
+            <Button
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Acceso a la fonoteca de nueva luz"
+                x:Name="Fonoteca"
+                Text="Fonoteca"
+                FontSize="Medium"
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                Clicked="ButtonClick_Audiobooks" FontAttributes="Bold"></Button>
+            <Button
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Configura las opciones de la aplicación"
+                x:Name="Configuration"
+                Text="Configuración"
+                FontSize="Medium"
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                Clicked="ButtonClick_Configuration" FontAttributes="Bold"></Button>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

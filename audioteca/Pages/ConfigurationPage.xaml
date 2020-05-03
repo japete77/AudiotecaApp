@@ -5,18 +5,30 @@
     xmlns:Helpers="clr-namespace:audioteca.Helpers"
     x:Class="audioteca.ConfigurationPage"
     Padding="20">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
-    </ContentPage.ToolbarItems>
-    <ScrollView>
+    <ScrollView Padding="0, 20, 0, 0">
         <StackLayout>
             <Button
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText=""
+                Text="Volver a Inicio"
+                x:Name="Volver"
+                FontSize="Medium"
+                BackgroundColor="SlateGray"
+                TextColor="White"
+                Clicked="ButtonClick_Back" FontAttributes="Bold"></Button>
+            <Button
+                AutomationProperties.Name="Velocidad de reproducción"
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Selector para cambiar la velocidad de reproducción del audio"
                 Text="Velocidad de reproducción"
                 FontSize="Medium"
                 BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Clicked="ButtonClick_SelectSpeeed"  FontAttributes="Bold"></Button>
             <Button
+                AutomationProperties.Name="Memoria de almacenamiento"
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Selector para seleccionar la memoria de almacenamiento donde se guardarán los audio libros"
                 IsVisible="{Binding HasExternalMemory}"
                 Text="Memoria de almacenamiento"
                 FontSize="Medium"
@@ -24,63 +36,14 @@
                 TextColor="White"
                 Clicked="ButtonClick_SelectMemory" FontAttributes="Bold"></Button>
             <Button
+                AutomationProperties.Name="Reiniciar credenciales"
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Activa el reinicio de las credenciales para forzar a introducirlas de nuevo al acceder a la fonoteca"
                 Text="Reiniciar credenciales"
                 FontSize="Medium"
                 BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Clicked="ButtonClick_ClearCredentials" FontAttributes="Bold"></Button>
         </StackLayout>
-
-        <!--<StackLayout>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40*" />
-                    <ColumnDefinition Width="60*" />
-                </Grid.ColumnDefinitions>
-                <Label Text="Velocidad" FontSize="Medium" VerticalTextAlignment="Center" LineBreakMode="TailTruncation" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="0" />
-                <Picker x:Name="pickerSpeed"
-                        Title="Seleccione velocidad"
-                        HorizontalOptions="FillAndExpand"
-                        TitleColor="Black"
-                        SelectedIndexChanged="pickerSpeed_SelectedIndexChanged"
-                        SelectedItem="{Binding Speed}"
-                        Grid.Row="0" Grid.Column="1">
-                    <Picker.ItemsSource>
-                        <x:Array Type="{x:Type x:Double}">
-                            <x:Double>0.5</x:Double>
-                            <x:Double>1</x:Double>
-                            <x:Double>1.5</x:Double>
-                            <x:Double>2</x:Double>
-                            <x:Double>2.5</x:Double>
-                            <x:Double>3</x:Double>
-                            <x:Double>4</x:Double>
-                        </x:Array>
-                    </Picker.ItemsSource>
-                </Picker>
-                <Label Text="Almacenamiento" FontSize="Medium" VerticalTextAlignment="Center" LineBreakMode="TailTruncation" HorizontalTextAlignment="Start" Grid.Row="1" Grid.Column="0" />
-                <Picker x:Name="picker" 
-                    Title="Seleccione almacenamiento" 
-                        HorizontalOptions="FillAndExpand"
-                    ItemsSource="{Binding Items}"
-                    ItemDisplayBinding="{Binding Name}"
-                    SelectedIndexChanged="pickerStorage_SelectedIndexChanged"
-                    SelectedItem="{Binding Storage}"
-                    Grid.Row="1" Grid.Column="1"/>
-                <Label Text="Credenciales" FontSize="Medium" VerticalTextAlignment="Center" 
-                       HorizontalTextAlignment="Start" Grid.Row="2" Grid.Column="0" />
-                <Button
-                    Text="Reiniciar"
-                    FontSize="Medium"
-                    BackgroundColor="DodgerBlue"
-                    TextColor="White"
-                    Clicked="ButtonClick_ClearCredentials" FontAttributes="Bold"
-                    Grid.Row="2" Grid.Column="1"></Button>
-            </Grid>
-        </StackLayout>-->
     </ScrollView>
 </ContentPage>

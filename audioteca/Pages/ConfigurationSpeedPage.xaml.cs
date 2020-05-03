@@ -15,9 +15,10 @@ namespace audioteca
 
         public ConfigurationSpeedPage()
         {
+            NavigationPage.SetHasNavigationBar(this, false);
+
             _model = new ConfigurationSpeedPageViewModel();
             this.BindingContext = _model;
-            Title = "Velocidad";
 
             InitializeComponent();
         }
@@ -50,9 +51,9 @@ namespace audioteca
             await Navigation.PopAsync();
         }
 
-        public async void GoToHome_Click(object sender, EventArgs e)
+        private async void ButtonClick_Back(object sender, EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            await this.Navigation.PopAsync();
         }
     }
 }

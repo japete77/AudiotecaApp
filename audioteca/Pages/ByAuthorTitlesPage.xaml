@@ -4,16 +4,30 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:Helpers="clr-namespace:audioteca.Helpers"
     x:Class="audioteca.ByAuthorTitlesPage"
+    Padding="0, 20, 0, 0"
     IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
-    </ContentPage.ToolbarItems>
     <StackLayout>
+        <StackLayout Padding="20, 45, 20, 20">
+            <Button
+                    AutomationProperties.IsInAccessibleTree="true"
+                    AutomationProperties.HelpText=""
+                    Text="Volver atrás"
+                    x:Name="Volver"
+                    FontSize="Medium"
+                    BackgroundColor="SlateGray"
+                    TextColor="White"
+                    Clicked="ButtonClick_Back" FontAttributes="Bold"></Button>
+        </StackLayout>
         <StackLayout>
             <SearchBar x:Name="SearchBar" Placeholder="Buscar" TextChanged="SearchBar_TextChanged"></SearchBar>
         </StackLayout>
         <StackLayout Padding="20">
-            <ListView x:Name="listView" ItemSelected="OnItemSelected">
+            <ListView
+                x:Name="listView"
+                ItemSelected="OnItemSelected"
+                AutomationProperties.Name="Índice de audio libros por título"
+                AutomationProperties.IsInAccessibleTree="True"
+                AutomationProperties.HelpText="Seleccione y arrastre para acceder a la sección por orden alfabético">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

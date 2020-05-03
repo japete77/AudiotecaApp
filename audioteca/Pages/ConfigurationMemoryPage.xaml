@@ -4,32 +4,39 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:Helpers="clr-namespace:audioteca.Helpers"
     x:Class="audioteca.ConfigurationMemoryPage"
-    Padding="20"
-    IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Ir a Inicio" Clicked="GoToHome_Click"/>
-    </ContentPage.ToolbarItems>
-    <StackLayout>
-        <ListView x:Name="listView" ItemSelected="OnItemSelected">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
-                            <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="40" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding Name}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
-                                </Grid>
+    Padding="20">
+    <ScrollView Padding="0, 20, 0, 0">
+        <StackLayout>
+            <Button
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText=""
+                Text="Volver a Configuración"
+                x:Name="Volver"
+                FontSize="Medium"
+                BackgroundColor="SlateGray"
+                TextColor="White"
+                Clicked="ButtonClick_Back" FontAttributes="Bold"></Button>
+            <ListView x:Name="listView" ItemSelected="OnItemSelected">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
+                                <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="40" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding Name}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
+                                    </Grid>
+                                </StackLayout>
                             </StackLayout>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

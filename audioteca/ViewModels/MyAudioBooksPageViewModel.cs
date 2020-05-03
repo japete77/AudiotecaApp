@@ -5,8 +5,8 @@ namespace audioteca.ViewModels
 {
     public class MyAudioBooksPageViewModel : ViewModelBase
     {
-        private ObservableCollection<MyAudioBook> _items = new ObservableCollection<MyAudioBook>();
-        public ObservableCollection<MyAudioBook> Items
+        private ObservableCollection<Grouping<string, MyAudioBook>> _items = new ObservableCollection<Grouping<string, MyAudioBook>>();
+        public ObservableCollection<Grouping<string, MyAudioBook>> Items
         {
             get { return _items; }
             set
