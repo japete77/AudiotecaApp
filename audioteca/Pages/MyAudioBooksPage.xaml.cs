@@ -1,3 +1,5 @@
+﻿@@ -1,61 +1,151 @@
+﻿using Acr.UserDialogs;
 ﻿using audioteca.Helpers;
 using audioteca.Models.Audiobook;
 using audioteca.Services;
@@ -21,17 +23,26 @@ namespace audioteca
 
         public MyAudioBooksPage()
         {
+            UserDialogs.Instance.ShowLoading("Cargando");
             NavigationPage.SetHasNavigationBar(this, false);
 
             _model = new MyAudioBooksPageViewModel();
             this.BindingContext = _model;
             _model.Loading = true;
+
+            Title = "Mis audio libros";
             
             InitializeComponent();
         }
 
         protected override void OnAppearing()
         {
+            _model.Items = new ObservableCollection<MyAudioBook>(AudioBookStore.Instance.GetMyAudioBooks());
+            
+            listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
+            listView.BindingContext = _model.Items;
+            
+            _model.Loading = false;
             if (_model.Loading)
             {
                 _myBooks = AudioBookStore.Instance.GetMyAudioBooks();
@@ -55,6 +66,7 @@ namespace audioteca
 
                 listView.BeginRefresh();
 
+            UserDialogs.Instance.HideLoading();
                 sorted.ToList().ForEach(item => _model.Items.Add(item));
 
                 listView.EndRefresh();
@@ -71,6 +83,7 @@ namespace audioteca
             // de-select the row
             ((ListView)sender).SelectedItem = null;
 
+            await Navigation.PushAsync(new AudioPlayerPage((e.SelectedItem as MyAudioBook).Book.Id), true);
             var bookId = (e.SelectedItem as MyAudioBook).Book.Id;
 
             if (!string.IsNullOrEmpty(bookId))
@@ -93,8 +106,10 @@ namespace audioteca
             }
         }
 
+        public async void GoToHome_Click(object sender, EventArgs e)
         private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
+            await Navigation.PopToRootAsync();
             IEnumerable<Grouping<string, MyAudioBook>> sorted;
 
             listView.BeginRefresh();
@@ -121,31 +136,6 @@ namespace audioteca
 
             listView.EndRefresh();
         }
-
-        //protected override void OnAppearing()
-        //{
-        //    _model.Items = new ObservableCollection<MyAudioBook>(AudioBookStore.Instance.GetMyAudioBooks());
-
-        //    listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
-        //    listView.BindingContext = _model.Items;
-
-        //    _model.Loading = false;
-        //}
-
-        //public async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
-        //{
-        //    // has been set to null, do not 'process' tapped event
-        //    if (e.SelectedItem == null) return;
-
-        //    // de-select the row
-        //    ((ListView)sender).SelectedItem = null;
-
-        //    await Navigation.PushAsync(new AudioPlayerPage((e.SelectedItem as MyAudioBook).Book.Id), true);
-        //}
-
-        //private async void ButtonClick_Back(object sender, EventArgs e)
-        //{
-        //    await this.Navigation.PopAsync();
-        //}
     }
 }
+No newline at end of file
