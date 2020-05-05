@@ -2,6 +2,7 @@
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

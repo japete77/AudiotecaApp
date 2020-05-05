@@ -80,29 +80,31 @@ namespace audioteca.Services
             // Code to run on the main thread
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                if (_fileChanged)
+                if (_playerInfo != null)
                 {
-                    await CrossMediaManager.Current.Play(
-                        new MediaItem
-                        {
-                            Title = _playerInfo.Position.CurrentTitle,
-                            MediaLocation = MediaLocation.FileSystem,
-                            MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
-                        }
-                    );
-                    await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
-
-                    _fileChanged = false;
-                }
-                else
-                {
-                    if (CrossMediaManager.Current.State == MediaPlayerState.Paused)
+                    if (_fileChanged)
                     {
+                        await CrossMediaManager.Current.Play(
+                            new MediaItem
+                            {
+                                Title = _playerInfo.Position.CurrentTitle,
+                                MediaLocation = MediaLocation.FileSystem,
+                                MediaUri = $"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"
+                            }
+                        );
                         await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
-                        await CrossMediaManager.Current.PlayPause();
+
+                        _fileChanged = false;
+                    }
+                    else
+                    {
+                        if (CrossMediaManager.Current.State == MediaPlayerState.Paused)
+                        {
+                            await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                            await CrossMediaManager.Current.PlayPause();
+                        }
                     }
                 }
-
             });
         }
 
@@ -116,19 +118,22 @@ namespace audioteca.Services
 
         private async void Current_StateChangediOS(object sender, MediaManager.Playback.StateChangedEventArgs e)
         {
-            if (_seekToCurrentTC && e.State == MediaPlayerState.Playing)
+            if (_playerInfo != null)
             {
-                await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
-                _seekToCurrentTC = false;
-            }
-            else if (_loadNextFile && e.State == MediaPlayerState.Stopped)
-            {
-                _loadNextFile = false;
-                await LoadNextFile();
-            }
+                if (_seekToCurrentTC && e.State == MediaPlayerState.Playing)
+                {
+                    await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                    _seekToCurrentTC = false;
+                }
+                else if (_loadNextFile && e.State == MediaPlayerState.Stopped)
+                {
+                    _loadNextFile = false;
+                    await LoadNextFile();
+                }
 
-            _playerInfo.Status = e.State;
-            StatusUpdate?.Invoke(_playerInfo);
+                _playerInfo.Status = e.State;
+                StatusUpdate?.Invoke(_playerInfo);
+            }
         }
 
         private async void Current_MediaItemFinishedAndroid(object sender, MediaManager.Media.MediaItemEventArgs e)
@@ -141,27 +146,33 @@ namespace audioteca.Services
 
         private async void Current_StateChangedAndroid(object sender, MediaManager.Playback.StateChangedEventArgs e)
         {
-            if (_seekToCurrentTC && e.State == MediaPlayerState.Playing)
+            if (_playerInfo != null)
             {
-                await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
-                _seekToCurrentTC = false;
-            }
+                if (_seekToCurrentTC && e.State == MediaPlayerState.Playing)
+                {
+                    await CrossMediaManager.Current.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                    _seekToCurrentTC = false;
+                }
 
-            _playerInfo.Status = e.State;
-            StatusUpdate?.Invoke(_playerInfo);
+                _playerInfo.Status = e.State;
+                StatusUpdate?.Invoke(_playerInfo);
+            }
         }
 
         private void Current_PositionChanged(object sender, MediaManager.Playback.PositionChangedEventArgs e)
         {
-            if (CrossMediaManager.Current.State == MediaPlayerState.Playing)
+            if (_playerInfo != null)
             {
-                _playerInfo.Position.CurrentTC = e.Position.TotalSeconds;
+                if (CrossMediaManager.Current.State == MediaPlayerState.Playing)
+                {
+                    _playerInfo.Position.CurrentTC = e.Position.TotalSeconds;
 
-                TimeCodeUpdate?.Invoke(
-                    new TimeSpan()
-                        .Add(e.Position)
-                        .Add(TimeSpan.FromSeconds(_playerInfo.Position.CurrentSOM))
-                );
+                    TimeCodeUpdate?.Invoke(
+                        new TimeSpan()
+                            .Add(e.Position)
+                            .Add(TimeSpan.FromSeconds(_playerInfo.Position.CurrentSOM))
+                    );
+                }
             }
         }
 

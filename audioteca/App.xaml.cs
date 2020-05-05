@@ -15,13 +15,13 @@ namespace audioteca
             InitializeComponent();
         }
 
-        protected async override void OnStart()
+        protected override void OnStart()
         {
             // Try to login
-            var isAuthenticated = await Session.Instance.IsAuthenticated();
+            var isAuthenticated = AsyncHelper.RunSync(() => Session.Instance.IsAuthenticated());
             if (isAuthenticated)
             {
-                await AudioLibrary.Instance.WarmUp();
+                AsyncHelper.RunSync(() => AudioLibrary.Instance.WarmUp());
 
                 MainPage = new NavigationPage(new MainPage());
             }

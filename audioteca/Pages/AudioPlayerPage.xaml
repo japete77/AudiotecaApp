@@ -12,7 +12,7 @@
                 <Button
                     AutomationProperties.IsInAccessibleTree="true"
                     AutomationProperties.HelpText=""
-                    Text="Volver a mis audio libros"
+                    Text="Volver atrás"
                     x:Name="Volver"
                     FontSize="Medium"
                     BackgroundColor="SlateGray"
