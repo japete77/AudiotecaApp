@@ -29,6 +29,24 @@
                 Clicked="ButtonClick_Audiobooks" FontAttributes="Bold"></Button>
             <Button
                 AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Acceso a las suscripciones de nueva luz"
+                x:Name="Subscriptions"
+                Text="Suscripciones"
+                FontSize="Medium"
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                Clicked="ButtonClick_Subscriptions" FontAttributes="Bold"></Button>
+            <Button
+                AutomationProperties.IsInAccessibleTree="true"
+                AutomationProperties.HelpText="Acceso a las notificaciones de nueva luz"
+                x:Name="Notifications"
+                Text="Notificaciones"
+                FontSize="Medium"
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                Clicked="ButtonClick_Notifications" FontAttributes="Bold"></Button>
+            <Button
+                AutomationProperties.IsInAccessibleTree="true"
                 AutomationProperties.HelpText="Configura las opciones de la aplicación"
                 x:Name="Configuration"
                 Text="Configuración"

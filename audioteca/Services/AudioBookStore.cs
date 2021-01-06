@@ -119,7 +119,25 @@ namespace audioteca.Services
                 _cancel = false;
 
                 var link = AsyncHelper.RunSync(() => AudioLibrary.Instance.GetAudioBookLink(_currentAudioBook.Book.Id));
-                if (link == null) return;
+                if (link == null)
+                {
+                    _currentAudioBook.StatusDescription = "Enlace de descarga no encontrado";
+                    _currentAudioBook.StatusKey = STATUS_ERROR;
+                    _isProcessingDownload = false;
+
+                    // Remove download from the list
+                    int index = _audioBooks.FindIndex(f => f.Book.Id == _currentAudioBook.Book.Id);
+                    if (index > -1)
+                    {
+                        _audioBooks.RemoveAt(index);
+                    }
+
+                    AsyncHelper.RunSync(() => SaveBooks());
+
+                    OnProgress?.Invoke(_currentAudioBook);
+
+                    return;
+                }
 
                 // download file
                 var zipFile = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}.zip";
@@ -130,7 +148,7 @@ namespace audioteca.Services
                 var webClient = new WebClient();
                 webClient.DownloadProgressChanged += _webClient_DownloadProgressChanged;
                 webClient.DownloadFileCompleted += _webClient_DownloadFileCompleted;
-                webClient.DownloadFileAsync(new Uri(link.AudioBookLink), zipFile);
+                webClient.DownloadFileAsync(new Uri(link), zipFile);
 
                 while (webClient.IsBusy)
                 {

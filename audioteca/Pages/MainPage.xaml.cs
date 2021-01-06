@@ -45,8 +45,14 @@ namespace audioteca
             await this.Navigation.PushAsync(new AudioLibraryPage(), true);
         }
 
-        public void ButtonClick_Notificacions(object sender, EventArgs e)
+        public async void ButtonClick_Subscriptions(object sender, EventArgs e)
         {
+            await this.Navigation.PushAsync(new SubscriptionsPage(), true);
+        }
+
+        public async void ButtonClick_Notifications(object sender, EventArgs e)
+        {
+            await this.Navigation.PushAsync(new NotificationsPage(), true);
         }
 
         public async void ButtonClick_Configuration(object sender, EventArgs e)

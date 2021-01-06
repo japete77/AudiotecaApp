@@ -1,0 +1,47 @@
+﻿<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Helpers="clr-namespace:audioteca.Helpers"
+    x:Class="audioteca.NotificationsPage"
+    Padding="0, 20, 0, 0"
+    IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
+    <StackLayout>
+        <StackLayout Padding="20, 45, 20, 20">
+            <Button
+                    AutomationProperties.IsInAccessibleTree="true"
+                    AutomationProperties.HelpText=""
+                    Text="Volver atrás"
+                    x:Name="Volver"
+                    FontSize="Medium"
+                    BackgroundColor="SlateGray"
+                    TextColor="White"
+                    Clicked="ButtonClick_Back" FontAttributes="Bold"></Button>
+        </StackLayout>
+        <StackLayout Padding="20">
+            <ListView
+                x:Name="listView"
+                ItemSelected="OnItemSelected"
+                AutomationProperties.Name="Notificaciones">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
+                                <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="40" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding Title}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
+                                    </Grid>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

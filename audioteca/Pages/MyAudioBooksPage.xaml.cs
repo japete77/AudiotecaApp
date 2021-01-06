@@ -123,5 +123,31 @@ namespace audioteca
 
             listView.EndRefresh();
         }
+
+        //protected override void OnAppearing()
+        //{
+        //    _model.Items = new ObservableCollection<MyAudioBook>(AudioBookStore.Instance.GetMyAudioBooks());
+
+        //    listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
+        //    listView.BindingContext = _model.Items;
+
+        //    _model.Loading = false;
+        //}
+
+        //public async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        //{
+        //    // has been set to null, do not 'process' tapped event
+        //    if (e.SelectedItem == null) return;
+
+        //    // de-select the row
+        //    ((ListView)sender).SelectedItem = null;
+
+        //    await Navigation.PushAsync(new AudioPlayerPage((e.SelectedItem as MyAudioBook).Book.Id), true);
+        //}
+
+        //private async void ButtonClick_Back(object sender, EventArgs e)
+        //{
+        //    await this.Navigation.PopAsync();
+        //}
     }
 }

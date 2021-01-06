@@ -51,7 +51,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Distribution: David Padilla (JNM343SE4U)</CodesignKey>
+    <CodesignKey>Apple Development: David Padilla (6MXZ9RA746)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>SdkOnly</MtouchLink>
@@ -60,6 +60,7 @@
 <MtouchFastDev>true</MtouchFastDev>
 <MtouchFloat32>true</MtouchFloat32>
 <MtouchEnableSGenConc>false</MtouchEnableSGenConc>
+<CodesignProvision>iOSDevelopment</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -141,5 +142,10 @@
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork%402x" />
     <ITunesArtwork Include="iTunesArtwork" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\audioteca\appsettings.json">
+      <Link>appsettings.json</Link>
+    </BundleResource>
   </ItemGroup>
 </Project>

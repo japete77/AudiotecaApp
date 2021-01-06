@@ -1,6 +1,7 @@
 ﻿using audioteca.Models.Api;
 using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -42,6 +43,12 @@ namespace audioteca.Services
             await GetAuthors(1, Int32.MaxValue);
         }
 
+        public async Task RefreshBooks()
+        {
+            _titles = await Get<TitleResult>("titles", null, 0, Int32.MaxValue, null);
+            _expireTitles = DateTime.Now.AddSeconds(ExpirySecs);
+        }
+
         public async Task<TitleResult> GetBooksByTitle(int index, int count)
         {
             if (_titles == null || _expireTitles < DateTime.Now)
@@ -77,15 +84,32 @@ namespace audioteca.Services
             return _authors;
         }
 
-        public async Task<AudioBookLinkResult> GetAudioBookLink(string id)
+        public async Task<string> GetAudioBookLink(string id)
         {
-            var request = new RestRequest($"title/{id}/link", DataFormat.Json)
+            if (Int32.TryParse(id, out int res))
             {
-                Method = Method.GET
-            };
-            request.AddParameter("session", Session.Instance.GetSession());
+                var request = new RestRequest($"title/{id}/link", DataFormat.Json)
+                {
+                    Method = Method.GET
+                };
+                request.AddParameter("session", Session.Instance.GetSession());
 
-            return await Call<AudioBookLinkResult>(request);
+                var result = await Call<AudioBookLinkResult>(request);
+
+                return result.AudioBookLink;
+            }
+            else
+            {
+                var request = new RestRequest($"subscription/title/{id}/link", DataFormat.Json)
+                {
+                    Method = Method.GET
+                };
+                request.AddParameter("session", Session.Instance.GetSession());
+
+                var result = await Call<SubscriptionTitleLinkResult>(request);
+
+                return result.SubscriptionTitleLink;
+            }
         }
 
         public async Task<AudioBookDetailResult> GetBookDetail(string id)
@@ -97,6 +121,31 @@ namespace audioteca.Services
             request.AddParameter("session", Session.Instance.GetSession());
 
             return await Call<AudioBookDetailResult>(request);
+        }
+
+        public async Task<UserSubscriptions> GetUserSubscriptions()
+        {
+            var request = new RestRequest($"subscriptions", DataFormat.Json)
+            {
+                Method = Method.GET
+            };
+            request.AddParameter("session", Session.Instance.GetSession());
+
+            return await Call<UserSubscriptions>(request);
+        }
+
+        public async Task<List<SubscriptionTitle>> GetSubscriptionTitles(string code)
+        {
+            var request = new RestRequest($"subscriptions/titles", DataFormat.Json)
+            {
+                Method = Method.GET
+            };
+            request.AddParameter("session", Session.Instance.GetSession());
+            request.AddParameter("code", code);
+
+            var result = await Call<SubscriptionTitleResult>(request);
+
+            return result.Titles;
         }
 
         private async Task<T> Get<T>(string method, string text, int index, int count, string filter) where T : new()
