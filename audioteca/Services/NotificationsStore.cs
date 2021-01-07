@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Amazon.Runtime;
+﻿using Amazon.Runtime;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using audioteca.Helpers;
 using audioteca.Models.Api;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace audioteca.Services
@@ -82,7 +81,9 @@ namespace audioteca.Services
                 new CreatePlatformEndpointRequest
                 {
                     Token = deviceToken,
-                    PlatformApplicationArn = AppSettings.Instance.AwsPlatformApplicationArn
+                    PlatformApplicationArn = Device.RuntimePlatform == Device.iOS ?
+                        AppSettings.Instance.AwsPlatformApplicationArnIOS :
+                        AppSettings.Instance.AwsPlatformApplicationArnAndroid
                 }
             );
 
@@ -99,6 +100,7 @@ namespace audioteca.Services
             foreach (var code in subscriptions.Subscriptions.Select(s => s.Code))
             {
                 var topicArn = AppSettings.Instance.AwsTopicArn;
+                topicArn += Device.RuntimePlatform == Device.iOS ? "-ios" : "-android";
                 topicArn += string.IsNullOrEmpty(code) ? "" : $"-{code}";
 
                 // Subscribe

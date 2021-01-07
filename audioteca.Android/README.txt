@@ -1,0 +1,1 @@
+﻿Firebase console access: https://console.firebase.google.com/ to get Server API Key

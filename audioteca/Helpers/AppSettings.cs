@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.IO;
-using Newtonsoft.Json;
+using System.Reflection;
 
 namespace audioteca.Helpers
 {
@@ -14,7 +14,15 @@ namespace audioteca.Helpers
             {
                 if (_instance == null)
                 {
-                    _instance = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText("appsettings.json"));
+                    var assembly = Assembly.GetExecutingAssembly();
+                    var resourceName = "audioteca.appsettings.json";
+
+                    using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        string result = reader.ReadToEnd();
+                        _instance = JsonConvert.DeserializeObject<AppSettings>(result);
+                    }
                 }
 
                 return _instance;
@@ -23,7 +31,8 @@ namespace audioteca.Helpers
 
         public string AwsKey;
         public string AwsSecret;
-        public string AwsPlatformApplicationArn;
+        public string AwsPlatformApplicationArnAndroid;
+        public string AwsPlatformApplicationArnIOS;
         public string AwsTopicArn;
         public string FonotecaApiUrl;
     }

@@ -1,8 +1,7 @@
-﻿
-using Acr.UserDialogs;
+﻿using Acr.UserDialogs;
 using Android.App;
-using Android.Content;
 using Android.Content.PM;
+using Android.Gms.Common;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -13,11 +12,11 @@ using System.Linq;
 namespace audioteca.Droid
 {
     [Activity(
-        Label = "Fonoteca Nueva Luz", 
-        Theme = "@style/Theme.Splash", 
+        Label = "Fonoteca Nueva Luz",
+        Theme = "@style/Theme.Splash",
         Icon = "@drawable/icon",
-        MainLauncher = true, 
-        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, 
+        MainLauncher = true,
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation,
         LaunchMode = LaunchMode.SingleTop
     )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
@@ -53,12 +52,61 @@ namespace audioteca.Droid
             CrossMediaManager.Current.Init();
 
             LoadApplication(new App());
+
+            if (IsPlayServicesAvailable())
+            {
+                CreateNotificationChannel();
+            }
         }
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        private bool IsPlayServicesAvailable()
+        {
+            int resultCode = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(this);
+            if (resultCode != ConnectionResult.Success)
+            {
+                //if (GoogleApiAvailability.Instance.IsUserResolvableError(resultCode))
+                //    msgText.Text = GoogleApiAvailability.Instance.GetErrorString(resultCode);
+                //else
+                //{
+                //    msgText.Text = "This device is not supported";
+                //    Finish();
+                //}
+                return false;
+            }
+            else
+            {
+                //msgText.Text = "Google Play Services is available.";
+                return true;
+            }
+        }
+
+        private void CreateNotificationChannel()
+        {
+            if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+            {
+                // Notification channels are new in API 26 (and not a part of the
+                // support library). There is no need to create a notification
+                // channel on older versions of Android.
+                return;
+            }
+
+            var channel = new NotificationChannel("fonoteca-channel",
+                                                  "FCM Notifications",
+                                                  NotificationImportance.Default)
+            {
+
+                Description = "Firebase Cloud Messages appear in this channel"
+            };
+
+            var notificationManager = (NotificationManager)GetSystemService(Android.Content.Context.NotificationService);
+            notificationManager.CreateNotificationChannel(channel);
         }
     }
 }
