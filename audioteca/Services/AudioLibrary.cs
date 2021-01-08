@@ -123,13 +123,14 @@ namespace audioteca.Services
             return await Call<AudioBookDetailResult>(request);
         }
 
-        public async Task<UserSubscriptions> GetUserSubscriptions()
+        public async Task<UserSubscriptions> GetUserSubscriptions(bool onlyAppSubscription = true)
         {
             var request = new RestRequest($"subscriptions", DataFormat.Json)
             {
                 Method = Method.GET
             };
             request.AddParameter("session", Session.Instance.GetSession());
+            request.AddParameter("onlyAppSubscriptions", onlyAppSubscription);
 
             return await Call<UserSubscriptions>(request);
         }
@@ -146,6 +147,19 @@ namespace audioteca.Services
             var result = await Call<SubscriptionTitleResult>(request);
 
             return result.Titles;
+        }
+
+        public async Task<List<NotificationModel>> GetNotifications()
+        {
+            var request = new RestRequest($"notifications", DataFormat.Json)
+            {
+                Method = Method.GET
+            };
+            request.AddParameter("session", Session.Instance.GetSession());
+
+            var result = await Call<NotificationsResult>(request);
+
+            return result.Notifications;
         }
 
         private async Task<T> Get<T>(string method, string text, int index, int count, string filter) where T : new()

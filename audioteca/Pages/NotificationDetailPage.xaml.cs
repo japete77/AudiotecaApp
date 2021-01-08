@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using audioteca.Models.Api;
+﻿using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
+using System;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace audioteca
@@ -26,7 +25,7 @@ namespace audioteca
             {
                 Loading = true,
                 Notification = notification,
-                ShowGoDetails = !string.IsNullOrEmpty(notification.Code)
+                ShowGoDetails = !string.IsNullOrEmpty(notification.ContentId) && notification.ContentId != "0"
             };
 
             this.BindingContext = _model;
@@ -56,16 +55,14 @@ namespace audioteca
             else
             {
                 var subscriptions = await AudioLibrary.Instance.GetSubscriptionTitles(_notification.Code);
-                var subscription = subscriptions.Where(w => w.Id == Int32.Parse(_notification.ContentId)).First();
-                await this.Navigation.PushAsync(new SubscriptionTitleDetailsPage(subscription, _notification.Code));
+                var subscription = subscriptions.Where(w => w.Id == Int32.Parse(_notification.ContentId)).FirstOrDefault();
+                if (subscription != null)
+                {
+                    await this.Navigation.PushAsync(new SubscriptionTitleDetailsPage(subscription, _notification.Code));
+                }
             }
-        }
 
-        private async void ButtonClick_DeleteNotification(object sender, EventArgs e)
-        {
-            await NotificationsStore.Instance.RemoveNotification(_index);
-
-            await this.Navigation.PopAsync();
+            _model.Loading = false;
         }
     }
 }

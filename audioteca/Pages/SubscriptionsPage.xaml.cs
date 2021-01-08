@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using audioteca.Models.Api;
+﻿using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace audioteca
@@ -34,7 +33,7 @@ namespace audioteca
         {
             if (_model.Loading)
             {
-                _subscriptions = await AudioLibrary.Instance.GetUserSubscriptions();
+                _subscriptions = await AudioLibrary.Instance.GetUserSubscriptions(true);
 
                 if (_subscriptions == null)
                 {

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using audioteca.Models.Api;
+﻿using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
 namespace audioteca
@@ -30,11 +29,11 @@ namespace audioteca
             InitializeComponent();
         }
 
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
             _model.Loading = true;
 
-            _notifications = NotificationsStore.Instance.GetNotifications();
+            _notifications = await NotificationsStore.Instance.GetNotifications();
 
             if (_notifications == null)
             {

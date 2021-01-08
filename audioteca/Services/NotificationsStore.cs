@@ -13,7 +13,6 @@ namespace audioteca.Services
 {
     public class NotificationsStore
     {
-        private const int MAX_NOTIFICATIONS = 100;
         private static NotificationsStore _instance;
         private const string DEVICE_TOKEN_KEY = "DeviceTokenKey";
         private const string NOTIFICATIONS_SUBSCRIPTIONS_KEY = "NotificationsSubscriptions";
@@ -43,29 +42,9 @@ namespace audioteca.Services
 
         }
 
-        public async Task AddNotification(NotificationModel notification)
+        public async Task<List<NotificationModel>> GetNotifications()
         {
-            _notifications.Insert(0, notification);
-
-            if (_notifications.Count > MAX_NOTIFICATIONS)
-            {
-                _notifications = _notifications.GetRange(0, MAX_NOTIFICATIONS);
-            }
-
-            await SaveNotifications();
-        }
-
-        public async Task RemoveNotification(int index)
-        {
-            _notifications.RemoveAt(index);
-
-            await SaveNotifications();
-        }
-
-        public List<NotificationModel> GetNotifications()
-        {
-            // TODO: Read from DB
-            return _notifications;
+            return await AudioLibrary.Instance.GetNotifications();
         }
 
         public string GetDeviceToken()
@@ -186,12 +165,9 @@ namespace audioteca.Services
             }
 
             // Retrieve subscriptions
-            var subscriptions = await AudioLibrary.Instance.GetUserSubscriptions();
+            var subscriptions = await AudioLibrary.Instance.GetUserSubscriptions(false);
 
             if (subscriptions == null) subscriptions = new UserSubscriptions { Subscriptions = new List<Models.Api.Subscription>() };
-            // Register default subscriptions CAT and General
-            subscriptions.Subscriptions.Add(new Models.Api.Subscription { Code = "CAT" });
-            subscriptions.Subscriptions.Add(new Models.Api.Subscription { Code = "" });
 
             // Register non existings subscriptions
             var subscriptionsCodes = subscriptions.Subscriptions.Select(s => s.Code).ToList();
@@ -240,23 +216,6 @@ namespace audioteca.Services
             // Save notifications subscriptions
             await SaveNotificationsSubscriptions(notificationsSubscriptions);
         }
-
-        public async Task ShowNotification(int index)
-        {
-            await Application.Current.MainPage.Navigation.PushAsync(
-                new NotificationDetailPage(
-                    _notifications.First(),
-                    0
-                )
-            );
-        }
-
-        private async Task SaveNotifications()
-        {
-            Application.Current.Properties[NOTIFICATIONS_KEY] = JsonConvert.SerializeObject(_notifications);
-            await Application.Current.SavePropertiesAsync();
-        }
-
     }
 
     public class SNSSubscriptions
