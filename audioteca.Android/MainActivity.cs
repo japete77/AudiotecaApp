@@ -71,18 +71,10 @@ namespace audioteca.Droid
             int resultCode = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(this);
             if (resultCode != ConnectionResult.Success)
             {
-                //if (GoogleApiAvailability.Instance.IsUserResolvableError(resultCode))
-                //    msgText.Text = GoogleApiAvailability.Instance.GetErrorString(resultCode);
-                //else
-                //{
-                //    msgText.Text = "This device is not supported";
-                //    Finish();
-                //}
                 return false;
             }
             else
             {
-                //msgText.Text = "Google Play Services is available.";
                 return true;
             }
         }

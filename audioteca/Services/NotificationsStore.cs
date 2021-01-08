@@ -15,6 +15,9 @@ namespace audioteca.Services
     {
         private const int MAX_NOTIFICATIONS = 100;
         private static NotificationsStore _instance;
+        private const string DEVICE_TOKEN_KEY = "DeviceTokenKey";
+        private const string NOTIFICATIONS_SUBSCRIPTIONS_KEY = "NotificationsSubscriptions";
+        private List<Topic> _topics;
 
         public static NotificationsStore Instance
         {
@@ -61,11 +64,74 @@ namespace audioteca.Services
 
         public List<NotificationModel> GetNotifications()
         {
+            // TODO: Read from DB
             return _notifications;
         }
 
-        public async Task RegisterUserNotifications(string deviceToken)
+        public string GetDeviceToken()
         {
+            if (Application.Current.Properties.ContainsKey(DEVICE_TOKEN_KEY))
+            {
+                return (string)Application.Current.Properties[DEVICE_TOKEN_KEY];
+            }
+
+            return "";
+        }
+
+        public async Task SaveDeviceToken(string deviceToken)
+        {
+            // Save device token
+            Application.Current.Properties[DEVICE_TOKEN_KEY] = deviceToken;
+
+            await Application.Current.SavePropertiesAsync();
+        }
+
+        public SNSSubscriptions GetNotificationsSubscriptions()
+        {
+            if (Application.Current.Properties.ContainsKey(NOTIFICATIONS_SUBSCRIPTIONS_KEY))
+            {
+                return JsonConvert.DeserializeObject<SNSSubscriptions>(Application.Current.Properties[NOTIFICATIONS_SUBSCRIPTIONS_KEY].ToString());
+            }
+
+            return new SNSSubscriptions
+            {
+                Subscriptions = new Dictionary<string, string>()
+            };
+        }
+
+        public async Task SaveNotificationsSubscriptions(SNSSubscriptions subscriptions)
+        {
+            // Save device token
+            Application.Current.Properties[NOTIFICATIONS_SUBSCRIPTIONS_KEY] = JsonConvert.SerializeObject(subscriptions);
+
+            await Application.Current.SavePropertiesAsync();
+        }
+
+        public async Task<bool> TopicExists(string topic, AmazonSimpleNotificationServiceClient client)
+        {
+            string nextToken = null;
+            if (_topics == null)
+            {
+                _topics = new List<Topic>();
+                do
+                {
+                    var topicsResponse = await client.ListTopicsAsync(nextToken);
+                    _topics.AddRange(topicsResponse.Topics);
+                    nextToken = topicsResponse.NextToken;
+                } while (nextToken != null);
+            }
+
+            return _topics.Any(a => a.TopicArn == topic);
+        }
+
+        public async Task RegisterUserNotifications()
+        {
+            string deviceToken = GetDeviceToken();
+
+            var notificationsSubscriptions = GetNotificationsSubscriptions();
+
+            if (string.IsNullOrEmpty(deviceToken)) return;
+
             var credentials = new BasicAWSCredentials(
                 AppSettings.Instance.AwsKey,
                 AppSettings.Instance.AwsSecret
@@ -76,41 +142,103 @@ namespace audioteca.Services
                 Amazon.RegionEndpoint.EUWest1
             );
 
-            // register with SNS to create an endpoint ARN
-            var endPointResponse = await client.CreatePlatformEndpointAsync(
-                new CreatePlatformEndpointRequest
+            if (string.IsNullOrEmpty(notificationsSubscriptions.ApplicationEndPoint) ||
+                notificationsSubscriptions.DeviceToken != deviceToken)
+            {
+                // **********************************************
+                // de-register old endpoint and all subscriptions
+                if (!string.IsNullOrEmpty(notificationsSubscriptions.ApplicationEndPoint))
                 {
-                    Token = deviceToken,
-                    PlatformApplicationArn = Device.RuntimePlatform == Device.iOS ?
-                        AppSettings.Instance.AwsPlatformApplicationArnIOS :
-                        AppSettings.Instance.AwsPlatformApplicationArnAndroid
+                    try
+                    {
+                        await client.DeleteEndpointAsync(new DeleteEndpointRequest { EndpointArn = notificationsSubscriptions.ApplicationEndPoint });
+                    }
+                    catch { /*Silent error in case endpoint doesn´t exist */ }
+
+                    notificationsSubscriptions.ApplicationEndPoint = null;
+
+                    foreach (var sub in notificationsSubscriptions.Subscriptions)
+                    {
+                        try
+                        {
+                            await client.UnsubscribeAsync(sub.Value);
+                        }
+                        catch { /*Silent error in case endpoint doesn´t exist */ }
+                    }
+
+                    notificationsSubscriptions.Subscriptions.Clear();
                 }
-            );
+
+                // register with SNS to create a new endpoint
+                var endPointResponse = await client.CreatePlatformEndpointAsync(
+                    new CreatePlatformEndpointRequest
+                    {
+                        Token = deviceToken,
+                        PlatformApplicationArn = Device.RuntimePlatform == Device.iOS ?
+                            AppSettings.Instance.AwsPlatformApplicationArnIOS :
+                            AppSettings.Instance.AwsPlatformApplicationArnAndroid
+                    }
+                );
+
+                // Save device token and application endpoint created
+                notificationsSubscriptions.DeviceToken = deviceToken;
+                notificationsSubscriptions.ApplicationEndPoint = endPointResponse.EndpointArn;
+            }
 
             // Retrieve subscriptions
             var subscriptions = await AudioLibrary.Instance.GetUserSubscriptions();
 
             if (subscriptions == null) subscriptions = new UserSubscriptions { Subscriptions = new List<Models.Api.Subscription>() };
-
             // Register default subscriptions CAT and General
             subscriptions.Subscriptions.Add(new Models.Api.Subscription { Code = "CAT" });
             subscriptions.Subscriptions.Add(new Models.Api.Subscription { Code = "" });
 
-            // Register subscriptions
-            foreach (var code in subscriptions.Subscriptions.Select(s => s.Code))
+            // Register non existings subscriptions
+            var subscriptionsCodes = subscriptions.Subscriptions.Select(s => s.Code).ToList();
+            foreach (var code in subscriptionsCodes)
             {
-                var topicArn = AppSettings.Instance.AwsTopicArn;
-                topicArn += Device.RuntimePlatform == Device.iOS ? "-ios" : "-android";
-                topicArn += string.IsNullOrEmpty(code) ? "" : $"-{code}";
-
-                // Subscribe
-                var subscribeResponse = await client.SubscribeAsync(new SubscribeRequest
+                if (!notificationsSubscriptions.Subscriptions.ContainsKey(code))
                 {
-                    Protocol = "application",
-                    Endpoint = endPointResponse.EndpointArn,
-                    TopicArn = topicArn
-                });
+                    var topicArn = AppSettings.Instance.AwsTopicArn;
+                    topicArn += string.IsNullOrEmpty(code) ? "" : $"-{code}";
+
+                    if (!await TopicExists(topicArn, client))
+                    {
+                        var topicResponse = await client.CreateTopicAsync(new CreateTopicRequest { Name = $"{AppSettings.Instance.AwsTopicName}-{code}" });
+                        topicArn = topicResponse.TopicArn;
+                    }
+
+                    // Subscribe
+                    var subscribeResponse = await client.SubscribeAsync(new SubscribeRequest
+                    {
+                        Protocol = "application",
+                        Endpoint = notificationsSubscriptions.ApplicationEndPoint,
+                        TopicArn = topicArn
+                    });
+
+                    // Add to the list
+                    notificationsSubscriptions.Subscriptions.Add(code, subscribeResponse.SubscriptionArn);
+                }
             }
+
+            // Remove subscriptions not in user list
+            var currentSubscriptions = notificationsSubscriptions.Subscriptions.ToList();
+            foreach (var subs in currentSubscriptions)
+            {
+                if (!subscriptionsCodes.Contains(subs.Key))
+                {
+                    try
+                    {
+                        await client.UnsubscribeAsync(subs.Value);
+                    }
+                    catch { /*Silent error in case endpoint doesn´t exist */ }
+
+                    notificationsSubscriptions.Subscriptions.Remove(subs.Key);
+                }
+            }
+
+            // Save notifications subscriptions
+            await SaveNotificationsSubscriptions(notificationsSubscriptions);
         }
 
         public async Task ShowNotification(int index)
@@ -129,5 +257,12 @@ namespace audioteca.Services
             await Application.Current.SavePropertiesAsync();
         }
 
+    }
+
+    public class SNSSubscriptions
+    {
+        public string DeviceToken { get; set; }
+        public string ApplicationEndPoint { get; set; }
+        public Dictionary<string, string> Subscriptions { get; set; }
     }
 }

@@ -34,6 +34,7 @@ namespace audioteca.Helpers
         public string AwsPlatformApplicationArnAndroid;
         public string AwsPlatformApplicationArnIOS;
         public string AwsTopicArn;
+        public string AwsTopicName;
         public string FonotecaApiUrl;
     }
 }

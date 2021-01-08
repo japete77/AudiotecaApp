@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
-using Acr.UserDialogs;
+﻿using Acr.UserDialogs;
 using audioteca.Services;
 using audioteca.ViewModels;
+using System;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -56,6 +56,8 @@ namespace audioteca
                             await Navigation.PushAsync(new MainPage(), true);
                             Navigation.RemovePage(currentPage);
                         }
+
+                        await NotificationsStore.Instance.RegisterUserNotifications();
                     }
                     else
                     {

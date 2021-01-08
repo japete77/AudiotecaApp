@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Acr.UserDialogs;
-using audioteca.Helpers;
-using audioteca.Models.Api;
+﻿using audioteca.Helpers;
 using audioteca.Services;
 using Xamarin.Forms;
 
@@ -15,7 +11,7 @@ namespace audioteca
             InitializeComponent();
         }
 
-        protected override void OnStart()
+        protected async override void OnStart()
         {
             // Try to login
             var isAuthenticated = AsyncHelper.RunSync(() => Session.Instance.IsAuthenticated());
@@ -24,6 +20,8 @@ namespace audioteca
                 AsyncHelper.RunSync(() => AudioLibrary.Instance.WarmUp());
 
                 MainPage = new NavigationPage(new MainPage());
+
+                await NotificationsStore.Instance.RegisterUserNotifications();
             }
             else
             {
