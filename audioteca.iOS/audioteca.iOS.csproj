@@ -27,9 +27,10 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>Apple Development: David Padilla (6MXZ9RA746)</CodesignKey>
     <MtouchSdkVersion>13.2</MtouchSdkVersion>
     <MtouchFloat32>true</MtouchFloat32>
+    <CodesignProvision>VS: com.nuevaluz.fonoteca Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -39,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
-    <CodesignKey>iPhone Distribution: David Padilla (JNM343SE4U)</CodesignKey>
+    <CodesignKey>Apple Distribution: David Padilla (JNM343SE4U)</CodesignKey>
     <CodesignProvision>Automatic:AppStore</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
@@ -60,7 +61,7 @@
 <MtouchFastDev>true</MtouchFastDev>
 <MtouchFloat32>true</MtouchFloat32>
 <MtouchEnableSGenConc>false</MtouchEnableSGenConc>
-<CodesignProvision>iOSDevelopment</CodesignProvision>
+<CodesignProvision>VS: com.nuevaluz.fonoteca Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -69,10 +70,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Distribution: David Padilla (JNM343SE4U)</CodesignKey>
+    <CodesignKey>Apple Development: David Padilla (6MXZ9RA746)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <BuildIpa>true</BuildIpa>
     <IpaPackageName>Fonoteca</IpaPackageName>
+    <CodesignProvision>VS: com.nuevaluz.fonoteca Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

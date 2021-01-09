@@ -50,51 +50,33 @@ namespace audioteca.iOS
         {
             var deviceToken = token.Description.Replace("<", "").Replace(">", "").Replace(" ", "");
 
-            await NotificationsStore.Instance.RegisterUserNotifications(deviceToken);
+            await NotificationsStore.Instance.SaveDeviceToken(deviceToken);
         }
 
         public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
         {
-            ShowAlert(application, "Error registrando notificaciones remotas", error.LocalizedDescription);
+            Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Error registrando notificaciones remotas", "Cerrar");
+            });
         }
 
-        public async override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+        public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
         {
             var aps = (userInfo["aps"] as NSDictionary);
 
-            if (aps != null)
+            if (aps != null) 
             {
-                var alert = (aps["alert"] as NSString);
-                var title = (aps["title"] as NSString);
-                var date = (aps["date"] as NSString);
-                var type = (aps["type"] as NSString);
-                var contentId = (aps["id"] as NSString);
+                var notification = aps["alert"] as NSString;
 
-                await NotificationsStore.Instance.AddNotification(
-                    new NotificationModel
+                if (notification != null && !string.IsNullOrEmpty(notification.Description))
+                {
+                    Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>
                     {
-                         Date = date != null ? date.Description : "",
-                         Title = title != null ? title.Description : "",
-                         Body = alert != null ? alert.Description : "",
-                         Code = type != null ? type.Description : "",
-                         ContentId = contentId != null ? contentId.Description : ""
-                    }
-                );
-
-                await NotificationsStore.Instance.ShowNotification(0);
+                        await App.Current.MainPage.DisplayAlert("Tienes una notificación nuvea", notification.Description, "Cerrar");
+                    });
+                }
             }
-        }
-
-        private void ShowAlert(UIApplication application, string title, string message)
-        {
-            //Create Alert
-            var errorAlertController = UIAlertController.Create(title, message, UIAlertControllerStyle.Alert);
-
-            //Add Action
-            errorAlertController.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
-
-            // Present Alert
-            application.KeyWindow.RootViewController.PresentViewController(errorAlertController, true, null);
         }
     }
 }
