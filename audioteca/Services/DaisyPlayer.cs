@@ -273,13 +273,13 @@ namespace audioteca.Services
             }
         }
 
-        public async void PlayPause()
+        public async Task PlayPause()
         {
             await CrossMediaManager.Current.PlayPause();
             SaveStatus();
         }
 
-        public async void Stop()
+        public async Task Stop()
         {
             if (_playerInfo != null)
             {
@@ -288,7 +288,7 @@ namespace audioteca.Services
             }
         }
 
-        public async void Pause()
+        public async Task Pause()
         {
             if (_playerInfo != null)
             {
@@ -411,6 +411,11 @@ namespace audioteca.Services
             return _book;
         }
 
+        public void CleanupDaisyBook()
+        {
+            _book = null;
+        }
+
         public void AddBookmark(Bookmark bookmark)
         {
             if (_playerInfo != null)
@@ -432,10 +437,14 @@ namespace audioteca.Services
 
         public void SaveStatus()
         {
-            File.WriteAllText(
-                $"{Session.Instance.GetDataDir()}/{_book.Id}/{PLAYER_STATUS_FILE}",
-                JsonConvert.SerializeObject(_playerInfo)
-            );
+            var path = $"{Session.Instance.GetDataDir()}/{_book.Id}/";
+            if (Directory.Exists(path))
+            {
+                File.WriteAllText(
+                    $"{path}{PLAYER_STATUS_FILE}",
+                    JsonConvert.SerializeObject(_playerInfo)
+                );
+            }
         }
 
         public void LoadStatus()

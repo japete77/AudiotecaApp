@@ -91,7 +91,7 @@ namespace audioteca
             }
             else
             {
-                DaisyPlayer.Instance.PlayPause();
+                await DaisyPlayer.Instance.PlayPause();
             }
         }
 

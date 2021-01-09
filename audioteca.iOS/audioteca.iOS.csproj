@@ -30,7 +30,7 @@
     <CodesignKey>Apple Development: David Padilla (6MXZ9RA746)</CodesignKey>
     <MtouchSdkVersion>13.2</MtouchSdkVersion>
     <MtouchFloat32>true</MtouchFloat32>
-    <CodesignProvision>VS: com.nuevaluz.fonoteca Development</CodesignProvision>
+    <CodesignProvision>iOSDevelopment</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>

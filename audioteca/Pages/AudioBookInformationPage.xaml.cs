@@ -55,13 +55,15 @@ namespace audioteca
                     {
                         if (action)
                         {
-                            DaisyPlayer.Instance.Stop();
+                            await DaisyPlayer.Instance.Stop();
 
                             var daisyBook = DaisyPlayer.Instance.GetDaisyBook();
 
                             await AudioBookStore.Instance.Delete(daisyBook.Id);
 
                             DaisyPlayer.Instance.CleanupPlayerInfo();
+
+                            DaisyPlayer.Instance.CleanupDaisyBook();
 
                             await Navigation.PopToRootAsync(true);
                         }
