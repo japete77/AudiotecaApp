@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:Helpers="clr-namespace:audioteca.Helpers"
     x:Class="audioteca.ByTitlePage"
-    Padding="0, 20, 0, 0"
+    Padding="20"
     IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}">
     <StackLayout>
-        <StackLayout Padding="20, 45, 20, 20">
+        <StackLayout Padding="0, 20, 0, 0">
             <Button
                     AutomationProperties.IsInAccessibleTree="true"
                     AutomationProperties.HelpText=""
@@ -27,7 +27,7 @@
                 AutomationProperties.IsInAccessibleTree="true"
                 AutomationProperties.HelpText="Introduzca un título para buscar en el listado de audio libros"></SearchBar>
         </StackLayout>
-        <StackLayout Padding="20">
+        <StackLayout Padding="0, 20, 0, 0">
             <ListView
                 x:Name="listView"
                 ItemSelected="OnItemSelected"

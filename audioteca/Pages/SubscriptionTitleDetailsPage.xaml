@@ -20,7 +20,8 @@
                     Clicked="ButtonClick_Back" FontAttributes="Bold"></Button>
             </StackLayout>
             <StackLayout>
-                <Label Text="{Binding SubscriptionTitle.Title}" FontSize="Large" FontAttributes="Bold"></Label>
+                <Label Text="{Binding SubscriptionTitle.Title}" FontSize="Medium" FontAttributes="Bold"></Label>
+                <Label Text="{Binding SubscriptionTitle.Description}" FontSize="Medium"></Label>
             </StackLayout>
             <StackLayout Padding="0,20,0,0" IsVisible="{Binding ShowStatus}">
                 <Label Text="{Binding StatusDescription}" FontSize="Medium" HorizontalTextAlignment="Center"></Label>
