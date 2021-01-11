@@ -52,15 +52,15 @@ namespace audioteca
                         Message = $"Esto moverá los audio libros a la {selectedStorage.Name}, dependiendo del tamaño puede tomar unos minutos ¿desea continuar?",
                         OkText = "Si",
                         CancelText = "No",
-                        OnAction = (action) =>
+                        OnAction = async (action) =>
                         {
                             if (action)
                             {
                                 // Stop to prevent locked files
-                                DaisyPlayer.Instance.Stop();
+                                await DaisyPlayer.Instance.Stop();
 
                                 // Run move
-                                Task.Run(() => MoveData(Session.Instance.GetDataDir(), selectedStorage));
+                                MoveData(Session.Instance.GetDataDir(), selectedStorage);
                             }
                         }
                     }
