@@ -40,7 +40,7 @@ namespace audioteca
 
         private async void ButtonClick_Back(object sender, EventArgs e)
         {
-            await this.Navigation.PopAsync();
+            await Navigation.PopAsync();
         }
 
         private async void ButtonClick_GoPublishing(object sender, EventArgs e)

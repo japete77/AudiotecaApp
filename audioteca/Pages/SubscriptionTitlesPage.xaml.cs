@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Acr.UserDialogs;
 using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
@@ -37,23 +38,34 @@ namespace audioteca
         {
             if (_model.Loading)
             {
-                _titles = await AudioLibrary.Instance.GetSubscriptionTitles(_code);
+                UserDialogs.Instance.ShowLoading("Cargando suscripciones");
 
-                if (_titles == null)
+                try
                 {
-                    return;
+                    _titles = await AudioLibrary.Instance.GetSubscriptionTitles(_code);
+
+                    if (_titles == null)
+                    {
+                        return;
+                    }
+
+                    // bind model
+                    listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
+                    listView.BindingContext = _model.Items;
+                    listView.BeginRefresh();
+
+                    _titles.ForEach(item => _model.Items.Add(item));
+
+                    listView.EndRefresh();
+                }
+                catch
+                {
+
                 }
 
-                // bind model
-                listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
-                listView.BindingContext = _model.Items;
-                listView.BeginRefresh();
-
-                _titles.ForEach(item => _model.Items.Add(item));
-
-                listView.EndRefresh();
-
                 _model.Loading = false;
+
+                UserDialogs.Instance.HideLoading();
             }
         }
 

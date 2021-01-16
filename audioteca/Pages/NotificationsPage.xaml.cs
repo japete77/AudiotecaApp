@@ -1,4 +1,5 @@
-﻿using audioteca.Models.Api;
+﻿using Acr.UserDialogs;
+using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
@@ -31,25 +32,38 @@ namespace audioteca
 
         protected async override void OnAppearing()
         {
+            if (_notifications != null) return;
+
             _model.Loading = true;
 
-            _notifications = await NotificationsStore.Instance.GetNotifications();
+            UserDialogs.Instance.ShowLoading("Cargando notificaciones");
 
-            if (_notifications == null)
+            try
             {
-                return;
+                _notifications = await NotificationsStore.Instance.GetNotifications();
+
+                if (_notifications == null)
+                {
+                    return;
+                }
+
+                // bind model
+                listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
+                listView.BindingContext = _model.Items;
+                listView.BeginRefresh();
+
+                _model.Items.Clear();
+                _notifications
+                    .ForEach(item => _model.Items.Add(item));
+
+                listView.EndRefresh();
+            }
+            catch
+            {
+
             }
 
-            // bind model
-            listView.SetBinding(ListView.ItemsSourceProperty, new Binding("."));
-            listView.BindingContext = _model.Items;
-            listView.BeginRefresh();
-
-            _model.Items.Clear();
-            _notifications
-                .ForEach(item => _model.Items.Add(item));
-
-            listView.EndRefresh();
+            UserDialogs.Instance.HideLoading();
 
             _model.Loading = false;
         }
