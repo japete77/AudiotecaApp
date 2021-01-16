@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using Acr.UserDialogs;
+﻿using Acr.UserDialogs;
 using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
 namespace audioteca
@@ -71,6 +70,8 @@ namespace audioteca
 
         public async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
+            _model.Loading = true;
+
             // has been set to null, do not 'process' tapped event
             if (e.SelectedItem == null) return;
 
@@ -78,6 +79,8 @@ namespace audioteca
             ((ListView)sender).SelectedItem = null;
 
             await Navigation.PushAsync(new SubscriptionTitleDetailsPage(e.SelectedItem as SubscriptionTitle, _code), true);
+
+            _model.Loading = false;
         }
 
         private async void ButtonClick_Back(object sender, EventArgs e)

@@ -70,6 +70,8 @@ namespace audioteca
 
         public async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
+            _model.Loading = true;
+
             // has been set to null, do not 'process' tapped event
             if (e.SelectedItem == null) return;
 
@@ -83,6 +85,8 @@ namespace audioteca
                 ),
                 true
             );
+
+            _model.Loading = false;
         }
 
         private async void ButtonClick_Back(object sender, EventArgs e)

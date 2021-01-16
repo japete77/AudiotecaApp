@@ -1,4 +1,8 @@
-﻿using System;
+﻿using audioteca.Helpers;
+using audioteca.Models.Api;
+using audioteca.Models.Audiobook;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -6,10 +10,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using audioteca.Helpers;
-using audioteca.Models.Api;
-using audioteca.Models.Audiobook;
-using Newtonsoft.Json;
 using Xamarin.Forms;
 
 namespace audioteca.Services
@@ -227,12 +227,28 @@ namespace audioteca.Services
                     catch
                     {
                         _isProcessingDownload = false;
+                        _currentAudioBook.StatusKey = STATUS_ERROR;
+                        _currentAudioBook.StatusDescription = "Error: no se ha podido extraer el contendido del audiolibro";
+                        OnProgress?.Invoke(_currentAudioBook);
+                        AsyncHelper.RunSync(() => SaveBooks());
                         return;
                     }
 
+
                     // Read daisy format and generate a ncc.json file with all the book content prepared for the audio player
+                    var nccIndex = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}/ncc.html";
+                    if (!File.Exists(nccIndex))
+                    {
+                        _isProcessingDownload = false;
+                        _currentAudioBook.StatusKey = STATUS_ERROR;
+                        _currentAudioBook.StatusDescription = "Error: formato del audiolibro incorrecto. Índice no encontrado.";
+                        OnProgress?.Invoke(_currentAudioBook);
+                        AsyncHelper.RunSync(() => SaveBooks());
+                        return;
+                    }
+
                     DaisyBook dbook = new DaisyBook();
-                    dbook.Load($"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}/ncc.html");
+                    dbook.Load(nccIndex);
                     dbook.Id = _currentAudioBook.Book.Id;
                     string dbookStr = JsonConvert.SerializeObject(dbook);
                     File.WriteAllText($"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}/ncc.json", dbookStr);
@@ -259,19 +275,32 @@ namespace audioteca.Services
 
         public async Task Download(AudioBookDetailResult book)
         {
-            MyAudioBook newBook = new MyAudioBook
-            {
-                Book = book,
-                Path = $"{Session.Instance.GetDataDir()}",
-                Filename = $"{book.Id}.zip",
-                TmpFolder = null,
-                Progress = 0,
-                StatusDescription = "Pendiente de descarga",
-                ErrorCode = 0,
-                StatusKey = STATUS_PENDING
-            };
+            var newBook = _audioBooks.Where(a => a.Book.Id == book.Id).FirstOrDefault();
 
-            _audioBooks.Add(newBook);
+            if (newBook == null)
+            {
+                newBook = new MyAudioBook
+                {
+                    Book = book,
+                    Path = $"{Session.Instance.GetDataDir()}",
+                    Filename = $"{book.Id}.zip",
+                    TmpFolder = null,
+                    Progress = 0,
+                    StatusDescription = "Pendiente de descarga",
+                    ErrorCode = 0,
+                    StatusKey = STATUS_PENDING
+                };
+
+                _audioBooks.Add(newBook);
+            }
+            else
+            {
+                newBook.TmpFolder = null;
+                newBook.Progress = 0;
+                newBook.StatusDescription = "Pendiente de descarga";
+                newBook.ErrorCode = 0;
+                newBook.StatusKey = STATUS_PENDING;
+            }
 
             OnProgress?.Invoke(newBook);
 
@@ -304,7 +333,7 @@ namespace audioteca.Services
 
         public MyAudioBook GetMyAudioBook(string id)
         {
-            return _audioBooks.Find(value => value.Book.Id == id);        
+            return _audioBooks.Find(value => value.Book.Id == id);
         }
 
         public List<MyAudioBook> GetMyAudioBooks()

@@ -4,7 +4,6 @@ using audioteca.Services;
 using audioteca.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using Xamarin.Forms;
@@ -44,6 +43,7 @@ namespace audioteca
                 }
 
                 var sorted = _myBooks
+                                .Where(w => w.StatusKey == AudioBookStore.STATUS_COMPLETED)
                                 .OrderBy(o => o.Book.Title)
                                 .GroupBy(g => g.Book.TitleSort)
                                 .Select(s => new Grouping<string, MyAudioBook>(s.Key, s));
