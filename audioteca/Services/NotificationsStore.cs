@@ -124,13 +124,19 @@ namespace audioteca.Services
             if (string.IsNullOrEmpty(notificationsSubscriptions.ApplicationEndPoint) ||
                 notificationsSubscriptions.DeviceToken != deviceToken)
             {
+
                 // **********************************************
                 // de-register old endpoint and all subscriptions
                 if (!string.IsNullOrEmpty(notificationsSubscriptions.ApplicationEndPoint))
                 {
                     try
                     {
-                        await client.DeleteEndpointAsync(new DeleteEndpointRequest { EndpointArn = notificationsSubscriptions.ApplicationEndPoint });
+                        var response = await client.DeleteEndpointAsync(new DeleteEndpointRequest { EndpointArn = notificationsSubscriptions.ApplicationEndPoint });
+
+                        if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                        {
+                            ShowAlert("Debug", $"Error eliminando endpoint: {response.HttpStatusCode}");
+                        }
                     }
                     catch { /*Silent error in case endpoint doesn´t exist */ }
 
@@ -159,6 +165,11 @@ namespace audioteca.Services
                     }
                 );
 
+                if (endPointResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    ShowAlert("Debug", $"Error registrando endpoint: {endPointResponse.HttpStatusCode}, {endPointResponse.ResponseMetadata}");
+                }
+
                 // Save device token and application endpoint created
                 notificationsSubscriptions.DeviceToken = deviceToken;
                 notificationsSubscriptions.ApplicationEndPoint = endPointResponse.EndpointArn;
@@ -175,14 +186,22 @@ namespace audioteca.Services
             {
                 if (!notificationsSubscriptions.Subscriptions.ContainsKey(code))
                 {
+
                     var topicArn = AppSettings.Instance.AwsTopicArn;
                     topicArn += string.IsNullOrEmpty(code) ? "" : $"-{code}";
 
                     if (!await TopicExists(topicArn, client))
                     {
                         var topicResponse = await client.CreateTopicAsync(new CreateTopicRequest { Name = $"{AppSettings.Instance.AwsTopicName}-{code}" });
+
+                        if (topicResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                        {
+                            ShowAlert("Debug", $"Error creando topic: {topicResponse.HttpStatusCode}, {topicResponse.ResponseMetadata}");
+                        }
+
                         topicArn = topicResponse.TopicArn;
                     }
+
 
                     // Subscribe
                     var subscribeResponse = await client.SubscribeAsync(new SubscribeRequest
@@ -191,6 +210,11 @@ namespace audioteca.Services
                         Endpoint = notificationsSubscriptions.ApplicationEndPoint,
                         TopicArn = topicArn
                     });
+
+                    if (subscribeResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        ShowAlert("Debug", $"Error creando suscripción: {subscribeResponse.HttpStatusCode}, {subscribeResponse.ResponseMetadata}");
+                    }
 
                     // Add to the list
                     notificationsSubscriptions.Subscriptions.Add(code, subscribeResponse.SubscriptionArn);
@@ -215,6 +239,14 @@ namespace audioteca.Services
 
             // Save notifications subscriptions
             await SaveNotificationsSubscriptions(notificationsSubscriptions);
+        }
+
+        private void ShowAlert(string title, string text)
+        {
+            Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>
+            {
+                await App.Current.MainPage.DisplayAlert(title, text, "Cerrar");
+            });
         }
     }
 

@@ -54,6 +54,7 @@
                 BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Clicked="ButtonClick_Configuration" FontAttributes="Bold"></Button>
+            <Label Text="{Binding VersionInfo}" FontSize="Medium" HorizontalTextAlignment="Center"/>
         </StackLayout>
     </ScrollView>
 </ContentPage>

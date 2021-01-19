@@ -36,5 +36,6 @@ namespace audioteca.Helpers
         public string AwsTopicArn;
         public string AwsTopicName;
         public string FonotecaApiUrl;
+        public string VersionInfo;
     }
 }

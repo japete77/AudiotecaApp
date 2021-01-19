@@ -48,7 +48,9 @@ namespace audioteca.iOS
 
         public async override void RegisteredForRemoteNotifications(UIApplication application, NSData token)
         {
-            var deviceToken = token.Description.Replace("<", "").Replace(">", "").Replace(" ", "");
+            byte[] bytes = token.ToArray<byte>();
+            string[] hexArray = bytes.Select(b => b.ToString("x2")).ToArray();
+            var deviceToken = string.Join(string.Empty, hexArray);
 
             await NotificationsStore.Instance.SaveDeviceToken(deviceToken);
         }

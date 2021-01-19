@@ -1,5 +1,6 @@
 ﻿using audioteca.Helpers;
 using audioteca.Services;
+using audioteca.ViewModels;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -15,9 +16,17 @@ namespace audioteca
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
+        private readonly MainPageViewModel _model;
+
         public MainPage()
         {
             NavigationPage.SetHasNavigationBar(this, false);
+
+            _model = new MainPageViewModel
+            {
+                VersionInfo = AppSettings.Instance.VersionInfo
+            };
+            this.BindingContext = _model;
 
             InitializeComponent();
 
