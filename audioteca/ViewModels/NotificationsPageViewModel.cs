@@ -1,6 +1,5 @@
-﻿using System;
+﻿using audioteca.Models.Api;
 using System.Collections.ObjectModel;
-using audioteca.Models.Api;
 
 namespace audioteca.ViewModels
 {
@@ -24,6 +23,17 @@ namespace audioteca.ViewModels
             set
             {
                 _loading = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _showMarkAllRead;
+        public bool ShowMarkAllRead
+        {
+            get { return _showMarkAllRead; }
+            set
+            {
+                _showMarkAllRead = value;
                 RaisePropertyChanged();
             }
         }

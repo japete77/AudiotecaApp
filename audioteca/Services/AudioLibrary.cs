@@ -162,6 +162,19 @@ namespace audioteca.Services
             return result.Notifications;
         }
 
+        public async Task<List<int>> GetNotificationsIds()
+        {
+            var request = new RestRequest($"notifications/ids", DataFormat.Json)
+            {
+                Method = Method.GET
+            };
+            request.AddParameter("session", Session.Instance.GetSession());
+
+            var result = await Call<List<int>>(request);
+
+            return result;
+        }
+
         private async Task<T> Get<T>(string method, string text, int index, int count, string filter) where T : new()
         {
             var request = new RestRequest(method, DataFormat.Json)

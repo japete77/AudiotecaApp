@@ -58,6 +58,8 @@ namespace audioteca
                         }
 
                         await NotificationsStore.Instance.RegisterUserNotifications();
+
+                        await NotificationsStore.Instance.RefreshNotifications();
                     }
                     else
                     {

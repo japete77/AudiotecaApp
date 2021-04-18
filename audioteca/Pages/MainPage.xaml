@@ -11,7 +11,7 @@
         <StackLayout>
             <Button
                 AutomationProperties.IsInAccessibleTree="true"
-                AutomationProperties.HelpText="Acceso a mis audio libros descargados"
+                AutomationProperties.HelpText="Mis Audio Libros"
                 Text="Mis audiolibros"
                 x:Name="MyAudiobooks"
                 FontSize="Medium"
@@ -20,7 +20,7 @@
                 Clicked="ButtonClick_MyAudiobooks" FontAttributes="Bold"></Button>
             <Button
                 AutomationProperties.IsInAccessibleTree="true"
-                AutomationProperties.HelpText="Acceso a la fonoteca de nueva luz"
+                AutomationProperties.HelpText="Fonoteca"
                 x:Name="Fonoteca"
                 Text="Fonoteca"
                 FontSize="Medium"
@@ -29,7 +29,7 @@
                 Clicked="ButtonClick_Audiobooks" FontAttributes="Bold"></Button>
             <Button
                 AutomationProperties.IsInAccessibleTree="true"
-                AutomationProperties.HelpText="Acceso a las suscripciones de nueva luz"
+                AutomationProperties.HelpText="Suscripciones"
                 x:Name="Subscriptions"
                 Text="Suscripciones"
                 FontSize="Medium"
@@ -38,7 +38,7 @@
                 Clicked="ButtonClick_Subscriptions" FontAttributes="Bold"></Button>
             <Button
                 AutomationProperties.IsInAccessibleTree="true"
-                AutomationProperties.HelpText="Acceso a las notificaciones de nueva luz"
+                AutomationProperties.HelpText="Notificaciones"
                 x:Name="Notifications"
                 Text="Notificaciones"
                 FontSize="Medium"
@@ -47,7 +47,7 @@
                 Clicked="ButtonClick_Notifications" FontAttributes="Bold"></Button>
             <Button
                 AutomationProperties.IsInAccessibleTree="true"
-                AutomationProperties.HelpText="Configura las opciones de la aplicación"
+                AutomationProperties.HelpText="Configuración"
                 x:Name="Configuration"
                 Text="Configuración"
                 FontSize="Medium"

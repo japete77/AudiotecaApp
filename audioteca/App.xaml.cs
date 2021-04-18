@@ -22,6 +22,8 @@ namespace audioteca
                 MainPage = new NavigationPage(new MainPage());
 
                 await NotificationsStore.Instance.RegisterUserNotifications();
+
+                await NotificationsStore.Instance.RefreshNotifications();
             }
             else
             {

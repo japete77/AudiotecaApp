@@ -1,4 +1,5 @@
-﻿using Amazon.Runtime;
+﻿using Acr.UserDialogs;
+using Amazon.Runtime;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using audioteca.Helpers;
@@ -16,7 +17,14 @@ namespace audioteca.Services
         private static NotificationsStore _instance;
         private const string DEVICE_TOKEN_KEY = "DeviceTokenKey";
         private const string NOTIFICATIONS_SUBSCRIPTIONS_KEY = "NotificationsSubscriptions";
+
+        private const string NOTIFICATIONS_READ_KEY = "NotificationsRead";
+        private List<int> _readNotifications = new List<int>();
+
         private List<Topic> _topics;
+
+        private System.Timers.Timer _subscriptionsTimer;
+        private System.Timers.Timer _timerUnreadNotifications;
 
         public static NotificationsStore Instance
         {
@@ -31,20 +39,115 @@ namespace audioteca.Services
             }
         }
 
-        private const string NOTIFICATIONS_KEY = "Notifications";
-        private List<NotificationModel> _notifications = new List<NotificationModel>();
-
         public NotificationsStore()
         {
-            // Read audiobooks list
-            Application.Current.Properties.TryGetValue(NOTIFICATIONS_KEY, out object data);
-            if (data != null) _notifications = JsonConvert.DeserializeObject<List<NotificationModel>>(data.ToString());
+            // Refresh subscriptions every hour
+            _subscriptionsTimer = new System.Timers.Timer()
+            {
+                AutoReset = true,
+                Interval = 3600000
+            };
+            _subscriptionsTimer.Elapsed += _subscriptionsTimer_SubscriptionsRefresh;
+            _subscriptionsTimer.Start();
+        }
 
+        public async Task RefreshNotifications()
+        {
+            // Read notifications ids
+            var notificationsIds = await AudioLibrary.Instance.GetNotificationsIds();
+            Application.Current.Properties.TryGetValue(NOTIFICATIONS_READ_KEY, out object data);
+            if (data != null)
+            {
+                _readNotifications = JsonConvert.DeserializeObject<List<int>>(data.ToString());
+
+                // Remove expired notifications (consider only notifications in the list)
+                _readNotifications = _readNotifications.Where(w => notificationsIds.Contains(w)).ToList();
+            }
+            else
+            {
+                // Is empty so we assume all notifications are read
+                _readNotifications = notificationsIds;
+                Application.Current.Properties[NOTIFICATIONS_READ_KEY] = JsonConvert.SerializeObject(_readNotifications);
+            }
+            await Application.Current.SavePropertiesAsync();
+
+            if (_timerUnreadNotifications == null)
+            {
+                // Check unread notifications
+                _timerUnreadNotifications = new System.Timers.Timer()
+                {
+                    AutoReset = false,
+                };
+                _timerUnreadNotifications.Elapsed += _timerUnreadNotifications_Elapsed;
+                _timerUnreadNotifications.Start();
+            }
+        }
+
+        private void _subscriptionsTimer_SubscriptionsRefresh(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            AsyncHelper.RunSync(() => RegisterUserNotifications());
+        }
+
+        private void _timerUnreadNotifications_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            var unreadNotificationsCount = AsyncHelper.RunSync(() => GetUnreadNotificationsCount());
+
+            if (unreadNotificationsCount > 0)
+            {
+                var msg = unreadNotificationsCount > 1 ?
+                    $"Tienes {unreadNotificationsCount} notificaciones sin leer" :
+                    $"Tienes {unreadNotificationsCount} notificación sin leer";
+                UserDialogs.Instance.Alert(
+                    new AlertConfig
+                    {
+                        Title = "Aviso",
+                        Message = msg,
+                        OkText = "Aceptar"
+                    }
+                );
+            }
         }
 
         public async Task<List<NotificationModel>> GetNotifications()
         {
-            return await AudioLibrary.Instance.GetNotifications();
+            var result = await AudioLibrary.Instance.GetNotifications();
+
+            // Mark notifications as Unread if it doesn´t exists in the unread notifications
+            result.ForEach(item =>
+            {
+
+                if (_readNotifications.Contains(item.Id))
+                {
+                    item.TextStyle = FontAttributes.None;
+                    item.Header = "";
+                }
+                else
+                {
+                    item.TextStyle = FontAttributes.Bold;
+                    item.Header = $"no leído";
+                }
+            });
+
+            return result;
+        }
+
+        public async Task<int> GetUnreadNotificationsCount()
+        {
+            var notificationsId = await AudioLibrary.Instance.GetNotificationsIds();
+
+            var unreadNotificationsCount = notificationsId.Where(w => !_readNotifications.Contains(w)).Count();
+
+            return unreadNotificationsCount;
+        }
+
+        public async Task SetNotificationRead(int id)
+        {
+            if (!_readNotifications.Contains(id))
+            {
+                _readNotifications.Add(id);
+                Application.Current.Properties[NOTIFICATIONS_READ_KEY] = JsonConvert.SerializeObject(_readNotifications);
+                await Application.Current.SavePropertiesAsync();
+            }
         }
 
         public string GetDeviceToken()

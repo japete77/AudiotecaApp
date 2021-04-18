@@ -1,6 +1,5 @@
 ﻿
 using Acr.UserDialogs;
-using audioteca.Helpers;
 using audioteca.Models.Player;
 using audioteca.Services;
 using audioteca.ViewModels;
@@ -116,21 +115,45 @@ namespace audioteca
 
             if (_dbook == null || _dbook.Id != _id)
             {
-                var abookJson = File.ReadAllText($"{Session.Instance.GetDataDir()}/{this._id}/ncc.json");
+                if (Directory.Exists($"{Session.Instance.GetDataDir()}/{this._id}") &&
+                    File.Exists($"{Session.Instance.GetDataDir()}/{this._id}/ncc.json"))
+                {
+                    var abookJson = File.ReadAllText($"{Session.Instance.GetDataDir()}/{this._id}/ncc.json");
 
-                _dbook = JsonConvert.DeserializeObject<DaisyBook>(abookJson);
+                    _dbook = JsonConvert.DeserializeObject<DaisyBook>(abookJson);
 
-                DaisyPlayer.Instance.LoadBook(_dbook);
+                    DaisyPlayer.Instance.LoadBook(_dbook);
+
+                    _model.Title = _dbook.Title;
+
+                    _model.Loading = false;
+
+                    // Update status
+                    Instance_StatusUpdate(DaisyPlayer.Instance.GetPlayerInfo());
+                }
+                else
+                {
+                    UserDialogs.Instance.Alert(
+                        new AlertConfig
+                        {
+                            Title = "Aviso",
+                            Message = "Audiolibro no encontrado, por favor descárgalo de nuevo.",
+                            OkText = "Aceptar",
+                            OnAction = async () =>
+                            {
+                                await AudioBookStore.Instance.Delete(this._id);
+
+                                DaisyPlayer.Instance.CleanupPlayerInfo();
+
+                                DaisyPlayer.Instance.CleanupDaisyBook();
+
+                                await Navigation.PopToRootAsync(true);
+                            }
+                        }
+                    );
+                }
             }
-
-            _model.Title = _dbook.Title;
-
-            _model.Loading = false;
-
-            // Update status
-            Instance_StatusUpdate(DaisyPlayer.Instance.GetPlayerInfo());
         }
-
         public async void ButtonClick_Index(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new AudioBookIndexPage(), true);

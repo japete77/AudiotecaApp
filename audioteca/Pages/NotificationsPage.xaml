@@ -9,13 +9,23 @@
         <StackLayout Padding="0, 20, 0, 0">
             <Button
                     AutomationProperties.IsInAccessibleTree="true"
-                    AutomationProperties.HelpText=""
+                    AutomationProperties.HelpText="Volver atrás"
                     Text="Volver atrás"
                     x:Name="Volver"
                     FontSize="Medium"
                     BackgroundColor="SlateGray"
                     TextColor="White"
                     Clicked="ButtonClick_Back" FontAttributes="Bold"></Button>
+            <Button
+                    AutomationProperties.IsInAccessibleTree="true"
+                    AutomationProperties.HelpText="Marcar todo como leído"
+                    Text="Marcar todo como leído"
+                    x:Name="MarkAllRead"
+                    FontSize="Medium"
+                    BackgroundColor="SlateGray"
+                    TextColor="White"
+                    IsVisible="{Binding ShowMarkAllRead}"
+                    Clicked="ButtonClick_MarkAllRead" FontAttributes="Bold"></Button>
         </StackLayout>
         <StackLayout Padding="0, 20, 0, 0">
             <ListView
@@ -34,7 +44,15 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="100*" />
                                         </Grid.ColumnDefinitions>
-                                        <Label Text="{Binding Title}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
+                                        <Label 
+                                            Text="{Binding Title}" 
+                                            VerticalTextAlignment="Center" 
+                                            FontSize="Medium" 
+                                            FontAttributes="{Binding TextStyle}" 
+                                            LineBreakMode="TailTruncation"
+                                            AutomationProperties.IsInAccessibleTree="true"
+                                            AutomationProperties.HelpText="{Binding Header}"
+                                        />
                                     </Grid>
                                 </StackLayout>
                             </StackLayout>

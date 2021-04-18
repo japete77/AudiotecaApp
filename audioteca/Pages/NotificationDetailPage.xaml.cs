@@ -1,4 +1,5 @@
-﻿using audioteca.Models.Api;
+﻿using audioteca.Helpers;
+using audioteca.Models.Api;
 using audioteca.Services;
 using audioteca.ViewModels;
 using System;
@@ -29,6 +30,11 @@ namespace audioteca
             };
 
             this.BindingContext = _model;
+
+            // Mark as read
+            notification.TextStyle = FontAttributes.None;
+            notification.Header = "";
+            AsyncHelper.RunSync(() => NotificationsStore.Instance.SetNotificationRead(notification.Id));
 
             InitializeComponent();
         }
