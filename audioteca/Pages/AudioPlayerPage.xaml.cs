@@ -31,10 +31,12 @@ namespace audioteca
             this.BindingContext = _model;
 
             _model.Loading = true;
-
+            
             DaisyPlayer.Instance.TimeCodeUpdate += Instance_TimeCodeUpdate;
             DaisyPlayer.Instance.StatusUpdate += Instance_StatusUpdate;
             DaisyPlayer.Instance.ChapterUpdate += Instance_ChapterUpdate;
+
+            Instance_StatusUpdate(DaisyPlayer.Instance.GetPlayerInfo());
 
             InitializeComponent();
         }
@@ -101,7 +103,10 @@ namespace audioteca
 
         private void Instance_TimeCodeUpdate(System.TimeSpan e)
         {
-            _model.CurrentTC = $"{GetTimeCode(e)} / {_dbook.TotalTime}";
+            if (e != null)
+            {
+                _model.CurrentTC = $"{GetTimeCode(e)} / {_dbook?.TotalTime}";
+            }
         }
 
         private string GetTimeCode(System.TimeSpan e)
@@ -132,7 +137,7 @@ namespace audioteca
                     Instance_StatusUpdate(DaisyPlayer.Instance.GetPlayerInfo());
                 }
                 else
-                {
+                {                    
                     UserDialogs.Instance.Alert(
                         new AlertConfig
                         {
@@ -153,6 +158,8 @@ namespace audioteca
                     );
                 }
             }
+
+            _model.Loading = false;
         }
         public async void ButtonClick_Index(object sender, EventArgs e)
         {
