@@ -58,6 +58,7 @@ namespace audioteca.Services
                 _sessionInfo.Username = user;
                 _sessionInfo.Password = password;
                 _sessionInfo.Session = result.Data.Session;
+                _sessionInfo.Speed = 1.0f;
 
                 _lastError = result.Data.Message;
 

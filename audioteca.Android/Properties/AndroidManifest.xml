@@ -1,10 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="7" android:versionName="1.7.0" package="com.nuevaluz.fonoteca" android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="29" android:targetSdkVersion="30" />
-	<application android:label="Fonoteca Nueva Luz" android:icon="@drawable/icon"></application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="8" android:versionName="1.8.0" package="com.nuevaluz.fonoteca" android:installLocation="auto">
+	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="33" />
+	<application android:label="Fonoteca Nueva Luz" android:icon="@drawable/icon" android:enableOnBackInvokedCallback="true">
+		<service android:name="crc648046fa1fb81736c8.FonotecaFirebaseMessagingService" android:exported="true" />
+	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.MANAGE_MEDIA" />
 </manifest>

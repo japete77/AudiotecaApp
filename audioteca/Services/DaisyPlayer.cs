@@ -55,6 +55,8 @@ namespace audioteca.Services
 
         public DaisyPlayer()
         {
+            CrossMediaManager.Current.Speed = (float)Session.Instance.GetSpeed();
+
             _timer = new System.Timers.Timer(500)
             {
                 AutoReset = false
@@ -254,8 +256,33 @@ namespace audioteca.Services
             }
         }
 
+        public static async Task<bool> HasStorageReadPermissionsAsync()
+        {
+            var permission = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+            // permission is "Denied" if we check for the very first time
+            if (permission != PermissionStatus.Granted)
+            {
+                // The following call should display the permission dialog;
+                // It works perfectly fine on <= API 28 but when I run it on API 33, it just returns "Denied"
+                // similar to what ChrisDoc documented above.
+                var requestStatus = await Permissions.RequestAsync<Permissions.StorageRead>();
+                if (requestStatus == PermissionStatus.Granted)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task Play(SeekInfo position = null)
         {
+            var permission = await HasStorageReadPermissionsAsync();
+
             if (_playerInfo != null)
             {
                 if (position != null) _playerInfo.Position = position;

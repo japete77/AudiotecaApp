@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="fonoteca.Pages.AudioLibraryPage"             
+             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             x:DataType="viewmodel:AudioLibraryPageViewModel"
+             Title="Fonoteca"
+             Shell.NavBarIsVisible="False">
+    <StackLayout Padding="20, 10">
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Volver"            
+            Text="Volver a Inicio"
+            Margin="0, 5"
+            x:Name="Volver"
+            FontSize="Medium"
+            BackgroundColor="SlateGray"
+            TextColor="White"
+            Command="{Binding GoToBackCommand}"
+            FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Accede a la fonoteca ordenada por títulos"
+            Margin="0, 5"
+            Text="Por Título"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding GoToByTitleCommand}"
+            FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Accede a la fonoteca ordenada por autores"
+            Margin="0, 5"
+            Text="Por Autor"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding GoToByAuthorCommand}"
+            FontAttributes="Bold"></Button>
+    </StackLayout>
+</ContentPage>

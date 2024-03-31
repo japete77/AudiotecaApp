@@ -1,5 +1,6 @@
 ﻿using Acr.UserDialogs;
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.Gms.Common;
 using Android.OS;
@@ -7,7 +8,10 @@ using Android.Runtime;
 using Android.Views;
 using audioteca.Helpers;
 using MediaManager;
+using RestSharp;
+using System;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 
 namespace audioteca.Droid
 {
@@ -61,6 +65,15 @@ namespace audioteca.Droid
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
+            if (Xamarin.Essentials.DeviceInfo.Version.Major >= 13 && (permissions.Where(p => p.Equals("android.permission.WRITE_EXTERNAL_STORAGE")).Any() || permissions.Where(p => p.Equals("android.permission.READ_EXTERNAL_STORAGE")).Any()))
+            {
+                var wIdx = Array.IndexOf(permissions, "android.permission.WRITE_EXTERNAL_STORAGE");
+                var rIdx = Array.IndexOf(permissions, "android.permission.READ_EXTERNAL_STORAGE");
+
+                if (wIdx != -1 && wIdx < permissions.Length) grantResults[wIdx] = Permission.Granted;
+                if (rIdx != -1 && rIdx < permissions.Length) grantResults[rIdx] = Permission.Granted;
+            }
+
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
