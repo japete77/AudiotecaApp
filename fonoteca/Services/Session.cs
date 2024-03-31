@@ -1,14 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using audioteca.Exceptions;
-using audioteca.Helpers;
-using audioteca.Models.Api;
-using audioteca.Models.Session;
+﻿using fonoteca.Exceptions;
+using fonoteca.Helpers;
+using fonoteca.Models.Api;
+using fonoteca.Models.Session;
 using Newtonsoft.Json;
 using RestSharp;
-using Xamarin.Forms;
 
-namespace audioteca.Services
+namespace fonoteca.Services
 {
     public class Session
     {
@@ -17,7 +14,8 @@ namespace audioteca.Services
         private const string SESSION_INFO_KEY = "SessionInfo";
 
         private static Session _instance;
-        public static Session Instance {
+        public static Session Instance
+        {
             get
             {
                 if (_instance == null)
@@ -31,21 +29,24 @@ namespace audioteca.Services
 
         public Session()
         {
-            Application.Current.Properties.TryGetValue(SESSION_INFO_KEY, out object data);
-            if (data != null) _sessionInfo = JsonConvert.DeserializeObject<SessionInfo>(data.ToString());
+            if (Preferences.ContainsKey(SESSION_INFO_KEY))
+            {
+                _sessionInfo = JsonConvert.DeserializeObject<SessionInfo>(Preferences.Get(SESSION_INFO_KEY, null));
+            }
         }
 
         public async Task<bool> Login(int user, string password)
         {
-            return await Task.Run<bool>(() =>
+            return await Task.Run(() =>
             {
-                RestRequest request = new RestRequest("login", DataFormat.Json)
+                RestRequest request = new RestRequest("login")
                 {
-                    Method = Method.POST
+                    Method = Method.Post,
+                    RequestFormat = DataFormat.Json
                 };
                 request.AddJsonBody(new LoginRequest { User = user, Password = password });
 
-                var result = ApiClient.Instance.Client.Post<LoginResult>(request);
+                var result = ApiClient.Instance.Client.ExecutePost<LoginResult>(request);
                 if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     throw new UnauthorizedException();
@@ -75,13 +76,14 @@ namespace audioteca.Services
         {
             await Task.Run(() =>
             {
-                RestRequest request = new RestRequest("change-password", DataFormat.Json)
+                RestRequest request = new RestRequest("change-password")
                 {
-                    Method = Method.POST
+                    Method = Method.Post,
+                    RequestFormat = DataFormat.Json
                 };
                 request.AddJsonBody(new ChangePasswordRequest { Session = _sessionInfo.Session, NewPassword = newPassword });
 
-                var result = ApiClient.Instance.Client.Post<ChangePasswordRequest>(request);
+                var result = ApiClient.Instance.Client.ExecutePost<ChangePasswordRequest>(request);
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     throw new Exception("No se ha podido cambiar la contraseña");
@@ -166,8 +168,7 @@ namespace audioteca.Services
 
         public void SaveSession()
         {
-            Application.Current.Properties[SESSION_INFO_KEY] = JsonConvert.SerializeObject(_sessionInfo);
-            AsyncHelper.RunSync(() => Application.Current.SavePropertiesAsync());
+            Preferences.Set(SESSION_INFO_KEY, JsonConvert.SerializeObject(_sessionInfo));
         }
     }
 }

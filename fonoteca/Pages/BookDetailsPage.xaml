@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="fonoteca.Pages.BookDetailsPage"             
+             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             xmlns:Helpers="clr-namespace:fonoteca.Helpers"
+             x:DataType="viewmodel:BookDetailsPageViewModel"
+             Title="Detalle audio libro"
+             Shell.NavBarIsVisible="False">    
+    <ScrollView>
+        <StackLayout>
+            <StackLayout Margin="20, 10">
+                <Button
+                    SemanticProperties.Description=""
+                    Text="Volver atrás"
+                    x:Name="Volver"
+                    FontSize="Medium"
+                    BackgroundColor="SlateGray"
+                    TextColor="White"
+                    Command="{Binding BackCommand}"
+                    FontAttributes="Bold"></Button>
+            </StackLayout>
+            <StackLayout Margin="20, 10">
+                <Label Text="{Binding AudioBook.Title}" FontSize="Large" FontAttributes="Bold"></Label>
+                <Label Text="{Binding AudioBook.Author.Name}" FontSize="Medium"></Label>
+                <Label Text="{Binding AudioBook, Converter={Helpers:GetDuration}}" FontSize="Medium"></Label>
+            </StackLayout>
+            <StackLayout Margin="20, 10">
+                <Label Text="{Binding AudioBook.Comments}" FontSize="Medium"></Label>
+            </StackLayout>
+            <StackLayout Margin="20, 10" IsVisible="{Binding ShowStatus}">
+                <Label Text="{Binding StatusDescription}" FontSize="Medium" HorizontalTextAlignment="Center"></Label>
+            </StackLayout>
+            <StackLayout Margin="20, 10" IsVisible="{Binding ShowDownload}">
+                <Button
+                    Text="Descargar"
+                    FontSize="Medium"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    Command="{Binding DownloadCommand}"
+                    FontAttributes="Bold"></Button>
+            </StackLayout>
+            <StackLayout Margin="20, 10" IsVisible="{Binding ShowCancel}">
+                <Button
+                    Text="Cancelar"
+                    FontSize="Medium"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    Command="{Binding CancelCommand}"
+                    FontAttributes="Bold"></Button>
+            </StackLayout>
+            <StackLayout Margin="20, 10" IsVisible="{Binding ShowPlay}">
+                <Button
+                    Text="Escuchar"
+                    FontSize="Medium"
+                    BackgroundColor="OliveDrab"
+                    TextColor="White"
+                    Command="{Binding PlayCommand}"
+                    FontAttributes="Bold"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

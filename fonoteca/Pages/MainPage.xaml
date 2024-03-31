@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             x:DataType="viewmodel:MainPageViewModel"
+             x:Class="fonoteca.MainPage"
+             Shell.NavBarIsVisible="False">
+    <StackLayout Padding="20, 10">
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Mis Audio Libros"
+            Text="Mis audiolibros"
+            x:Name="MyAudiobooks"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding GoToMyAudioBooksCommand}"
+            Margin="0, 5"
+            FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Fonoteca"
+            x:Name="Fonoteca"
+            Text="Fonoteca"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding GoToAudioBooksCommand}"
+            Margin="0, 5"
+            FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Suscripciones"
+            x:Name="Subscriptions"
+            Text="Suscripciones"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding GoToSubscriptionsCommand}"
+            Margin="0, 5"
+            FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Notificaciones"
+            x:Name="Notifications"
+            Text="Notificaciones"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding GoToNotificationsCommand}"
+            Margin="0, 5"
+            FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Configuración"
+            x:Name="Configuration"
+            Text="Configuración"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding GoToConfigurationCommand}"
+            Margin="0, 5"
+            FontAttributes="Bold"></Button>
+        <Label 
+            Text="{Binding VersionInfo}" 
+            Margin="0, 5"
+            FontSize="Medium" 
+            HorizontalTextAlignment="Center"/>
+    </StackLayout>
+</ContentPage>
