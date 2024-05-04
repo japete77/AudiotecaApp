@@ -1,5 +1,6 @@
 using fonoteca.Services;
 using fonoteca.ViewModels;
+using System.Net;
 
 namespace fonoteca.Pages;
 
@@ -12,12 +13,11 @@ public partial class BookDetailsPage : ContentPage
         _vm = vm;
         BindingContext = vm;
 
-        //var book = AudioBookStore.Instance.GetMyAudioBook(vm.BookId);
-        // if (book != null)
-        if (false)
+        var book = AudioBookStore.Instance.GetMyAudioBook(vm.BookId);
+        if (book != null)
         {
-            //Download_OnProgress(book);
-            //AudioBookStore.Instance.OnProgress += Download_OnProgress;
+            _vm.Download_OnProgress(book);
+            AudioBookStore.Instance.OnProgress += _vm.Download_OnProgress;
         }
         else
         {
@@ -34,4 +34,6 @@ public partial class BookDetailsPage : ContentPage
 
         _vm.Loading = false;
     }
+
+    
 }

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using fonoteca.Pages;
-using fonoteca.Services;
 namespace fonoteca.ViewModels
 {
     public partial class MainPageViewModel : ObservableObject
@@ -12,8 +11,7 @@ namespace fonoteca.ViewModels
         [RelayCommand]
         async Task GoToMyAudioBooks()
         {
-            // await Shell.Current.GoToAsync(nameof());
-            await Task.CompletedTask;
+            await Shell.Current.GoToAsync(nameof(MyAudioBooksPage));
         }
 
         [RelayCommand]

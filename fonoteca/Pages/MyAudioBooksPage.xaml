@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="fonoteca.Pages.MyAudioBooksPage"
+             Title="MyAudioBooksPage"
+             xmlns:Helpers="clr-namespace:fonoteca.Helpers"
+             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}"
+             Shell.NavBarIsVisible="False">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Button -->
+        <Button Grid.Row="0"
+                Margin="20, 10, 20, 0"
+                AutomationProperties.IsInAccessibleTree="true"
+                SemanticProperties.HeadingLevel="Level1"
+                SemanticProperties.Description="Volver"                
+                Text="Volver atrás"
+                x:Name="Volver"
+                FontSize="Medium"
+                BackgroundColor="SlateGray"
+                TextColor="White"
+                Command="{Binding GoToBackCommand}"
+                FontAttributes="Bold" />
+
+        <!-- Search Bar -->
+        <SearchBar Grid.Row="1"                   
+                   x:Name="SearchBar"
+                   Placeholder="Buscar"
+                   TextChanged="SearchBar_TextChanged"
+                   Margin="0, 5, 20, 0"
+                   SemanticProperties.HeadingLevel="Level1"
+                   SemanticProperties.Description="Buscar por título"
+                   SemanticProperties.Hint="Introduzca un título para buscar en el listado de audio libros"
+                   AutomationProperties.IsInAccessibleTree="true" />
+
+        <!-- CollectionView -->
+        <CollectionView Grid.Row="2"
+                        Margin="20, 10, 20, 0"
+                        ItemsSource="{Binding Items}"
+                        SelectionMode="Single" x:Name="ItemsCollectionView"
+                        SelectionChangedCommand="{Binding ClickBookCommand}" 
+                        SelectionChangedCommandParameter="{Binding SelectedItem, Source={x:Reference ItemsCollectionView}}"
+                        IsGrouped="True">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding Key}" FontAttributes="Bold" FontSize="Large"/>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout>
+                        <StackLayout Padding="5,0,0,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding Book.Title}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
+                            </Grid>
+                        </StackLayout>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

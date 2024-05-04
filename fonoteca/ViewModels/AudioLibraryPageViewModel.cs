@@ -21,7 +21,7 @@ namespace fonoteca.ViewModels
         [RelayCommand]
         public async Task GoToByAuthor()
         {
-            await Shell.Current.GoToAsync("");
+            await Shell.Current.GoToAsync(nameof(ByAuthorPage));
         }
     }
 }

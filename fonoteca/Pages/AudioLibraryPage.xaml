@@ -13,7 +13,6 @@
             SemanticProperties.Description="Volver"            
             Text="Volver a Inicio"
             Margin="0, 5"
-            x:Name="Volver"
             FontSize="Medium"
             BackgroundColor="SlateGray"
             TextColor="White"

@@ -1,22 +1,21 @@
-using fonoteca.Helpers;
 using fonoteca.Models.Api;
-using fonoteca.Services;
 using fonoteca.ViewModels;
-using System.Collections.ObjectModel;
+using fonoteca.Services;
+using fonoteca.Helpers;
 
 namespace fonoteca.Pages;
 
-public partial class ByTitlePage : ContentPage
+public partial class ByAuthorTitlesPage : ContentPage
 {
     private const int PAGE_SIZE = int.MaxValue;
-    private readonly ByTitlePageViewModel _vm;
+    private readonly ByAuthorTitlesPageViewModel _vm;
     private TitleResult _titles;
 
-    public ByTitlePage(ByTitlePageViewModel vm)
-	{
-		InitializeComponent();
+    public ByAuthorTitlesPage(ByAuthorTitlesPageViewModel vm)
+    {
+        InitializeComponent();
         BindingContext = vm;
-        vm.Items = new ObservableCollection<Grouping<string, TitleModel>>();
+        vm.Items = new System.Collections.ObjectModel.ObservableCollection<Grouping<string, TitleModel>>();
         vm.Loading = true;
         _vm = vm;
     }
@@ -25,7 +24,7 @@ public partial class ByTitlePage : ContentPage
     {
         if (_vm.Loading)
         {
-            _titles = await AudioLibrary.Instance.GetBooksByTitle(1, PAGE_SIZE);
+            _titles = await AudioLibrary.Instance.GetBooksByAuthor(_vm.AuthorId, 1, PAGE_SIZE);
 
             if (_titles == null)
             {
@@ -55,7 +54,7 @@ public partial class ByTitlePage : ContentPage
 
     private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
     {
-        IEnumerable<Grouping<string, TitleModel>> sorted;        
+        IEnumerable<Grouping<string, TitleModel>> sorted;
 
         if (string.IsNullOrEmpty(e.NewTextValue))
         {
