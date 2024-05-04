@@ -107,8 +107,7 @@ namespace fonoteca.ViewModels
         [RelayCommand]
         public async Task Index()
         {
-            await Task.CompletedTask;
-            // await Navigation.PushAsync(new AudioBookIndexPage(), true);
+            await Shell.Current.Navigation.PushAsync(new AudioBookIndexPage(new AudioBookIndexPageViewModel()), true);
         }
 
         [RelayCommand]

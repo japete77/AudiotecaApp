@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             xmlns:daisy="clr-namespace:fonoteca.Models.Daisy"
+             x:Class="fonoteca.Pages.AudioBookIndexPage"
+             x:DataType="viewmodel:AudioBookIndexPageViewModel"
+             Title="AudioBookIndexPage"
+             Shell.NavBarIsVisible="False">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Button
+            Grid.Row="0"
+            Margin="20, 10, 20, 0"
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description=""
+            Text="Volver al reproductor"
+            x:Name="Volver"
+            FontSize="Medium"
+            BackgroundColor="SlateGray"
+            TextColor="White"
+            Command="{Binding GoToBackCommand}"
+            FontAttributes="Bold"></Button>
+
+        <ListView
+            Grid.Row="1"
+            Margin="20, 10, 20, 0"
+            x:Name="listView"
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Seleccione un elemento del índice para saltar a dicha sección"
+            ItemsSource="{Binding Items}"
+            ItemSelected="OnItemSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="daisy:SmilInfo">
+                    <ViewCell>
+                        <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
+                            <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="40" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding Title}" VerticalTextAlignment="Center" FontSize="Medium" LineBreakMode="TailTruncation"/>
+                                </Grid>
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentPage>
