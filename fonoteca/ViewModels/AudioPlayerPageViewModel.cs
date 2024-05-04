@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using fonoteca.Models.Player;
+using fonoteca.Pages;
 using fonoteca.Services;
 
 namespace fonoteca.ViewModels
@@ -181,8 +182,32 @@ namespace fonoteca.ViewModels
         [RelayCommand]
         public async Task Info()
         {
-            await Task.CompletedTask;
-            // await Navigation.PushAsync(new AudioBookInformationPage(), true);
+            var daisyBook = DaisyPlayer.Instance.GetDaisyBook();
+            if (daisyBook != null)
+            {
+                await Shell.Current.Navigation.PushAsync(
+                    new AudioBookInformationPage(
+                        new AudioBookInformationPageViewModel 
+                        {
+                            Charset = daisyBook.Charset,
+                            Creator = daisyBook.Creator,
+                            Date = daisyBook.Date,
+                            Format = daisyBook.Format,
+                            Generator = daisyBook.Generator,
+                            Id = daisyBook.Id,
+                            Identifier = daisyBook.Identifier,
+                            Narrator = daisyBook.Narrator,
+                            Producer = daisyBook.Producer,
+                            Publisher = daisyBook.Publisher,
+                            Source = daisyBook.Source,
+                            Subject = daisyBook.Subject,
+                            Title = daisyBook.Title,
+                            TotalTime = daisyBook.TotalTime,
+                        }
+                    ), 
+                    true
+                );
+            }
         }
 
         [RelayCommand]

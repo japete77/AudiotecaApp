@@ -40,6 +40,8 @@ namespace fonoteca
             builder.Services.AddTransient<MyAudioBooksPageViewModel>();
             builder.Services.AddTransient<AudioPlayerPage>();
             builder.Services.AddTransient<AudioPlayerPageViewModel>();
+            builder.Services.AddTransient<AudioBookInformationPage>();
+            builder.Services.AddTransient<AudioBookInformationPageViewModel>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

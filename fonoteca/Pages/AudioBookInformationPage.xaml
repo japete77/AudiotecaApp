@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             x:DataType="viewmodel:AudioBookInformationPageViewModel"
+             x:Class="fonoteca.Pages.AudioBookInformationPage"
+             Title="AudioBookInformationPage"
+             Shell.NavBarIsVisible="False">
+    <ScrollView Padding="20, 20">
+        <StackLayout>
+            <StackLayout>
+                <Button
+                    Margin="0, 5"
+                    AutomationProperties.IsInAccessibleTree="true"
+                    SemanticProperties.HeadingLevel="Level1"
+                    SemanticProperties.Description="Volver"
+                    Text="Volver al reproductor"
+                    x:Name="Volver"
+                    FontSize="Medium"
+                    BackgroundColor="SlateGray"
+                    TextColor="White"
+                    Command="{Binding GoToBackCommand}"
+                    FontAttributes="Bold"></Button>
+            </StackLayout>
+            <StackLayout>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="35*" />
+                        <ColumnDefinition Width="65*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Título" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="0"/>
+                    <Label Text="{Binding Title}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="0" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Autor" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="1" Grid.Column="0" />
+                    <Label Text="{Binding Creator}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="1" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Tema" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="2" Grid.Column="0" />
+                    <Label Text="{Binding Subject}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="2" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Duración" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="3" Grid.Column="0" />
+                    <Label Text="{Binding TotalTime}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="3" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Fecha" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="4" Grid.Column="0" />
+                    <Label Text="{Binding Date}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="4" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Identificador" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="5" Grid.Column="0" />
+                    <Label Text="{Binding Identifier}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="5" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Publicador por" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="6" Grid.Column="0" />
+                    <Label Text="{Binding Publisher}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="6" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Generado por" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="7" Grid.Column="0" />
+                    <Label Text="{Binding Generator}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="7" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Narrado por" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="8" Grid.Column="0" />
+                    <Label Text="{Binding Narrator}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="8" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Producido por" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="9" Grid.Column="0" />
+                    <Label Text="{Binding Producer}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="9" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="ISBN" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="10" Grid.Column="0" />
+                    <Label Text="{Binding Source}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="10" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Formato texto" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="11" Grid.Column="0" />
+                    <Label Text="{Binding Charset}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="11" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                    <Label Text="Formato" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="12" Grid.Column="0" />
+                    <Label Text="{Binding Format}" FontSize="Medium" HorizontalTextAlignment="Start" Grid.Row="12" Grid.Column="1" LineBreakMode="TailTruncation"/>
+                </Grid>
+                <StackLayout Padding="0,20,0,0">
+                    <Button
+                        Text="Eliminar audio libro"
+                        FontSize="Medium"
+                        BackgroundColor="Red"
+                        TextColor="White"
+                        Command="{Binding DeleteBookCommand}"
+                        FontAttributes="Bold"></Button>
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
