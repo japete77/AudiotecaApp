@@ -1,10 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using fonoteca.Pages;
 
 namespace fonoteca.ViewModels
 {
     public partial class AudioBookInformationPageViewModel : ObservableObject
     {
+        public AudioBookInformationPage _page;
+
         [ObservableProperty]
         private string id;
 
@@ -48,42 +51,15 @@ namespace fonoteca.ViewModels
         private string totalTime;
 
         [RelayCommand]
-        void DeleteBook()
-        {
-            // TODO: Add MAUI user dialog
-
-            //UserDialogs.Instance.Confirm(
-            //    new ConfirmConfig
-            //    {
-            //        Title = "Aviso",
-            //        Message = "Esto eliminará completamente el audio libro del dispositivo y todos los marcadores asociados ¿desea continuar?",
-            //        OkText = "Si",
-            //        CancelText = "No",
-            //        OnAction = async (action) =>
-            //        {
-            //            if (action)
-            //            {
-            //                await DaisyPlayer.Instance.Stop();
-
-            //                var daisyBook = DaisyPlayer.Instance.GetDaisyBook();
-
-            //                await AudioBookStore.Instance.Delete(daisyBook.Id);
-
-            //                DaisyPlayer.Instance.CleanupPlayerInfo();
-
-            //                DaisyPlayer.Instance.CleanupDaisyBook();
-
-            //                await Navigation.PopToRootAsync(true);
-            //            }
-            //        }
-            //    }
-            //);
-        }
-
-        [RelayCommand]
         public async Task GoToBack()
         {
             await Shell.Current.Navigation.PopAsync(true);
+        }
+
+        [RelayCommand]
+        public async Task DeleteBook()
+        {
+            await _page.DeleteBook();
         }
     }
 }
