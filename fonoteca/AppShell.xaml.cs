@@ -17,6 +17,8 @@ namespace fonoteca
             Routing.RegisterRoute(nameof(AudioPlayerPage), typeof(AudioPlayerPage));
             Routing.RegisterRoute(nameof(AudioBookInformationPage), typeof(AudioBookInformationPage));
             Routing.RegisterRoute(nameof(AudioBookIndexPage), typeof(AudioBookIndexPage));
+            Routing.RegisterRoute(nameof(BookmarksPage), typeof(BookmarksPage));
+            Routing.RegisterRoute(nameof(NavigationLevelsPage), typeof(NavigationLevelsPage));
         }
     }
 }

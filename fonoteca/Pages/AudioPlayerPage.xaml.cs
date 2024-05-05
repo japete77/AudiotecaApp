@@ -1,3 +1,4 @@
+using fonoteca.Models.Player;
 using fonoteca.Services;
 using fonoteca.ViewModels;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ public partial class AudioPlayerPage : ContentPage
     {
         InitializeComponent();
         _vm = vm;
+        _vm._page = this;
         BindingContext = vm;
 
         if (DaisyPlayer._player == null)
@@ -30,7 +32,7 @@ public partial class AudioPlayerPage : ContentPage
         vm.Instance_StatusUpdate(DaisyPlayer.Instance.GetPlayerInfo());
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         _vm.Dbook = DaisyPlayer.Instance.GetDaisyBook();
 
@@ -54,29 +56,25 @@ public partial class AudioPlayerPage : ContentPage
             }
             else
             {
-                // TODO: Alert using MAUI
+                await DisplayAlert("Aviso", "Audiolibro no encontrado, por favor descárgalo de nuevo.", "Aceptar");
 
-                //UserDialogs.Instance.Alert(
-                //    new AlertConfig
-                //    {
-                //        Title = "Aviso",
-                //        Message = "Audiolibro no encontrado, por favor descárgalo de nuevo.",
-                //        OkText = "Aceptar",
-                //        OnAction = async () =>
-                //        {
-                //            await AudioBookStore.Instance.Delete(this._id);
-
-                //            DaisyPlayer.Instance.CleanupPlayerInfo();
-
-                //            DaisyPlayer.Instance.CleanupDaisyBook();
-
-                //            await Navigation.PopToRootAsync(true);
-                //        }
-                //    }
-                //);
+                AudioBookStore.Instance.Delete(_vm.Id);
+                DaisyPlayer.Instance.CleanupPlayerInfo();
+                DaisyPlayer.Instance.CleanupDaisyBook();
+                await Navigation.PopToRootAsync(true);
             }
         }
 
         _vm.Loading = false;
+    }
+
+    public async Task CreateBookmark(Bookmark bookmark)
+    {
+        string result = await DisplayPromptAsync("Crear marcador", $"Marcador en {bookmark.AbsoluteTC}", "Crear", "Cancelar", "Marcador", initialValue: bookmark.Title);
+        if (!string.IsNullOrEmpty(result))
+        {
+            bookmark.Title = result;
+            DaisyPlayer.Instance.AddBookmark(bookmark);
+        }
     }
 }

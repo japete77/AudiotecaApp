@@ -9,6 +9,8 @@ namespace fonoteca.ViewModels
 {
     public partial class AudioPlayerPageViewModel : ObservableObject
     {
+        public AudioPlayerPage _page;
+
         public string Id;
 
         public DaisyBook Dbook;
@@ -113,12 +115,11 @@ namespace fonoteca.ViewModels
         [RelayCommand]
         public async Task Levels()
         {
-            await Task.CompletedTask;
-            // await Navigation.PushAsync(new NavigationLevelsPage(), true);
+            await Shell.Current.Navigation.PushAsync(new NavigationLevelsPage(new NavigationLevelsPageViewModel()), true);
         }
 
         [RelayCommand]
-        public void CreateBookmark()
+        public async Task CreateBookmark()
         {
             var info = DaisyPlayer.Instance.GetPlayerInfo();
 
@@ -148,34 +149,13 @@ namespace fonoteca.ViewModels
                 )
             };
 
-            // TODO: Review how to create user dialog in MAUI
-
-            //UserDialogs.Instance.Prompt(
-            //    new PromptConfig
-            //    {
-            //        Title = "Crear marcador",
-            //        Message = $"Marcador en {bookmark.AbsoluteTC}",
-            //        OkText = "Crear",
-            //        CancelText = "Cancelar",
-            //        Placeholder = "Marcador",
-            //        Text = bookmark.Title,
-            //        OnAction = (action) =>
-            //        {
-            //            if (action.Ok)
-            //            {
-            //                bookmark.Title = action.Text;
-            //                DaisyPlayer.Instance.AddBookmark(bookmark);
-            //            }
-            //        }
-            //    }
-            //);
+            await _page.CreateBookmark(bookmark);
         }
 
         [RelayCommand]
         public async Task GoToBookmark()
         {
-            await Task.CompletedTask;
-            // await Navigation.PushAsync(new BookmarksPage(), true);
+            await Shell.Current.Navigation.PushAsync(new BookmarksPage(new BookmarksPageViewModel()), true);
         }
 
         [RelayCommand]
