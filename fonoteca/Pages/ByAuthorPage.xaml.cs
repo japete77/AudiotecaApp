@@ -11,6 +11,7 @@ public partial class ByAuthorPage : ContentPage
     private const int PAGE_SIZE = int.MaxValue;
     private readonly ByAuthorPageViewModel _vm;
     private AuthorsResult _authors;
+    private ILoadingService _loading;
 
     public ByAuthorPage(ByAuthorPageViewModel vm)
     {
@@ -19,29 +20,33 @@ public partial class ByAuthorPage : ContentPage
         vm.Items = new ObservableCollection<Grouping<string, AuthorModel>>();
         vm.Loading = true;
         _vm = vm;
+        _loading = Application.Current.Handler.MauiContext.Services.GetService<ILoadingService>();
     }
 
     protected override async void OnAppearing()
     {
         if (_vm.Loading)
         {
-            _authors = await AudioLibrary.Instance.GetAuthors(1, PAGE_SIZE);
-
-            if (_authors == null)
+            using (await _loading.Show("Cargando"))
             {
-                return;
+                _authors = await AudioLibrary.Instance.GetAuthors(1, PAGE_SIZE);
+
+                if (_authors == null)
+                {
+                    return;
+                }
+
+                var sorted = _authors.Authors
+                                .OrderBy(o => o.Name)
+                                .GroupBy(g => g.NameSort)
+                                .Select(s => new Grouping<string, AuthorModel>(s.Key, s));
+
+                // Clear the existing items before adding new ones
+                _vm.Items.Clear();
+                sorted.ToList().ForEach(item => _vm.Items.Add(item));
+
+                _vm.Loading = false;
             }
-
-            var sorted = _authors.Authors
-                            .OrderBy(o => o.Name)
-                            .GroupBy(g => g.NameSort)
-                            .Select(s => new Grouping<string, AuthorModel>(s.Key, s));
-
-            // Clear the existing items before adding new ones
-            _vm.Items.Clear();
-            sorted.ToList().ForEach(item => _vm.Items.Add(item));
-
-            _vm.Loading = false;
         }
     }
 

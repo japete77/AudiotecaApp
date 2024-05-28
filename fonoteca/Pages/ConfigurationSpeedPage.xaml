@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="fonoteca.Pages.NavigationLevelsPage"
-             Title="NavigationLevelsPage"
-             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
-             xmlns:player="clr-namespace:fonoteca.Models.Player"
+             x:Class="fonoteca.Pages.ConfigurationSpeedPage"
              xmlns:Helpers="clr-namespace:fonoteca.Helpers"
-             x:DataType="viewmodel:NavigationLevelsPageViewModel"
+             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             xmlns:config="clr-namespace:fonoteca.Models.Config"
+             IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}"
+             x:DataType="viewmodel:ConfigurationSpeedPageViewModel"
              Shell.NavBarIsVisible="False">
     <Grid>
         <Grid.RowDefinitions>
@@ -32,12 +32,12 @@
             Grid.Row="1"
             AutomationProperties.IsInAccessibleTree="true"
             SemanticProperties.HeadingLevel="Level1"
-            SemanticProperties.Description="Seleccione un marcador de la lista para saltar a esa posición en el audio libro"
+            SemanticProperties.Description="Seleccione la velocidad de reproducción"
             x:Name="listView"
             ItemsSource="{Binding Items}"
             ItemSelected="OnItemSelected">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="player:NavigationLevel">
+                <DataTemplate x:DataType="config:PlayerSpeed">
                     <ViewCell>
                         <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
                             <StackLayout Padding="20,5" VerticalOptions="StartAndExpand" Orientation="Vertical">

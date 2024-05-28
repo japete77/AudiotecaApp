@@ -23,6 +23,8 @@ namespace fonoteca.Services
             }
         }
 
+        public static bool HasBeenInitialized => _instance != null;
+
         public event OnTimeCodeUpdate TimeCodeUpdate;
         public delegate void OnTimeCodeUpdate(TimeSpan e);
 
@@ -472,7 +474,7 @@ namespace fonoteca.Services
 
         public void SetSpeed(float speed)
         {
-            _player.Speed = speed;
+            if (_player != null) _player.Speed = speed;
         }
     }
 }

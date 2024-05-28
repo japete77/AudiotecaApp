@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="fonoteca.Pages.ConfigurationPage"
+             xmlns:Helpers="clr-namespace:fonoteca.Helpers"
+             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             IsVisible="{Binding Loading, Converter={Helpers:InverseBoolConverter}}"
+             x:DataType="viewmodel:ConfigurationPageViewModel"
+             Shell.NavBarIsVisible="False">
+    <StackLayout Padding="20, 10">
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Volver"            
+            Text="Volver a Inicio"
+            Margin="0, 5"
+            FontSize="Medium"
+            BackgroundColor="SlateGray"
+            TextColor="White"
+            Command="{Binding GoToBackCommand}"
+            FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Selector para cambiar la velocidad de reproducción del audio"
+            Margin="0, 5"
+            Text="Velocidad de reproducción"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding SelectSpeedCommand}"
+            FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Selector para indicar la memoria de almacenamiento donde se guardarán los audio libros"
+            Margin="0, 5"
+            Text="Memoria de almacenamiento"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            IsVisible="{Binding HasExternalMemory}"
+            Command="{Binding SelectStorageCommand}"
+            FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Activa el reinicio de las credenciales para forzar a introducirlas de nuevo al acceder a la fonoteca"
+            Margin="0, 5"
+            Text="Reiniciar credenciales"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding ResetCredentialsCommand}"
+            FontAttributes="Bold"></Button>
+    </StackLayout>
+</ContentPage>

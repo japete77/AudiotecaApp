@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using fonoteca.Models.Api;
 using fonoteca.Models.Audiobook;
+using fonoteca.Pages;
 using fonoteca.Services;
 
 namespace fonoteca.ViewModels
@@ -58,7 +59,7 @@ namespace fonoteca.ViewModels
         [RelayCommand]
         public async Task Play()
         {
-            await Task.CompletedTask;
+            await Shell.Current.Navigation.PushAsync(new AudioPlayerPage(new AudioPlayerPageViewModel { Id = AudioBook.Id }), true);
         }
 
         [RelayCommand]

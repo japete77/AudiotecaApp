@@ -1,13 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using fonoteca.Models.Player;
+using fonoteca.Models.Api;
 
 namespace fonoteca.ViewModels
 {
-    public partial class NavigationLevelsPageViewModel : ObservableObject
+    public partial class NotificationsPageViewModel : ObservableObject
     {
         [ObservableProperty]
-        private List<NavigationLevel> items;
+        private List<NotificationModel> items;
+
+        [ObservableProperty]
+        private bool showMarkAllRead;
 
         [ObservableProperty]
         private bool loading;

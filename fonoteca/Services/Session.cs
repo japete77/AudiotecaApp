@@ -1,5 +1,4 @@
 ﻿using fonoteca.Exceptions;
-using fonoteca.Helpers;
 using fonoteca.Models.Api;
 using fonoteca.Models.Session;
 using Newtonsoft.Json;

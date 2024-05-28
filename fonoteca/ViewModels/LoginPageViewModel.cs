@@ -8,6 +8,12 @@ namespace fonoteca.ViewModels
     {
         private const string DefaultPassword = "1234";
 
+        readonly ILoadingService loadingPopup;
+        public LoginPageViewModel(ILoadingService loadingPopup)
+        {
+            this.loadingPopup = loadingPopup;
+        }
+
         [ObservableProperty]
         bool isVisible = false;
 
@@ -29,59 +35,52 @@ namespace fonoteca.ViewModels
         [RelayCommand]
         async Task Login()
         {
-            // UserDialogs.Instance.ShowLoading("Comprobando credenciales");
-
-            try
+            using (await loadingPopup.Show("Comprobando credenciales"))
             {
-                if (int.TryParse(Username, out int iUsername))
+                try
                 {
-                    var result = await Session.Instance.Login(iUsername, Password);
-                    if (result)
+                    if (int.TryParse(Username, out int iUsername))
                     {
-                        // Warm up audio books
-                        await AudioLibrary.Instance.WarmUp();
-
-                        if (Password == DefaultPassword)
+                        var result = await Session.Instance.Login(iUsername, Password);
+                        if (result)
                         {
-                            // Go to ChangePassword page
-                            // UserDialogs.Instance.HideLoading();
+                            // Warm up audio books
+                            await AudioLibrary.Instance.WarmUp();
 
-                            //var currentPage = Navigation.NavigationStack.Last();
-                            //await Navigation.PushAsync(new ChangePasswordPage(), true);
-                            //Navigation.RemovePage(currentPage);
+                            if (Password == DefaultPassword)
+                            {
+                                //var currentPage = Navigation.NavigationStack.Last();
+                                //await Navigation.PushAsync(new ChangePasswordPage(), true);
+                                //Navigation.RemovePage(currentPage);
+                            }
+                            else
+                            {
+                                await Shell.Current.GoToAsync(nameof(MainPage));
+
+                                //var currentPage = Navigation.NavigationStack.Last();
+                                //await Navigation.PushAsync(new MainPage(), true);
+                                //Navigation.RemovePage(currentPage);
+                            }
+
+                            //await NotificationsStore.Instance.RegisterUserNotifications();
+
+                            //await NotificationsStore.Instance.RefreshNotifications();
                         }
                         else
                         {
-                            // Go to Main page
-                            //UserDialogs.Instance.HideLoading();
-
-                            await Shell.Current.GoToAsync(nameof(MainPage));
-
-                            //var currentPage = Navigation.NavigationStack.Last();
-                            //await Navigation.PushAsync(new MainPage(), true);
-                            //Navigation.RemovePage(currentPage);
+                            ErrorMessage = "Usuario o contraseña incorrectos";
                         }
-
-                        //await NotificationsStore.Instance.RegisterUserNotifications();
-
-                        //await NotificationsStore.Instance.RefreshNotifications();
                     }
                     else
                     {
                         ErrorMessage = "Usuario o contraseña incorrectos";
                     }
                 }
-                else
+                catch
                 {
-                    ErrorMessage = "Usuario o contraseña incorrectos";
+                    ErrorMessage = "Fonoteca no disponible";
                 }
             }
-            catch
-            {
-                ErrorMessage = "Fonoteca no disponible";
-            }
-
-            // UserDialogs.Instance.HideLoading();
         }
     }
 }

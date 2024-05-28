@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="fonoteca.Pages.NavigationLevelsPage"
+             x:Class="fonoteca.Pages.NotificationsPage"
              Title="NavigationLevelsPage"
              xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
-             xmlns:player="clr-namespace:fonoteca.Models.Player"
+             xmlns:api="clr-namespace:fonoteca.Models.Api"
              xmlns:Helpers="clr-namespace:fonoteca.Helpers"
-             x:DataType="viewmodel:NavigationLevelsPageViewModel"
+             x:DataType="viewmodel:NotificationsPageViewModel"
              Shell.NavBarIsVisible="False">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -28,25 +29,45 @@
             Command="{Binding GoToBackCommand}"
             FontAttributes="Bold"></Button>
 
-        <ListView
+        <Button
             Grid.Row="1"
+            Margin="20, 10, 20, 0"
             AutomationProperties.IsInAccessibleTree="true"
             SemanticProperties.HeadingLevel="Level1"
-            SemanticProperties.Description="Seleccione un marcador de la lista para saltar a esa posición en el audio libro"
+            SemanticProperties.Description=""
+            Text="Marcar todo como leído"
+            x:Name="MarkAllRead"
+            FontSize="Medium"
+            BackgroundColor="SlateGray"
+            TextColor="White"
+            Command="{Binding GoToBackCommand}"
+            IsVisible="{Binding ShowMarkAllRead}"
+            FontAttributes="Bold"></Button>
+
+        <ListView
+            Grid.Row="2"
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Seleccione un elemento de la lista para leer la notificación"
             x:Name="listView"
             ItemsSource="{Binding Items}"
             ItemSelected="OnItemSelected">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="player:NavigationLevel">
+                <DataTemplate x:DataType="api:NotificationModel">
                     <ViewCell>
                         <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
                             <StackLayout Padding="20,5" VerticalOptions="StartAndExpand" Orientation="Vertical">
                                 <Grid ColumnDefinitions="100,150,100" RowDefinitions="40">
                                     <Label 
-                                        Text="{Binding Label}" 
+                                        Text="{Binding Title}" 
                                         Margin="0,0,5,0" 
                                         HorizontalOptions="Start" 
                                         FontSize="Medium" 
+                                        FontAttributes="{Binding TextStyle}" 
+                                        AutomationProperties.IsInAccessibleTree="true"
+                                        SemanticProperties.HeadingLevel="Level1"
+                                        SemanticProperties.Description="{Binding Header}"
+                                        LineBreakMode="TailTruncation"
                                         VerticalTextAlignment="Center" 
                                         HorizontalTextAlignment="Start" 
                                         Grid.Row="0" Grid.Column="0" />

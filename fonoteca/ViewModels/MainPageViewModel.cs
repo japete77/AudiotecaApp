@@ -37,8 +37,7 @@ namespace fonoteca.ViewModels
         [RelayCommand]
         async Task GoToConfiguration()
         {
-            // await Shell.Current.GoToAsync(nameof());
-            await Task.CompletedTask;
+            await Shell.Current.GoToAsync(nameof(ConfigurationPage));
         }
     }
 }

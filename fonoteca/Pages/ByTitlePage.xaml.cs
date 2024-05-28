@@ -11,6 +11,7 @@ public partial class ByTitlePage : ContentPage
     private const int PAGE_SIZE = int.MaxValue;
     private readonly ByTitlePageViewModel _vm;
     private TitleResult _titles;
+    private ILoadingService _loading;
 
     public ByTitlePage(ByTitlePageViewModel vm)
 	{
@@ -18,30 +19,34 @@ public partial class ByTitlePage : ContentPage
         BindingContext = vm;
         vm.Items = new ObservableCollection<Grouping<string, TitleModel>>();
         vm.Loading = true;
-        _vm = vm;
+        _vm = vm;        
+        _loading = Application.Current.Handler.MauiContext.Services.GetService<ILoadingService>();
     }
 
     protected override async void OnAppearing()
     {
         if (_vm.Loading)
         {
-            _titles = await AudioLibrary.Instance.GetBooksByTitle(1, PAGE_SIZE);
-
-            if (_titles == null)
+            using (await _loading.Show("Cargando"))
             {
-                return;
+                _titles = await AudioLibrary.Instance.GetBooksByTitle(1, PAGE_SIZE);
+
+                if (_titles == null)
+                {
+                    return;
+                }
+
+                var sorted = _titles.Titles
+                                .OrderBy(o => o.Title)
+                                .GroupBy(g => g.TitleSort)
+                                .Select(s => new Grouping<string, TitleModel>(s.Key, s));
+
+                // Clear the existing items before adding new ones
+                _vm.Items.Clear();
+                sorted.ToList().ForEach(item => _vm.Items.Add(item));
+
+                _vm.Loading = false;
             }
-
-            var sorted = _titles.Titles
-                            .OrderBy(o => o.Title)
-                            .GroupBy(g => g.TitleSort)
-                            .Select(s => new Grouping<string, TitleModel>(s.Key, s));
-
-            // Clear the existing items before adding new ones
-            _vm.Items.Clear();
-            sorted.ToList().ForEach(item => _vm.Items.Add(item));
-
-            _vm.Loading = false;
         }
     }
 

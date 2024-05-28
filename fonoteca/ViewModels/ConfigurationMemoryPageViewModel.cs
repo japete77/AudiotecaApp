@@ -1,16 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using fonoteca.Models.Player;
+using fonoteca.Helpers;
 
 namespace fonoteca.ViewModels
 {
-    public partial class NavigationLevelsPageViewModel : ObservableObject
+    public partial class ConfigurationMemoryPageViewModel : ObservableObject
     {
         [ObservableProperty]
-        private List<NavigationLevel> items;
+        bool loading;
 
         [ObservableProperty]
-        private bool loading;
+        List<StorageDir> items;
 
         [RelayCommand]
         public async Task GoToBack()
