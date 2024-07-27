@@ -29,7 +29,7 @@
             </StackLayout>
             <StackLayout Margin="20, 10">
                 <Button
-                    Text="Ver publicación 2"
+                    Text="Ver publicación"
                     FontSize="Medium"
                     BackgroundColor="DodgerBlue"
                     TextColor="White"

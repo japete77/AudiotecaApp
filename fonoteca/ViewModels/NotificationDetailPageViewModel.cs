@@ -47,6 +47,12 @@ namespace fonoteca.ViewModels
                             new SubscriptionTitleDetailsPageViewModel
                             {
                                 BookId = $"{Notification.Code}{Notification.ContentId}",
+                                Title = subscription,
+                                AudioBook = new AudioBookDetailResult
+                                {
+                                    Id = $"{Notification.Code}{Notification.ContentId}",
+                                    Title = subscription.Title,
+                                }
                             }
                         ),
                         true

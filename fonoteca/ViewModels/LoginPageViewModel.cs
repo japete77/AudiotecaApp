@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using fonoteca.Pages;
 using fonoteca.Services;
 
 namespace fonoteca.ViewModels
@@ -49,17 +50,11 @@ namespace fonoteca.ViewModels
 
                             if (Password == DefaultPassword)
                             {
-                                //var currentPage = Navigation.NavigationStack.Last();
-                                //await Navigation.PushAsync(new ChangePasswordPage(), true);
-                                //Navigation.RemovePage(currentPage);
+                                await Shell.Current.GoToAsync(nameof(ChangePasswordPage));
                             }
                             else
                             {
                                 await Shell.Current.GoToAsync(nameof(MainPage));
-
-                                //var currentPage = Navigation.NavigationStack.Last();
-                                //await Navigation.PushAsync(new MainPage(), true);
-                                //Navigation.RemovePage(currentPage);
                             }
 
                             //await NotificationsStore.Instance.RegisterUserNotifications();

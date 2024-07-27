@@ -6,14 +6,15 @@
              x:DataType="viewmodel:LoginPageViewModel"
              Title="Acceso a la Fonoteca"
              Shell.NavBarIsVisible="False">
-    <ScrollView Padding="0, 20, 0, 0" IsVisible="{Binding IsVisible}">
+    <ScrollView Margin="20" IsVisible="{Binding IsVisible}">
         <StackLayout>
-            <Label Text="Introduzca sus credenciales de acceso" FontSize="Medium" HorizontalTextAlignment="Center"></Label>
+            <Label Margin="0,0,0,20" Text="Introduzca sus credenciales de acceso" FontSize="Medium" HorizontalTextAlignment="Center"></Label>
             <Entry Placeholder="Usuario" FontSize="Medium" Text="{Binding Username}"/>
             <Entry Placeholder="Contraseña" FontSize="Medium" IsPassword="True" Text="{Binding Password}"/>
             <Button
                 Text="Acceder"
                 FontSize="Medium"
+                Margin="0,20,0,0"
                 BackgroundColor="DodgerBlue"
                 TextColor="White"
                 Command="{Binding LoginCommand}"
