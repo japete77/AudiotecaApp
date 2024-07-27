@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="fonoteca.Pages.NotificationDetailPage"
-             Title="NotificationDetailPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:Class="fonoteca.Pages.NotificationDetailPage"             
+             xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             xmlns:Helpers="clr-namespace:fonoteca.Helpers"
+             x:DataType="viewmodel:NotificationDetailPageViewModel"
+             Title="Detalle notificacion"
+             Shell.NavBarIsVisible="False">
+    <ScrollView>
+        <StackLayout>
+            <StackLayout Margin="20, 10">
+                <Button
+                    SemanticProperties.Description=""
+                    Text="Volver atrás"
+                    x:Name="Volver"
+                    FontSize="Medium"
+                    BackgroundColor="SlateGray"
+                    TextColor="White"
+                    Command="{Binding GoToBackCommand}"
+                    FontAttributes="Bold"></Button>
+            </StackLayout>
+            <StackLayout Margin="20, 10">
+                <Label Text="{Binding Notification.Title}" FontSize="Large" FontAttributes="Bold"></Label>
+                <Label Text="{Binding Notification.Date}" FontSize="Medium"></Label>
+            </StackLayout>
+            <StackLayout Margin="20, 10">
+                <Label Text="{Binding Notification.Body}" FontSize="Medium"></Label>
+            </StackLayout>
+            <StackLayout Margin="20, 10">
+                <Button
+                    Text="Ver publicación 2"
+                    FontSize="Medium"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    Command="{Binding GoToPublishingCommand}"
+                    FontAttributes="Bold"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

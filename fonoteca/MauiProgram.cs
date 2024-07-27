@@ -54,6 +54,12 @@ namespace fonoteca
             builder.Services.AddTransient<NotificationsPageViewModel>();
             builder.Services.AddTransient<NotificationDetailPage>();
             builder.Services.AddTransient<NotificationDetailPageViewModel>();
+            builder.Services.AddTransient<SubscriptionsPage>();
+            builder.Services.AddTransient<SubscriptionsPageViewModel>();
+            builder.Services.AddTransient<SubscriptionTitlesPage>();
+            builder.Services.AddTransient<SubscriptionTitlesPageViewModel>();
+            builder.Services.AddTransient<SubscriptionTitleDetailsPage>();
+            builder.Services.AddTransient<SubscriptionTitleDetailsPageViewModel>();
             builder.Services.AddTransient<ChangePasswordPage>();
             builder.Services.AddTransient<ChangePasswordPageViewModel>();
             builder.Services.AddTransient<ConfigurationMemoryPage>();

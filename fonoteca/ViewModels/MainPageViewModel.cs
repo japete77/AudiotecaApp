@@ -23,15 +23,13 @@ namespace fonoteca.ViewModels
         [RelayCommand]
         async Task GoToSubscriptions()
         {
-            // await Shell.Current.GoToAsync(nameof());
-            await Task.CompletedTask;
+            await Shell.Current.GoToAsync(nameof(SubscriptionsPage));
         }
 
         [RelayCommand]
         async Task GoToNotifications()
         {
-            // await Shell.Current.GoToAsync(nameof());
-            await Task.CompletedTask;
+            await Shell.Current.GoToAsync(nameof(NotificationsPage));
         }
 
         [RelayCommand]

@@ -1,7 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
-using fonoteca.Services;
-
-namespace fonoteca
+﻿namespace fonoteca
 {
     public partial class App : Application
     {

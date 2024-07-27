@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="fonoteca.Pages.NotificationsPage"
-             Title="NavigationLevelsPage"
+             x:Class="fonoteca.Pages.SubscriptionTitlesPage"
+             Title="SubscriptionsLevelsPage"
              xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
              xmlns:api="clr-namespace:fonoteca.Models.Api"
              xmlns:Helpers="clr-namespace:fonoteca.Helpers"
-             x:DataType="viewmodel:NotificationsPageViewModel"
+             x:DataType="viewmodel:SubscriptionTitlesPageViewModel"
              Shell.NavBarIsVisible="False">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -29,32 +28,17 @@
             Command="{Binding GoToBackCommand}"
             FontAttributes="Bold"></Button>
 
-        <Button
-            Grid.Row="1"
-            Margin="20, 10, 20, 0"
-            AutomationProperties.IsInAccessibleTree="true"
-            SemanticProperties.HeadingLevel="Level1"
-            SemanticProperties.Description=""
-            Text="Marcar todo como leído"
-            x:Name="MarkAllRead"
-            FontSize="Medium"
-            BackgroundColor="SlateGray"
-            TextColor="White"
-            Command="{Binding MarkAllReadCommand}"
-            IsVisible="{Binding ShowMarkAllRead}"
-            FontAttributes="Bold"></Button>
-
         <ListView
             Margin="0, 00, 20, 0"
             Grid.Row="2"
             AutomationProperties.IsInAccessibleTree="true"
             SemanticProperties.HeadingLevel="Level1"
-            SemanticProperties.Description="Seleccione un elemento de la lista para leer la notificación"
-            x:Name="NotificationsView"
+            SemanticProperties.Description="Seleccione un elemento de la lista para ver los mensajes de la subscripción"
+            x:Name="SubscriptionTitlesView"
             ItemsSource="{Binding Items}"
             ItemSelected="OnItemSelected">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="api:NotificationModel">
+                <DataTemplate x:DataType="api:SubscriptionTitle">
                     <ViewCell>
                         <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
                             <StackLayout Padding="20,5" VerticalOptions="StartAndExpand" Orientation="Vertical">
@@ -64,10 +48,9 @@
                                         Margin="0,0,5,0" 
                                         HorizontalOptions="Start" 
                                         FontSize="Medium" 
-                                        FontAttributes="{Binding TextStyle}" 
                                         AutomationProperties.IsInAccessibleTree="true"
                                         SemanticProperties.HeadingLevel="Level1"
-                                        SemanticProperties.Description="{Binding Header}"
+                                        SemanticProperties.Description="{Binding Title}"
                                         LineBreakMode="TailTruncation"
                                         VerticalTextAlignment="Center" 
                                         HorizontalTextAlignment="Start" 

@@ -5,16 +5,16 @@ using System.Collections.ObjectModel;
 
 namespace fonoteca.Pages;
 
-public partial class NotificationsPage : ContentPage
+public partial class SubscriptionsPage : ContentPage
 {
-    private readonly NotificationsPageViewModel _vm;
+    private readonly SubscriptionsPageViewModel _vm;
     private ILoadingService _loading;
 
-    public NotificationsPage(NotificationsPageViewModel vm)
+    public SubscriptionsPage(SubscriptionsPageViewModel vm)
     {
         InitializeComponent();
         BindingContext = vm;
-        vm.Items = new ObservableCollection<NotificationModel>();
+        vm.Items = new ObservableCollection<Subscription>();
         vm.Loading = true;
         _vm = vm;
         _loading = Application.Current.Handler.MauiContext.Services.GetService<ILoadingService>();
@@ -26,18 +26,19 @@ public partial class NotificationsPage : ContentPage
         {
             using (await _loading.Show("Cargando"))
             {
-                var notifications = await NotificationsStore.Instance.GetNotifications();
+                var subscriptions = await AudioLibrary.Instance.GetUserSubscriptions(true);
 
-                if (notifications == null)
+                if (subscriptions == null)
                 {
                     return;
                 }
 
                 // Clear the existing items before adding new ones
                 _vm.Items.Clear();
-                notifications.ForEach(item => _vm.Items.Add(item));
-
-                _vm.ShowMarkAllRead = notifications.Where(w => w.TextStyle == FontAttributes.Bold).Any();
+                subscriptions.Subscriptions
+                    .OrderBy(o => o.Description)
+                    .ToList()
+                    .ForEach(item => _vm.Items.Add(item));
 
                 _vm.Loading = false;
             }
@@ -47,7 +48,6 @@ public partial class NotificationsPage : ContentPage
             var tmp = _vm.Items.ToList();
             _vm.Items.Clear();
             tmp.ForEach(item => _vm.Items.Add(item));
-            _vm.ShowMarkAllRead = tmp.Where(w => w.TextStyle == FontAttributes.Bold).Any();
         }
     }
 
@@ -56,7 +56,7 @@ public partial class NotificationsPage : ContentPage
         base.OnDisappearing();
 
         // Reset selected items of the notifications view
-        NotificationsView.SelectedItem = null;
+        SubscriptionsView.SelectedItem = null;        
     }
 
     public async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -67,15 +67,10 @@ public partial class NotificationsPage : ContentPage
         // de-select the row
         ((ListView)sender).SelectedItem = null;
 
-        var selected = e.SelectedItem as NotificationModel;
+        var selected = e.SelectedItem as Subscription;
 
         await Shell.Current.Navigation.PushAsync(
-            new NotificationDetailPage(
-                new NotificationDetailPageViewModel 
-                { 
-                    Notification = selected 
-                }
-            ), 
+            new SubscriptionTitlesPage(new SubscriptionTitlesPageViewModel { Code = selected.Code }),
             true
         );
     }
