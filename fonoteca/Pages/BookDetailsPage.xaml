@@ -23,6 +23,7 @@
             <StackLayout Margin="20, 10">
                 <Label Text="{Binding AudioBook.Title}" FontSize="Large" FontAttributes="Bold"></Label>
                 <Label Text="{Binding AudioBook.Author.Name}" FontSize="Medium"></Label>
+                <Label Text="{Binding AudioBook.Date}" FontSize="Medium"></Label>
                 <Label Text="{Binding AudioBook, Converter={Helpers:GetDuration}}" FontSize="Medium"></Label>
             </StackLayout>
             <StackLayout Margin="20, 10">

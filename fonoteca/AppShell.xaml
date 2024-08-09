@@ -9,7 +9,6 @@
     Title="fonoteca">
 
     <ShellContent
-                Title="Login"
-                ContentTemplate="{DataTemplate pages:LoginPage}"
-                Route="login" />
+        Title="Inicio"
+        ContentTemplate="{DataTemplate pages:LoginPage}" />
 </Shell>

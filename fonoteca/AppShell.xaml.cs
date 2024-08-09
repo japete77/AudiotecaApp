@@ -29,6 +29,7 @@ namespace fonoteca
             Routing.RegisterRoute(nameof(SubscriptionsPage), typeof(SubscriptionsPage));
             Routing.RegisterRoute(nameof(SubscriptionTitlesPage), typeof(SubscriptionTitlesPage));
             Routing.RegisterRoute(nameof(SubscriptionTitleDetailsPage), typeof(SubscriptionTitleDetailsPage));
+            Routing.RegisterRoute(nameof(ForgotPasswordPage), typeof(ForgotPasswordPage));
         }
     }
 }

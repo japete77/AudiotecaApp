@@ -43,12 +43,12 @@ namespace fonoteca.ViewModels
                     if (int.TryParse(Username, out int iUsername))
                     {
                         var result = await Session.Instance.Login(iUsername, Password);
-                        if (result)
+                        if (result.Success)
                         {
                             // Warm up audio books
                             await AudioLibrary.Instance.WarmUp();
 
-                            if (Password == DefaultPassword)
+                            if (result.MustBeChanged)
                             {
                                 await Shell.Current.GoToAsync(nameof(ChangePasswordPage));
                             }
@@ -76,6 +76,12 @@ namespace fonoteca.ViewModels
                     ErrorMessage = "Fonoteca no disponible";
                 }
             }
+        }
+
+        [RelayCommand]
+        async Task RecoverPassword()
+        {
+            await Shell.Current.GoToAsync(nameof(ForgotPasswordPage));
         }
     }
 }

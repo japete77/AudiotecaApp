@@ -138,7 +138,7 @@ namespace fonoteca.Services
                 }
 
                 // download file
-                var zipFile = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}.zip";
+                var zipFile = $"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_currentAudioBook.Book.Id}.zip";
 
                 if (File.Exists(zipFile)) File.Delete(zipFile);
 
@@ -217,7 +217,7 @@ namespace fonoteca.Services
                             double totalBytes = archive.Entries.Sum(e => e.Length);
                             long currentBytes = 0;
 
-                            var targetPath = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}";
+                            var targetPath = $"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_currentAudioBook.Book.Id}";
 
                             // clean up if exists
                             if (Directory.Exists(targetPath)) Directory.Delete(targetPath, true);
@@ -262,7 +262,7 @@ namespace fonoteca.Services
 
 
                     // Read daisy format and generate a ncc.json file with all the book content prepared for the audio player
-                    var nccIndex = $"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}/ncc.html";
+                    var nccIndex = $"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_currentAudioBook.Book.Id}{Path.DirectorySeparatorChar}ncc.html";
                     if (!File.Exists(nccIndex))
                     {
                         _isProcessingDownload = false;
@@ -277,16 +277,27 @@ namespace fonoteca.Services
                     dbook.Load(nccIndex);
                     dbook.Id = _currentAudioBook.Book.Id;
                     string dbookStr = JsonConvert.SerializeObject(dbook);
-                    File.WriteAllText($"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}/ncc.json", dbookStr);
+                    File.WriteAllText($"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_currentAudioBook.Book.Id}{Path.DirectorySeparatorChar}ncc.json", dbookStr);
 
                     // clean up .zip file
-                    File.Delete($"{Session.Instance.GetDataDir()}/{_currentAudioBook.Book.Id}.zip");
+                    File.Delete($"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_currentAudioBook.Book.Id}.zip");
 
                     _currentAudioBook.StatusKey = STATUS_COMPLETED;
                     _currentAudioBook.StatusDescription = "Completado";
-                    OnProgress?.Invoke(_currentAudioBook);
+                    OnProgress?.Invoke(_currentAudioBook);                    
 
                     SaveBooks();
+
+                    // call to increase download counter
+                    try
+                    {
+                        AsyncHelper.RunSync(() => AudioLibrary.Instance.IncreaseTitleDownloadCounter(_currentAudioBook.Book.Id));
+                    }
+                    catch (Exception ex)
+                    {
+                        var a = ex.Message;
+                    }
+                    
                 }
 
                 _isProcessingDownload = false;
@@ -372,7 +383,7 @@ namespace fonoteca.Services
 
             SaveBooks();
 
-            var tmp = $"{Session.Instance.GetDataDir()}/{id}";
+            var tmp = $"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{id}";
             if (Directory.Exists(tmp))
             {
                 Directory.Delete(tmp, true);
@@ -394,13 +405,13 @@ namespace fonoteca.Services
             {
                 if (!string.IsNullOrEmpty(item.Path))
                 {
-                    var tmp = $"{Session.Instance.GetDataDir()}/{item.Filename}";
+                    var tmp = $"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{item.Filename}";
                     if (File.Exists(tmp))
                     {
                         File.Delete(tmp);
                     }
 
-                    tmp = $"{Session.Instance.GetDataDir()}/{item.Book.Id}";
+                    tmp = $"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{item.Book.Id}";
                     if (Directory.Exists(tmp))
                     {
                         Directory.Delete(tmp, true);
@@ -409,7 +420,7 @@ namespace fonoteca.Services
 
                 if (!string.IsNullOrEmpty(item.TmpFolder))
                 {
-                    var tmp = $"{Session.Instance.GetDataDir()}/{item.TmpFolder}";
+                    var tmp = $"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{item.TmpFolder}";
                     if (Directory.Exists(tmp))
                     {
                         Directory.Delete(tmp, true);

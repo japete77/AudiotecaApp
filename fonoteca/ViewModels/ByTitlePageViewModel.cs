@@ -14,6 +14,9 @@ namespace fonoteca.ViewModels
         [ObservableProperty]
         bool loading;
 
+        [ObservableProperty]
+        bool sortByRecent = false;
+
         [RelayCommand]
         public async Task GoToBack()
         {

@@ -28,12 +28,6 @@ namespace fonoteca.Helpers
             }
         }
 
-        public string AwsKey;
-        public string AwsSecret;
-        public string AwsPlatformApplicationArnAndroid;
-        public string AwsPlatformApplicationArnIOS;
-        public string AwsTopicArn;
-        public string AwsTopicName;
         public string FonotecaApiUrl;
         public string VersionInfo;
     }

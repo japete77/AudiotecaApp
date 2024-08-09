@@ -19,6 +19,12 @@ namespace fonoteca.ViewModels
         }
 
         [RelayCommand]
+        public async Task GoToByTitleRecent()
+        {
+            await Shell.Current.Navigation.PushAsync(new ByTitlePage(new ByTitlePageViewModel { SortByRecent = true }), true);
+        }
+
+        [RelayCommand]
         public async Task GoToByAuthor()
         {
             await Shell.Current.GoToAsync(nameof(ByAuthorPage));

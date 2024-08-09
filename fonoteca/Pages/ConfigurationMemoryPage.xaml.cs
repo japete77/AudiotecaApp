@@ -78,7 +78,7 @@ public partial class ConfigurationMemoryPage : ContentPage
 
         for (int i = 0; i < audioBookDirs.Length; i++)
         {
-            var tmp = $"{target.AbsolutePath}/{Path.GetFileName(audioBookDirs[i])}/";
+            var tmp = $"{target.AbsolutePath}{Path.DirectorySeparatorChar}{Path.GetFileName(audioBookDirs[i])}{Path.DirectorySeparatorChar}";
 
             if (!Directory.Exists(tmp)) Directory.CreateDirectory(tmp);
 
@@ -87,7 +87,7 @@ public partial class ConfigurationMemoryPage : ContentPage
             {
                 //progress.Title = $"Moviendo audio libros {(int)(i * 100 / audioBookDirs.Length) + (int)(j * 100 / (abookFiles.Length * audioBookDirs.Length))}%";
 
-                File.Copy(abookFiles[j], $"{tmp}/{Path.GetFileName(abookFiles[j])}", true);
+                File.Copy(abookFiles[j], $"{tmp}{Path.DirectorySeparatorChar}{Path.GetFileName(abookFiles[j])}", true);
             }
 
             Directory.Delete(audioBookDirs[i], true);

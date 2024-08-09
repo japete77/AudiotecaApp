@@ -120,7 +120,7 @@ namespace fonoteca.Services
 
                 this._body.Add(tmpSmil);
 
-                string smilPath = $"{Path.GetDirectoryName(filename)}/{tmpSmil.Filename}";
+                string smilPath = $"{Path.GetDirectoryName(filename)}{Path.DirectorySeparatorChar}{tmpSmil.Filename}";
                 ParseSmils(smilPath, tmpSmil.Id, tmpSmil.Title, tmpSmil.Level);
             }
         }

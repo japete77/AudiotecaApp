@@ -38,10 +38,10 @@ public partial class AudioPlayerPage : ContentPage
 
         if (_vm.Dbook == null || _vm.Dbook.Id != _vm.Id)
         {
-            if (Directory.Exists($"{Session.Instance.GetDataDir()}/{_vm.Id}") &&
-                File.Exists($"{Session.Instance.GetDataDir()}/{_vm.Id}/ncc.json"))
+            if (Directory.Exists($"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_vm.Id}") &&
+                File.Exists($"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_vm.Id}{Path.DirectorySeparatorChar}ncc.json"))
             {
-                var abookJson = File.ReadAllText($"{Session.Instance.GetDataDir()}/{_vm.Id}/ncc.json");
+                var abookJson = File.ReadAllText($"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_vm.Id}{Path.DirectorySeparatorChar}ncc.json");
 
                 _vm.Dbook = JsonConvert.DeserializeObject<DaisyBook>(abookJson);
 

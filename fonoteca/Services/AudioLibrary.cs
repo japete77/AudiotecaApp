@@ -1,6 +1,7 @@
 ﻿using fonoteca.Models.Api;
 using fonoteca.Pages;
 using RestSharp;
+using System.Runtime.CompilerServices;
 
 namespace fonoteca.Services
 {
@@ -22,6 +23,9 @@ namespace fonoteca.Services
 
         TitleResult _titles;
         DateTime _expireTitles;
+
+        TitleResult _titlesLatest;
+        DateTime _expireTitlesLatest;
 
         AuthorsResult _authors;
         DateTime _expireAuthors;
@@ -45,15 +49,26 @@ namespace fonoteca.Services
             _expireTitles = DateTime.Now.AddSeconds(ExpirySecs);
         }
 
-        public async Task<TitleResult> GetBooksByTitle(int index, int count)
+        public async Task<TitleResult> GetBooksByTitle(int index, int count, bool orderByLatest = false)
         {
-            if (_titles == null || _expireTitles < DateTime.Now)
+            if (orderByLatest)
             {
-                _titles = await Get<TitleResult>("titles", null, index, count, null);
-                _expireTitles = DateTime.Now.AddSeconds(ExpirySecs);
+                if (_titlesLatest == null || _expireTitlesLatest < DateTime.Now)
+                {
+                    _titlesLatest = await Get<TitleResult>("titles/latest", null, index, count, null);
+                    _expireTitlesLatest = DateTime.Now.AddSeconds(ExpirySecs);
+                }
+                return _titlesLatest;
             }
-
-            return _titles;
+            else
+            {
+                if (_titles == null || _expireTitles < DateTime.Now)
+                {
+                    _titles = await Get<TitleResult>("titles", null, index, count, null);
+                    _expireTitles = DateTime.Now.AddSeconds(ExpirySecs);
+                }
+                return _titles;
+            }            
         }
 
         public async Task<TitleResult> GetBooksByAuthor(string author, int index, int count)
@@ -79,6 +94,29 @@ namespace fonoteca.Services
 
             return _authors;
         }
+
+        public async Task IncreaseTitleDownloadCounter(string id)
+        {
+            if (int.TryParse(id, out int res))
+            {
+                var request = new RestRequest($"title/{id}/link/count?session={Session.Instance.GetSession()}")
+                {
+                    Method = Method.Post
+                };
+
+                await CallPost(request);
+            }
+            else
+            {
+                var request = new RestRequest($"subscription/title/{id}/link/count?session={Session.Instance.GetSession()}")
+                {
+                    Method = Method.Post,                    
+                };
+
+                await CallPost(request);                
+            }
+        }
+
 
         public async Task<string> GetAudioBookLink(string id)
         {
@@ -219,31 +257,44 @@ namespace fonoteca.Services
                     if (!await Session.Instance.IsAuthenticated())
                     {
                         await Shell.Current.GoToAsync(nameof(LoginPage));
-                        //Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(async () =>
-                        //{
-                        //    await Application.Current.MainPage.Navigation.PushAsync(new LoginPage());
-                        //});
                     }
                     else
                     {
                         await Shell.Current.GoToAsync(nameof(MainPage));
                     }
-
-                    //Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(async () =>
-                    //{
-                    //    await Application.Current.MainPage.Navigation.PushAsync(new AudioLibraryPage());
-                    //});
                 }
                 else
                 {
                     await Shell.Current.GoToAsync(nameof(LoginPage));
-                    //Xamarin.Essentials.MainThread.BeginInvokeOnMainThread(async () =>
-                    //{
-                    //    await Application.Current.MainPage.Navigation.PopToRootAsync();
-                    //});
                 }
 
                 return default;
+            });
+        }
+
+        private async Task CallPost(RestRequest request)
+        {
+            await Task.Run(async () =>
+            {
+                var result = ApiClient.Instance.Client.ExecutePost(request);
+                if (result.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Session.Instance.SetSession(null);
+                    Session.Instance.SaveSession();
+
+                    if (!await Session.Instance.IsAuthenticated())
+                    {
+                        await Shell.Current.GoToAsync(nameof(LoginPage));
+                    }
+                    else
+                    {
+                        await Shell.Current.GoToAsync(nameof(MainPage));
+                    }
+                }
+                else
+                {
+                    await Shell.Current.GoToAsync(nameof(LoginPage));
+                }
             });
         }
     }

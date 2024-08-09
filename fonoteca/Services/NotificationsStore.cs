@@ -3,7 +3,9 @@ using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using fonoteca.Helpers;
 using fonoteca.Models.Api;
+using fonoteca.Models.Notifications;
 using Newtonsoft.Json;
+using RestSharp;
 
 namespace fonoteca.Services
 {
@@ -16,7 +18,7 @@ namespace fonoteca.Services
         private const string NOTIFICATIONS_READ_KEY = "NotificationsRead";
         private List<int> _readNotifications = new List<int>();
 
-        private List<Topic> _topics;
+        // private List<Topic> _topics;
 
         private System.Timers.Timer _subscriptionsTimer;
         private System.Timers.Timer _timerUnreadNotifications;
@@ -97,7 +99,7 @@ namespace fonoteca.Services
                     $"Tienes {unreadNotificationsCount} notificaciones sin leer" :
                     $"Tienes {unreadNotificationsCount} notificación sin leer";
 
-                ShowAlert("Aviso", msg);
+                // ShowAlert("Aviso", msg);
             }
         }
 
@@ -177,163 +179,37 @@ namespace fonoteca.Services
             Preferences.Set(NOTIFICATIONS_SUBSCRIPTIONS_KEY, JsonConvert.SerializeObject(subscriptions));            
         }
 
-        public async Task<bool> TopicExists(string topic, AmazonSimpleNotificationServiceClient client)
-        {
-            string nextToken = null;
-            if (_topics == null)
-            {
-                _topics = new List<Topic>();
-                do
-                {
-                    var topicsResponse = await client.ListTopicsAsync(nextToken);
-                    _topics.AddRange(topicsResponse.Topics);
-                    nextToken = topicsResponse.NextToken;
-                } while (nextToken != null);
-            }
-
-            return _topics.Any(a => a.TopicArn == topic);
-        }
-
         public async Task RegisterUserNotifications()
         {
             string deviceToken = GetDeviceToken();
 
             var notificationsSubscriptions = GetNotificationsSubscriptions();
 
-            if (string.IsNullOrEmpty(deviceToken)) return;
-
-            var credentials = new BasicAWSCredentials(
-                AppSettings.Instance.AwsKey,
-                AppSettings.Instance.AwsSecret
-            );
-
-            var client = new AmazonSimpleNotificationServiceClient(
-                credentials,
-                Amazon.RegionEndpoint.EUWest1
-            );
-
-            if (string.IsNullOrEmpty(notificationsSubscriptions.ApplicationEndPoint) ||
-                notificationsSubscriptions.DeviceToken != deviceToken)
+            var request = new RestRequest("notifications/synch")
             {
+                RequestFormat = DataFormat.Json,
+                Method = Method.Put
+            };
 
-                // **********************************************
-                // de-register old endpoint and all subscriptions
-                if (!string.IsNullOrEmpty(notificationsSubscriptions.ApplicationEndPoint))
-                {
-                    try
-                    {
-                        var response = await client.DeleteEndpointAsync(new DeleteEndpointRequest { EndpointArn = notificationsSubscriptions.ApplicationEndPoint });
-
-                        if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                        {
-                            ShowAlert("Debug", $"Error eliminando endpoint: {response.HttpStatusCode}");
-                        }
-                    }
-                    catch { /*Silent error in case endpoint doesn´t exist */ }
-
-                    notificationsSubscriptions.ApplicationEndPoint = null;
-
-                    foreach (var sub in notificationsSubscriptions.Subscriptions)
-                    {
-                        try
-                        {
-                            await client.UnsubscribeAsync(sub.Value);
-                        }
-                        catch { /*Silent error in case endpoint doesn´t exist */ }
-                    }
-
-                    notificationsSubscriptions.Subscriptions.Clear();
-                }
-
-                // register with SNS to create a new endpoint
-                var endPointResponse = await client.CreatePlatformEndpointAsync(
-                    new CreatePlatformEndpointRequest
-                    {
-                        Token = deviceToken,
-                        PlatformApplicationArn = DeviceInfo.Platform == DevicePlatform.iOS ?
-                            AppSettings.Instance.AwsPlatformApplicationArnIOS :
-                            AppSettings.Instance.AwsPlatformApplicationArnAndroid
-                    }
-                );
-
-                if (endPointResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    ShowAlert("Debug", $"Error registrando endpoint: {endPointResponse.HttpStatusCode}, {endPointResponse.ResponseMetadata}");
-                }
-
-                // Save device token and application endpoint created
-                notificationsSubscriptions.DeviceToken = deviceToken;
-                notificationsSubscriptions.ApplicationEndPoint = endPointResponse.EndpointArn;
-            }
-
-            // Retrieve subscriptions
-            var subscriptions = await AudioLibrary.Instance.GetUserSubscriptions(false);
-
-            if (subscriptions == null) subscriptions = new UserSubscriptions { Subscriptions = new List<Models.Api.Subscription>() };
-
-            // Register non existings subscriptions
-            var subscriptionsCodes = subscriptions.Subscriptions.Select(s => s.Code).ToList();
-            foreach (var code in subscriptionsCodes)
+            request.AddJsonBody(new SynchNotificationsRequest
             {
-                if (!notificationsSubscriptions.Subscriptions.ContainsKey(code))
-                {
+                DeviceToken = deviceToken,
+                Platform = DeviceInfo.Platform == DevicePlatform.iOS ? "iOS" : "Android",
+                Session = Session.Instance.GetSession(),
+                Subscriptions = notificationsSubscriptions
+            });
 
-                    var topicArn = AppSettings.Instance.AwsTopicArn;
-                    topicArn += string.IsNullOrEmpty(code) ? "" : $"-{code}";
+            var response = await ApiClient.Instance.Client.ExecutePutAsync<SynchNotificactionsResponse>(request);
 
-                    if (!await TopicExists(topicArn, client))
-                    {
-                        var topicResponse = await client.CreateTopicAsync(new CreateTopicRequest { Name = $"{AppSettings.Instance.AwsTopicName}-{code}" });
-
-                        if (topicResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                        {
-                            ShowAlert("Debug", $"Error creando topic: {topicResponse.HttpStatusCode}, {topicResponse.ResponseMetadata}");
-                        }
-
-                        topicArn = topicResponse.TopicArn;
-                    }
-
-                    // Subscribe
-                    var subscribeResponse = await client.SubscribeAsync(new SubscribeRequest
-                    {
-                        Protocol = "application",
-                        Endpoint = notificationsSubscriptions.ApplicationEndPoint,
-                        TopicArn = topicArn
-                    });
-
-                    if (subscribeResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                    {
-                        ShowAlert("Debug", $"Error creando suscripción: {subscribeResponse.HttpStatusCode}, {subscribeResponse.ResponseMetadata}");
-                    }
-
-                    // Add to the list
-                    notificationsSubscriptions.Subscriptions.Add(code, subscribeResponse.SubscriptionArn);
-                }
-            }
-
-            // Remove subscriptions not in user list
-            var currentSubscriptions = notificationsSubscriptions.Subscriptions.ToList();
-            foreach (var subs in currentSubscriptions)
+            if (response.IsSuccessful)
             {
-                if (!subscriptionsCodes.Contains(subs.Key))
-                {
-                    try
-                    {
-                        await client.UnsubscribeAsync(subs.Value);
-                    }
-                    catch { /*Silent error in case endpoint doesn´t exist */ }
-
-                    notificationsSubscriptions.Subscriptions.Remove(subs.Key);
-                }
+                // Save notifications subscriptions
+                SaveNotificationsSubscriptions(response.Data.Subscriptions);
             }
-
-            // Save notifications subscriptions
-            SaveNotificationsSubscriptions(notificationsSubscriptions);
-        }
-
-        private void ShowAlert(string title, string text)
-        {
-            AsyncHelper.RunSync(() => App.Current.MainPage.DisplayAlert(title, text, "Cerrar"));
+            else
+            {
+                // Error synch subscriptions
+            }
         }
     }
 

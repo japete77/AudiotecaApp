@@ -34,7 +34,7 @@ namespace fonoteca.Services
             }
         }
 
-        public async Task<bool> Login(int user, string password)
+        public async Task<LoginResult> Login(int user, string password)
         {
             return await Task.Run(() =>
             {
@@ -67,7 +67,7 @@ namespace fonoteca.Services
                     SaveSession();
                 }
 
-                return result.Data.Success;
+                return result.Data;
             });
         }
 
@@ -90,6 +90,25 @@ namespace fonoteca.Services
             });
         }
 
+        public async Task ForgotPassword(string email)
+        {
+            await Task.Run(() =>
+            {
+                RestRequest request = new RestRequest("forgot-password")
+                {
+                    Method = Method.Post,
+                    RequestFormat = DataFormat.Json
+                };
+                request.AddJsonBody(new ForgotPasswordRequest { Email = email });
+
+                var result = ApiClient.Instance.Client.ExecutePost<ForgotPasswordRequest>(request);
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    throw new Exception("No se ha podido solicitar la recuparción de la contraseña");
+                }
+            });
+        }
+
         public async Task<bool> IsAuthenticated()
         {
             if (_sessionInfo == null ||
@@ -99,7 +118,7 @@ namespace fonoteca.Services
             try
             {
                 var result = await Login(_sessionInfo.Username, _sessionInfo.Password);
-                if (result)
+                if (result.Success)
                 {
                     return true;
                 }

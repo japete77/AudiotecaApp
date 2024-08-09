@@ -39,7 +39,6 @@ namespace fonoteca.Services
         private readonly System.Timers.Timer _timer;
         private bool _seekToCurrentTC = false;
         private bool _fileChanged = false;
-        private bool _loadNextFile = false;
 
         private const string PLAYER_STATUS_FILE = "status.json";
 
@@ -56,17 +55,9 @@ namespace fonoteca.Services
             _timer.Elapsed += PlayCurrentFile;
 
             _player.PositionChanged += Current_PositionChanged;
-
-            if (DeviceInfo.Platform == DevicePlatform.iOS)
-            {
-                _player.StateChanged += Current_StateChangediOS;
-                _player.MediaEnded += Current_MediaItemFinishediOS;
-            }
-            else if (DeviceInfo.Platform == DevicePlatform.Android)
-            {
-                _player.StateChanged += Current_StateChangedAndroid;
-                _player.MediaEnded += Current_MediaItemFinishedAndroid;
-            }
+            _player.StateChanged += Current_StateChanged;
+            _player.MediaEnded += Current_MediaItemFinished;
+            _player.MediaOpened += Current_MediaOpened;
         }
 
         private void PlayCurrentFile(object sender, System.Timers.ElapsedEventArgs e)
@@ -78,8 +69,8 @@ namespace fonoteca.Services
                 {
                     if (_fileChanged)
                     {
-                        _player.Source = MediaSource.FromFile($"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"); ;
-                        _player.Play();
+                        PlayCurrentFile();
+
                         await _player.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
 
                         _fileChanged = false;
@@ -96,35 +87,7 @@ namespace fonoteca.Services
             });
         }
 
-        private void Current_MediaItemFinishediOS(object sender, EventArgs e)
-        {
-            if (_player.Position.Ticks != 0)
-            {
-                _loadNextFile = true;
-            }
-        }
-
-        private async void Current_StateChangediOS(object sender, MediaStateChangedEventArgs e)
-        {
-            if (_playerInfo != null)
-            {
-                if (_seekToCurrentTC && e.NewState == MediaElementState.Playing)
-                {
-                    await _player.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
-                    _seekToCurrentTC = false;
-                }
-                else if (_loadNextFile && e.NewState == MediaElementState.Stopped)
-                {
-                    _loadNextFile = false;
-                    LoadNextFile();
-                }
-
-                _playerInfo.Status = e.NewState;
-                StatusUpdate?.Invoke(_playerInfo);
-            }
-        }
-
-        private void Current_MediaItemFinishedAndroid(object sender, EventArgs e)
+        private void Current_MediaItemFinished(object sender, EventArgs e)
         {
             if (_player.Position.Ticks != 0)
             {
@@ -132,13 +95,24 @@ namespace fonoteca.Services
             }
         }
 
-        private async void Current_StateChangedAndroid(object sender, MediaStateChangedEventArgs e)
+        private void Current_MediaOpened(object sender, EventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                _player.Play();
+            });
+        }
+
+        private void Current_StateChanged(object sender, MediaStateChangedEventArgs e)
         {
             if (_playerInfo != null)
             {
                 if (_seekToCurrentTC && e.NewState == MediaElementState.Playing)
                 {
-                    await _player.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await _player.SeekTo(TimeSpan.FromSeconds(_playerInfo.Position.CurrentTC));
+                    });
                     _seekToCurrentTC = false;
                 }
 
@@ -187,8 +161,7 @@ namespace fonoteca.Services
 
             ChapterUpdate?.Invoke(_book.Title, _book.Sequence[0].Title);
 
-            _player.Source = MediaSource.FromFile($"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}");
-            _player.Play();
+            PlayCurrentFile();
 
             _seekToCurrentTC = true;
         }
@@ -217,9 +190,11 @@ namespace fonoteca.Services
                 _playerInfo.Position.CurrentTitle = _book.Sequence[newIndex].Title;
 
                 ChapterUpdate?.Invoke(_book.Title, _playerInfo.Position.CurrentTitle);
-                
-                _player.Source = MediaSource.FromFile($"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"); ;
-                _player.Play();
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    PlayCurrentFile();
+                });
 
                 SaveStatus();
                 return true;
@@ -238,10 +213,16 @@ namespace fonoteca.Services
             {
                 if (position != null) _playerInfo.Position = position;
 
-                _player.Source = MediaSource.FromFile($"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}");
-                _player.Play();
+                PlayCurrentFile();
                 _seekToCurrentTC = true;
             }
+        }
+
+        private void PlayCurrentFile()
+        {
+            _player.Source = MediaSource.FromFile($"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_book.Id}{Path.DirectorySeparatorChar}{_playerInfo.CurrentFilename}");
+            //while (!_player.IsLoaded) Thread.Sleep(100);
+            //_player.Play();
         }
 
         public void PlayPause()
@@ -347,8 +328,7 @@ namespace fonoteca.Services
             {
                 _playerInfo.CurrentFilename = $"{_book.Sequence[index].Filename}";
 
-                _player.Source = MediaSource.FromFile($"{Session.Instance.GetDataDir()}/{_book.Id}/{_playerInfo.CurrentFilename}"); ;
-                _player.Play();
+                PlayCurrentFile();
 
                 _seekToCurrentTC = true;
             }
@@ -410,7 +390,7 @@ namespace fonoteca.Services
 
         public void SaveStatus()
         {
-            var path = $"{Session.Instance.GetDataDir()}/{_book.Id}/";
+            var path = $"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_book.Id}{Path.DirectorySeparatorChar}";
             if (Directory.Exists(path))
             {
                 File.WriteAllText(
@@ -422,7 +402,7 @@ namespace fonoteca.Services
 
         public void LoadStatus()
         {
-            string statusPath = $"{Session.Instance.GetDataDir()}/{_book.Id}/{PLAYER_STATUS_FILE}";
+            string statusPath = $"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_book.Id}{Path.DirectorySeparatorChar}{PLAYER_STATUS_FILE}";
             if (File.Exists(statusPath))
             {
                 _playerInfo = JsonConvert.DeserializeObject<PlayerInfo>(File.ReadAllText(statusPath));

@@ -40,5 +40,16 @@
             TextColor="White"
             Command="{Binding GoToByAuthorCommand}"
             FontAttributes="Bold"></Button>
+        <Button
+            AutomationProperties.IsInAccessibleTree="true"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Accede a la fonoteca ordenada por los más rececientes"
+            Margin="0, 5"
+            Text="Últimas novedades"
+            FontSize="Medium"
+            BackgroundColor="DodgerBlue"
+            TextColor="White"
+            Command="{Binding GoToByTitleRecentCommand}"
+            FontAttributes="Bold"></Button>
     </StackLayout>
 </ContentPage>

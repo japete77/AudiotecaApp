@@ -20,7 +20,6 @@ public partial class LoginPage : ContentPage
         if (isAuthenticated)
         {
             // AsyncHelper.RunSync(() => AudioLibrary.Instance.WarmUp());
-
             await Shell.Current.GoToAsync(nameof(MainPage));
 
             //await NotificationsStore.Instance.RegisterUserNotifications();

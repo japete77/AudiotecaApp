@@ -29,21 +29,14 @@ public partial class ByTitlePage : ContentPage
         {
             using (await _loading.Show("Cargando"))
             {
-                _titles = await AudioLibrary.Instance.GetBooksByTitle(1, PAGE_SIZE);
+                _titles = await AudioLibrary.Instance.GetBooksByTitle(1, PAGE_SIZE, _vm.SortByRecent);
 
                 if (_titles == null)
                 {
                     return;
                 }
 
-                var sorted = _titles.Titles
-                                .OrderBy(o => o.Title)
-                                .GroupBy(g => g.TitleSort)
-                                .Select(s => new Grouping<string, TitleModel>(s.Key, s));
-
-                // Clear the existing items before adding new ones
-                _vm.Items.Clear();
-                sorted.ToList().ForEach(item => _vm.Items.Add(item));
+                ShowTitles(string.Empty);
 
                 _vm.Loading = false;
             }
@@ -58,28 +51,52 @@ public partial class ByTitlePage : ContentPage
         ItemsCollectionView.SelectedItem = null;
     }
 
-    private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
+    private void ShowTitles(string filterText)
     {
         IEnumerable<Grouping<string, TitleModel>> sorted;        
 
-        if (string.IsNullOrEmpty(e.NewTextValue))
+        if (string.IsNullOrEmpty(filterText))
         {
-            sorted = _titles.Titles
-                .OrderBy(o => o.Title)
-                .GroupBy(g => g.TitleSort)
-                .Select(s => new Grouping<string, TitleModel>(s.Key, s));
+            if (_vm.SortByRecent)
+            {
+                sorted = _titles.Titles
+                            .GroupBy(g => string.Empty)
+                            .Select(s => new Grouping<string, TitleModel>(s.Key, s));
+            }
+            else
+            {
+                sorted = _titles.Titles
+                            .OrderBy(o => o.Title)
+                            .GroupBy(g => g.TitleSort)
+                            .Select(s => new Grouping<string, TitleModel>(s.Key, s));
+            }
         }
         else
         {
-            sorted = _titles.Titles
-                .Where(s => TextHelper.RemoveDiacritics(s.Title).ToUpper().Contains(TextHelper.RemoveDiacritics(e.NewTextValue).ToUpper()))
-                .OrderBy(o => o.Title)
-                .GroupBy(g => g.TitleSort)
-                .Select(s => new Grouping<string, TitleModel>(s.Key, s));
+            if (_vm.SortByRecent)
+            {
+                sorted = _titles.Titles
+                    .Where(s => TextHelper.RemoveDiacritics(s.Title).ToUpper().Contains(TextHelper.RemoveDiacritics(filterText).ToUpper()))                    
+                    .GroupBy(g => string.Empty)
+                    .Select(s => new Grouping<string, TitleModel>(s.Key, s));
+            }
+            else
+            {
+                sorted = _titles.Titles
+                    .Where(s => TextHelper.RemoveDiacritics(s.Title).ToUpper().Contains(TextHelper.RemoveDiacritics(filterText).ToUpper()))
+                    .OrderBy(o => o.Title)
+                    .GroupBy(g => g.TitleSort)
+                    .Select(s => new Grouping<string, TitleModel>(s.Key, s));
+            }
         }
 
         // Update items
         _vm.Items.Clear();
         sorted.ToList().ForEach(item => _vm.Items.Add(item));
+    }
+
+    private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        ShowTitles(e.NewTextValue);
     }
 }
