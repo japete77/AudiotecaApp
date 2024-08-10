@@ -12,7 +12,10 @@
     <ScrollView>
         <StackLayout Margin="20, 10, 20, 0">
             <StackLayout>
-                <toolkit:MediaElement x:Name="MediaElement"/>
+                <toolkit:MediaElement 
+                    x:Name="MediaElement"
+                    ShouldShowPlaybackControls="True"
+                />
             </StackLayout>
             <StackLayout>
                 <Button

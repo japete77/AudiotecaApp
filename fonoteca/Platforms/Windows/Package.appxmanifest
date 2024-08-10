@@ -6,13 +6,13 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
 
-  <Identity Name="maui-package-name-placeholder" Publisher="CN=User Name" Version="0.0.0.0" />
+  <Identity Name="NuevaLuz.AppFonoteca" Publisher="CN=44203218-0E9D-4D80-99E8-040A86571CA1" Version="1.1.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="0154E803-D638-4BC3-87EA-16689AA67D7F" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>$placeholder$</DisplayName>
-    <PublisherDisplayName>User Name</PublisherDisplayName>
+    <DisplayName>AppFonoteca</DisplayName>
+    <PublisherDisplayName>Nueva Luz</PublisherDisplayName>
     <Logo>$placeholder$.png</Logo>
   </Properties>
 
