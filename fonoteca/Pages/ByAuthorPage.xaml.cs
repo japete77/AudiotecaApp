@@ -79,7 +79,10 @@ public partial class ByAuthorPage : ContentPage
         }
 
         // Update items
-        _vm.Items.Clear();
-        sorted.ToList().ForEach(item => _vm.Items.Add(item));
+        var newItems = new ObservableCollection<Grouping<string, AuthorModel>>(sorted);
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            _vm.Items = newItems;
+        });
     }
 }

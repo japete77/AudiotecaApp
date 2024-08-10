@@ -3,6 +3,7 @@ using fonoteca.ViewModels;
 using fonoteca.Services;
 using fonoteca.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.ObjectModel;
 
 namespace fonoteca.Pages;
 
@@ -79,7 +80,10 @@ public partial class ByAuthorTitlesPage : ContentPage
         }
 
         // Update items
-        _vm.Items.Clear();
-        sorted.ToList().ForEach(item => _vm.Items.Add(item));
+        var newItems = new ObservableCollection<Grouping<string, TitleModel>>(sorted);
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            _vm.Items = newItems;
+        });
     }
 }

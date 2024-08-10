@@ -21,10 +21,12 @@
             <ActivityIndicator
                 IsEnabled="True"
                 IsRunning="True"
+                Color="DarkSlateBlue"
                 IsVisible="True"/>
             <Label
                 HorizontalOptions="Center"
                 Text="{Binding Message}"
+                TextColor="Black"
                 VerticalTextAlignment="Center"
                 VerticalOptions="Center"/>
         </VerticalStackLayout>

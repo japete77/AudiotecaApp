@@ -100,6 +100,7 @@ namespace fonoteca.Services
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 _player.Play();
+                _player.Speed = (float)Session.Instance.GetSpeed();
             });
         }
 
@@ -221,8 +222,6 @@ namespace fonoteca.Services
         private void PlayCurrentFile()
         {
             _player.Source = MediaSource.FromFile($"{Session.Instance.GetDataDir()}{Path.DirectorySeparatorChar}{_book.Id}{Path.DirectorySeparatorChar}{_playerInfo.CurrentFilename}");
-            //while (!_player.IsLoaded) Thread.Sleep(100);
-            //_player.Play();
         }
 
         public void PlayPause()
