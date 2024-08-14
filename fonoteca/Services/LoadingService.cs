@@ -20,7 +20,7 @@ namespace fonoteca.Services
 
         public async Task<IDisposable> Show(string message = null)
         {
-            await navigation.PushAsync(new LoadingPopupPage(new ViewModels.LoadingPopupViewModel { Message = message }), true);
+            await navigation.PushAsync(new LoadingPopupPage(new ViewModels.LoadingPopupViewModel { Message = message }), true);            
             return this;
         }
     }

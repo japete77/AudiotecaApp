@@ -6,9 +6,9 @@ using fonoteca.Helpers;
 using Microsoft.Extensions.Logging;
 using Mopups.Hosting;
 using Microsoft.Maui.LifecycleEvents;
+#if ANDROID || IOS
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Bundled.Shared;
-#if ANDROID || IOS
 using Plugin.Firebase.Bundled.Platforms.Android;
 using Plugin.Firebase.Crashlytics;
 using Firebase;
@@ -117,7 +117,9 @@ namespace fonoteca
 #endif
             });
 
+#if ANDROID || IOS
             builder.Services.AddSingleton(_ => CrossFirebaseAuth.Current);
+#endif
             return builder;
         }
 
@@ -149,7 +151,7 @@ namespace fonoteca
             // TODO
         }
 
-
+#if ANDROID || IOS
         private static CrossFirebaseSettings CreateCrossFirebaseSettings()
         {
             return new CrossFirebaseSettings(
@@ -158,5 +160,7 @@ namespace fonoteca
                 isAnalyticsEnabled: true
             );
         }
+#endif
+
     }
 }

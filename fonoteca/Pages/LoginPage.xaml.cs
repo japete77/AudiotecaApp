@@ -1,7 +1,10 @@
-using fonoteca.Helpers;
+
 using fonoteca.Services;
 using fonoteca.ViewModels;
+#if ANDROID || IOS
+using fonoteca.Helpers;
 using Plugin.Firebase.CloudMessaging;
+#endif
 
 namespace fonoteca.Pages;
 
@@ -19,7 +22,9 @@ public partial class LoginPage : ContentPage
     {
         base.OnAppearing();
 
+#if ANDROID || IOS
         using (await _loading.Show("Cargando"))
+#endif
         {
             // Try to login
             var isAuthenticated = await Session.Instance.IsAuthenticated();
