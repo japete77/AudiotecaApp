@@ -8,9 +8,11 @@ using Mopups.Hosting;
 using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Bundled.Shared;
+#if ANDROID || IOS
 using Plugin.Firebase.Bundled.Platforms.Android;
 using Plugin.Firebase.Crashlytics;
 using Firebase;
+#endif
 
 namespace fonoteca
 {
@@ -103,6 +105,7 @@ namespace fonoteca
                 events.AddAndroid(android => android.OnCreate((activity, _) =>
                     CrossFirebase.Initialize(activity, CreateCrossFirebaseSettings()))
                 );
+                CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
 #elif IOS
                 InitializeFirebaseiOS();
 
@@ -110,14 +113,15 @@ namespace fonoteca
                     CrossFirebase.Initialize(app, launchOptions, CreateCrossFirebaseSettings());
                     return false;
                 }));
-#endif
                 CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
+#endif
             });
 
             builder.Services.AddSingleton(_ => CrossFirebaseAuth.Current);
             return builder;
         }
 
+#if ANDROID
         private static void InitializeFirebaseAndroid()
         {
             // Retrieve the FirebaseOptions from API
@@ -138,6 +142,7 @@ namespace fonoteca
                 FirebaseApp.InitializeApp(context, options);
             }
         }
+#endif
 
         private static void InitializeFirebaseiOS()
         {
