@@ -57,9 +57,9 @@ namespace fonoteca.ViewModels
                                 await Shell.Current.GoToAsync(nameof(MainPage));
                             }
 
-                            //await NotificationsStore.Instance.RegisterUserNotifications();
+                            await NotificationsStore.Instance.RegisterUserNotifications();
 
-                            //await NotificationsStore.Instance.RefreshNotifications();
+                            await NotificationsStore.Instance.RefreshNotifications();
                         }
                         else
                         {

@@ -1,7 +1,4 @@
-﻿using Amazon.Runtime;
-using Amazon.SimpleNotificationService;
-using Amazon.SimpleNotificationService.Model;
-using fonoteca.Helpers;
+﻿using fonoteca.Helpers;
 using fonoteca.Models.Api;
 using fonoteca.Models.Notifications;
 using Newtonsoft.Json;
@@ -17,8 +14,6 @@ namespace fonoteca.Services
 
         private const string NOTIFICATIONS_READ_KEY = "NotificationsRead";
         private List<int> _readNotifications = new List<int>();
-
-        // private List<Topic> _topics;
 
         private System.Timers.Timer _subscriptionsTimer;
         private System.Timers.Timer _timerUnreadNotifications;
@@ -52,12 +47,12 @@ namespace fonoteca.Services
         {
             // Read notifications ids
             var notificationsIds = await AudioLibrary.Instance.GetNotificationsIds();
-            
+
             string notificationsKey = null;
             if (Preferences.ContainsKey(NOTIFICATIONS_READ_KEY))
             {
                 notificationsKey = Preferences.Get(NOTIFICATIONS_READ_KEY, null);
-            }            
+            }
             if (!string.IsNullOrEmpty(notificationsKey))
             {
                 _readNotifications = JsonConvert.DeserializeObject<List<int>>(notificationsKey);
@@ -69,7 +64,7 @@ namespace fonoteca.Services
             {
                 // Is empty so we assume all notifications are read
                 _readNotifications = notificationsIds;
-                Preferences.Set(NOTIFICATIONS_READ_KEY, JsonConvert.SerializeObject(_readNotifications));                
+                Preferences.Set(NOTIFICATIONS_READ_KEY, JsonConvert.SerializeObject(_readNotifications));
             }
 
             if (_timerUnreadNotifications == null)
@@ -99,7 +94,10 @@ namespace fonoteca.Services
                     $"Tienes {unreadNotificationsCount} notificaciones sin leer" :
                     $"Tienes {unreadNotificationsCount} notificación sin leer";
 
-                // ShowAlert("Aviso", msg);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    App.Current.MainPage.DisplayAlert("Aviso", msg, "Ok");
+                });
             }
         }
 
@@ -140,7 +138,7 @@ namespace fonoteca.Services
             if (!_readNotifications.Contains(id))
             {
                 _readNotifications.Add(id);
-                Preferences.Set(NOTIFICATIONS_READ_KEY, JsonConvert.SerializeObject(_readNotifications));                
+                Preferences.Set(NOTIFICATIONS_READ_KEY, JsonConvert.SerializeObject(_readNotifications));
             }
         }
 
@@ -157,7 +155,7 @@ namespace fonoteca.Services
         public void SaveDeviceToken(string deviceToken)
         {
             // Save device token
-            Preferences.Set(DEVICE_TOKEN_KEY, deviceToken);            
+            Preferences.Set(DEVICE_TOKEN_KEY, deviceToken);
         }
 
         public SNSSubscriptions GetNotificationsSubscriptions()
@@ -176,7 +174,7 @@ namespace fonoteca.Services
         public void SaveNotificationsSubscriptions(SNSSubscriptions subscriptions)
         {
             // Save device token
-            Preferences.Set(NOTIFICATIONS_SUBSCRIPTIONS_KEY, JsonConvert.SerializeObject(subscriptions));            
+            Preferences.Set(NOTIFICATIONS_SUBSCRIPTIONS_KEY, JsonConvert.SerializeObject(subscriptions));
         }
 
         public async Task RegisterUserNotifications()
@@ -211,6 +209,27 @@ namespace fonoteca.Services
                 // Error synch subscriptions
             }
         }
+
+        public FirebaseAndroidConfigResponse GetFirebaseAndroidConfig()
+        {
+            var request = new RestRequest("firebase/android")
+            {
+                RequestFormat = DataFormat.Json,
+                Method = Method.Put
+            };
+
+            var response = ApiClient.Instance.Client.ExecuteGet<FirebaseAndroidConfigResponse>(request);
+
+            if (response.IsSuccessful)
+            {
+                // Save notifications subscriptions
+                return response.Data;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 
     public class SNSSubscriptions
@@ -218,5 +237,13 @@ namespace fonoteca.Services
         public string DeviceToken { get; set; }
         public string ApplicationEndPoint { get; set; }
         public Dictionary<string, string> Subscriptions { get; set; }
+    }
+
+    public class FirebaseAndroidConfigResponse
+    {
+        public string ApiKey { get; set; }
+        public string ApplicationId { get; set; }
+        public string ProjectId { get; set; }
+        public string StorageBucket { get; set; }
     }
 }

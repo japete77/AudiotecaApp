@@ -5,6 +5,12 @@ using fonoteca.ViewModels;
 using fonoteca.Helpers;
 using Microsoft.Extensions.Logging;
 using Mopups.Hosting;
+using Microsoft.Maui.LifecycleEvents;
+using Plugin.Firebase.Auth;
+using Plugin.Firebase.Bundled.Shared;
+using Plugin.Firebase.Bundled.Platforms.Android;
+using Plugin.Firebase.Crashlytics;
+using Firebase;
 
 namespace fonoteca
 {
@@ -15,6 +21,7 @@ namespace fonoteca
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .RegisterFirebaseServices()
                 .UseMauiCommunityToolkitMediaElement()
                 .ConfigureFonts(fonts =>
                 {
@@ -84,6 +91,67 @@ namespace fonoteca
             }
 
             return builder.Build();
+        }
+
+        private static MauiAppBuilder RegisterFirebaseServices(this MauiAppBuilder builder)
+        {
+            builder.ConfigureLifecycleEvents(events =>
+            {
+#if ANDROID
+                InitializeFirebaseAndroid();
+
+                events.AddAndroid(android => android.OnCreate((activity, _) =>
+                    CrossFirebase.Initialize(activity, CreateCrossFirebaseSettings()))
+                );
+#elif IOS
+                InitializeFirebaseiOS();
+
+                events.AddiOS(iOS => iOS.FinishedLaunching((app, launchOptions) => {
+                    CrossFirebase.Initialize(app, launchOptions, CreateCrossFirebaseSettings());
+                    return false;
+                }));
+#endif
+                CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
+            });
+
+            builder.Services.AddSingleton(_ => CrossFirebaseAuth.Current);
+            return builder;
+        }
+
+        private static void InitializeFirebaseAndroid()
+        {
+            // Retrieve the FirebaseOptions from API
+            var config = NotificationsStore.Instance.GetFirebaseAndroidConfig();
+
+            if (config != null)
+            {
+                var options = new FirebaseOptions.Builder()
+                    .SetApiKey(config.ApiKey)
+                    .SetApplicationId(config.ApplicationId)
+                    .SetProjectId(config.ProjectId)
+                    .SetStorageBucket(config.StorageBucket)
+                    .Build();
+
+                // Assuming MainPage.Context is defined, or use another context provider
+                var context = Android.App.Application.Context;
+
+                FirebaseApp.InitializeApp(context, options);
+            }
+        }
+
+        private static void InitializeFirebaseiOS()
+        {
+            // TODO
+        }
+
+
+        private static CrossFirebaseSettings CreateCrossFirebaseSettings()
+        {
+            return new CrossFirebaseSettings(
+                isAuthEnabled: true, 
+                isCloudMessagingEnabled: true, 
+                isAnalyticsEnabled: true
+            );
         }
     }
 }

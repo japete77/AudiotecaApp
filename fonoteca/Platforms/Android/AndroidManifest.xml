@@ -1,15 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.nuevaluz.appfonoteca" android:versionCode="2" android:versionName="2.0" android:installLocation="auto">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="Fonoteca Nueva Luz">
-		<service android:name="crc648046fa1fb81736c8.FonotecaFirebaseMessagingService" android:exported="true" />
 		<service android:name="CommunityToolkit.Maui.Media.Services" android:exported="false" android:enabled="true" android:foregroundServiceType="mediaPlayback">
 			<intent-filter>
 				<action android:name="android.intent.action.MEDIA_BUTTON" />
 			</intent-filter>
 			<intent-filter>
-				<action android:name="androidx.media3.session.MediaSessionService"/>
+				<action android:name="androidx.media3.session.MediaSessionService" />
 			</intent-filter>
 		</service>
+		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver" android:exported="false" />
+		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
+			<intent-filter>
+				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+				<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+				<category android:name="${applicationId}" />
+			</intent-filter>
+		</receiver>
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
@@ -24,5 +31,5 @@
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 	<uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
-	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34" />
+	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
 </manifest>
