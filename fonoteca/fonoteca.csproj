@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<!-- Uncomment to also build the ios app -->
+		<TargetFrameworks>net8.0-ios</TargetFrameworks>
 		
 		<!-- Uncomment to also build the android app -->
-		<TargetFrameworks>net8.0-android34.0</TargetFrameworks>
+		<!--<TargetFrameworks>net8.0-android34.0</TargetFrameworks>-->
 
 		<!-- Uncomment to also build the windows app -->
 		<!--<TargetFrameworks>net8.0-windows10.0.22621.0</TargetFrameworks>-->
@@ -35,8 +37,10 @@
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
+		<!-- Uncomment to also build the ios app -->
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
 		<!-- Uncomment to also build the android app -->
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
+		<!--<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>-->
 		<!--<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>-->
 	</PropertyGroup>
@@ -70,6 +74,8 @@
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
 	  <AndroidPackageFormat>aab</AndroidPackageFormat>
 	  <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+	  <ApplicationDisplayVersion>2.0.5</ApplicationDisplayVersion>
+	  <ApplicationVersion>5</ApplicationVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
@@ -89,10 +95,19 @@
 	  <AndroidPackageFormat>aab</AndroidPackageFormat>
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <ApplicationDisplayVersion>2.0.5</ApplicationDisplayVersion>
+	  <ApplicationVersion>5</ApplicationVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
 	  <NoWarn>1701;1702;XC0022</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+		<CodesignEntitlements>Platforms/iOS/Entitlements.plist</CodesignEntitlements>
+		<ProvisioningType>manual</ProvisioningType>
+		<CodesignKey>Apple Distribution: David Padilla (JNM343SE4U)</CodesignKey>
+		<CodesignProvision>Distribucion</CodesignProvision>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -121,9 +136,9 @@
 	<ItemGroup>
 		<PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.301.43" />
 		<PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="3.1.1" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.40" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.40" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Mopups" Version="1.3.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

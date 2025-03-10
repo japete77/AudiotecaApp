@@ -230,6 +230,27 @@ namespace fonoteca.Services
                 return null;
             }
         }
+
+        public FirebaseiOSConfigResponse GetFirebaseiOSConfig()
+        {
+            var request = new RestRequest("firebase/ios")
+            {
+                RequestFormat = DataFormat.Json,
+                Method = Method.Put
+            };
+
+            var response = ApiClient.Instance.Client.ExecuteGet<FirebaseiOSConfigResponse>(request);
+
+            if (response.IsSuccessful)
+            {
+                // Save notifications subscriptions
+                return response.Data;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 
     public class SNSSubscriptions
@@ -245,5 +266,14 @@ namespace fonoteca.Services
         public string ApplicationId { get; set; }
         public string ProjectId { get; set; }
         public string StorageBucket { get; set; }
+    }
+
+    public class FirebaseiOSConfigResponse
+    {
+        public string ApiKey { get; set; }
+        public string ApplicationId { get; set; }
+        public string ProjectId { get; set; }
+        public string StorageBucket { get; set; }
+        public string GcmSenderId { get; set; }
     }
 }

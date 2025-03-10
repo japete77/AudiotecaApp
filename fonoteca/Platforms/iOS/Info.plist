@@ -28,5 +28,19 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.0.6</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.nuevaluz.fonoteca</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+		<string>processing</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.nuevaluz.fonoteca.bgprocessing</string>
+	</array>		 
 </dict>
 </plist>

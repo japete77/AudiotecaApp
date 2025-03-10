@@ -29,11 +29,12 @@
                 FontAttributes="Bold" />
 
         <!-- Search Bar -->
-        <SearchBar Grid.Row="1"                   
+        <SearchBar Grid.Row="1"       
+                   BackgroundColor="White"
                    x:Name="SearchBar"
                    Placeholder="Buscar"
                    TextChanged="SearchBar_TextChanged"
-                   Margin="0, 5, 20, 0"
+                   Margin="15, 5, 20, 0"
                    SemanticProperties.HeadingLevel="Level1"
                    SemanticProperties.Description="Buscar por título"
                    SemanticProperties.Hint="Introduzca un título para buscar en el listado de audio libros"

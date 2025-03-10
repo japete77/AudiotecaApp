@@ -1,6 +1,10 @@
 
 using fonoteca.Services;
 using fonoteca.ViewModels;
+using static UIKit.UIGestureRecognizer;
+using Firebase.CloudMessaging;
+
+
 #if ANDROID || IOS
 using fonoteca.Helpers;
 using Plugin.Firebase.CloudMessaging;
@@ -26,6 +30,17 @@ public partial class LoginPage : ContentPage
         using (await _loading.Show("Cargando"))
 #endif
         {
+
+#if ANDROID
+            var token = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
+            NotificationsStore.Instance.SaveDeviceToken(token);
+#endif
+
+#if IOS
+            var deviceToken = BitConverter.ToString(Messaging.SharedInstance.ApnsToken.ToArray()).Replace("-", "");
+            NotificationsStore.Instance.SaveDeviceToken(deviceToken);
+#endif
+
             // Try to login
             var isAuthenticated = await Session.Instance.IsAuthenticated();
             if (isAuthenticated)
@@ -34,15 +49,11 @@ public partial class LoginPage : ContentPage
 
                 await Shell.Current.GoToAsync(nameof(MainPage));
 
-#if ANDROID || IOS
                 await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
-                var token = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
-                NotificationsStore.Instance.SaveDeviceToken(token);
 
                 await NotificationsStore.Instance.RegisterUserNotifications();
 
                 await NotificationsStore.Instance.RefreshNotifications();
-#endif
             }
             else
             {

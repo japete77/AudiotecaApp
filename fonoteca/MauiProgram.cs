@@ -6,12 +6,22 @@ using fonoteca.Helpers;
 using Microsoft.Extensions.Logging;
 using Mopups.Hosting;
 using Microsoft.Maui.LifecycleEvents;
+#if ANDROID
+using Plugin.Firebase.Bundled.Platforms.Android;
+#endif
+#if IOS
+using Plugin.Firebase.Bundled.Platforms.iOS;
+#endif
 #if ANDROID || IOS
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Bundled.Shared;
-using Plugin.Firebase.Bundled.Platforms.Android;
 using Plugin.Firebase.Crashlytics;
 using Firebase;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Firebase.Core;
+using UIKit;
+using UserNotifications;
+using System.Diagnostics;
 #endif
 
 namespace fonoteca
@@ -86,12 +96,19 @@ namespace fonoteca
 #endif
             // Set the data directory
             var currentDataDir = Session.Instance.GetDataDir();
-            if (string.IsNullOrEmpty(currentDataDir) || DeviceInfo.Platform == DevicePlatform.iOS)
+            if (string.IsNullOrEmpty(currentDataDir) || !Directory.Exists(currentDataDir))
             {
-                Session.Instance.SetDataDir(AudioBookDataDir.StorageDirs.First().AbsolutePath);
-                Session.Instance.SaveSession();
+                if (DeviceInfo.Platform == DevicePlatform.Android)
+                {
+                    Session.Instance.SetDataDir(AudioBookDataDir.StorageDirs.First().AbsolutePath);
+                    Session.Instance.SaveSession();
+                }
+                else if (DeviceInfo.Platform == DevicePlatform.iOS)
+                {
+                    Session.Instance.SetDataDir(AudioBookDataDir.StorageDirs.First().AbsolutePath);
+                    Session.Instance.SaveSession();
+                }
             }
-
             return builder.Build();
         }
 
@@ -109,12 +126,50 @@ namespace fonoteca
 #elif IOS
                 InitializeFirebaseiOS();
 
-                events.AddiOS(iOS => iOS.FinishedLaunching((app, launchOptions) => {
-                    CrossFirebase.Initialize(app, launchOptions, CreateCrossFirebaseSettings());
-                    return false;
+                events.AddiOS(ios => ios.FinishedLaunching((application, launchOptions) =>
+                {
+                    // Asigna el delegado para manejar notificaciones
+                    UNUserNotificationCenter.Current.Delegate = new NotificationDelegate();
+
+                    var center = UNUserNotificationCenter.Current;
+
+                    // Obtener la configuración actual de notificaciones
+                    center.GetNotificationSettings((settings) =>
+                    {
+                        // Si el usuario ya autorizó las notificaciones, no se solicita nuevamente.
+                        if (settings.AuthorizationStatus == UNAuthorizationStatus.Authorized ||
+                            settings.AuthorizationStatus == UNAuthorizationStatus.Provisional)
+                        {
+                            Console.WriteLine("Los permisos de notificaciones ya han sido otorgados.");
+                        }
+                        else
+                        {
+                            // En caso de que aún no se hayan otorgado los permisos, se solicitan.
+                            var authOptions = UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound;
+                            center.RequestAuthorization(authOptions, (granted, error) =>
+                            {
+                                if (granted)
+                                {
+                                    Console.WriteLine("Permisos de notificaciones concedidos.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Permisos de notificaciones denegados.");
+                                }
+                            });
+                        }
+                    });
+
+                    // Registrar la app para recibir notificaciones remotas
+                    application.RegisterForRemoteNotifications();
+
+                    // Enable Crashlytics collection after Firebase initialization
+                    CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
+
+                    return true;
                 }));
-                CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
 #endif
+
             });
 
 #if ANDROID || IOS
@@ -148,7 +203,23 @@ namespace fonoteca
 
         private static void InitializeFirebaseiOS()
         {
-            // TODO
+            // Recupera la configuración para iOS
+            var config = NotificationsStore.Instance.GetFirebaseiOSConfig();
+
+            if (config != null)
+            {
+                // Crea las opciones para Firebase. El constructor requiere el ApplicationId (GOOGLE_APP_ID)
+                // y el GcmSenderId.
+                var options = new Options(config.ApplicationId, config.GcmSenderId)
+                {
+                    ApiKey = config.ApiKey,
+                    ProjectId = config.ProjectId,
+                    StorageBucket = config.StorageBucket
+                };
+
+                // Configura Firebase con las opciones creadas
+                Firebase.Core.App.Configure(options);
+            }
         }
 
 #if ANDROID || IOS

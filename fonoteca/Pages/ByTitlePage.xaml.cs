@@ -91,10 +91,11 @@ public partial class ByTitlePage : ContentPage
         }
 
         // Update items
-        var newItems = new ObservableCollection<Grouping<string, TitleModel>>(sorted);
+        // var newItems = new ObservableCollection<Grouping<string, TitleModel>>(sorted);
         MainThread.BeginInvokeOnMainThread(() =>
-        {
-            _vm.Items = newItems;
+        {            
+            var filteredGroups = sorted.Where(group => group.Any()).ToList();
+            _vm.Items = new ObservableCollection<Grouping<string, TitleModel>>(filteredGroups);
         });
     }
 
