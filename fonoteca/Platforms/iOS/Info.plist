@@ -29,7 +29,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.6</string>
+	<string>2.0.7</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.nuevaluz.fonoteca</string>
 	<key>UIBackgroundModes</key>
@@ -41,6 +41,8 @@
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.nuevaluz.fonoteca.bgprocessing</string>
-	</array>		 
+	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app uses Bluetooth to connect and communicate with nearby devices, enhancing your experience.</string>
 </dict>
 </plist>

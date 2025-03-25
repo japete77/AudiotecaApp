@@ -26,6 +26,12 @@ public partial class LoginPage : ContentPage
     {
         base.OnAppearing();
 
+        if (!OfflineChecker.IsConnected)
+        {
+            await Shell.Current.GoToAsync(nameof(MainPage));
+            return;
+        }
+
 #if ANDROID || IOS
         using (await _loading.Show("Cargando"))
 #endif

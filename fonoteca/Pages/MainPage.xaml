@@ -19,6 +19,7 @@
             Margin="0, 5"
             FontAttributes="Bold"></Button>
         <Button
+            IsVisible="{Binding OnlineMode}"
             AutomationProperties.IsInAccessibleTree="true"
             SemanticProperties.HeadingLevel="Level1"
             SemanticProperties.Description="Fonoteca"
@@ -31,6 +32,7 @@
             Margin="0, 5"
             FontAttributes="Bold"></Button>
         <Button
+            IsVisible="{Binding OnlineMode}"
             AutomationProperties.IsInAccessibleTree="true"
             SemanticProperties.HeadingLevel="Level1"
             SemanticProperties.Description="Suscripciones"
@@ -43,6 +45,7 @@
             Margin="0, 5"
             FontAttributes="Bold"></Button>
         <Button
+            IsVisible="{Binding OnlineMode}"
             AutomationProperties.IsInAccessibleTree="true"
             SemanticProperties.HeadingLevel="Level1"
             SemanticProperties.Description="Notificaciones"

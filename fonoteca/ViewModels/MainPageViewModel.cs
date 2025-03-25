@@ -8,6 +8,9 @@ namespace fonoteca.ViewModels
         [ObservableProperty]
         private string versionInfo;
 
+        [ObservableProperty]
+        private bool onlineMode;
+
         [RelayCommand]
         async Task GoToMyAudioBooks()
         {

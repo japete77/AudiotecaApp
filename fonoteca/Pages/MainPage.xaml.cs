@@ -1,4 +1,5 @@
 ﻿using fonoteca.Helpers;
+using fonoteca.Services;
 using fonoteca.ViewModels;
 
 namespace fonoteca.Pages
@@ -9,6 +10,7 @@ namespace fonoteca.Pages
         {
             InitializeComponent();
             vm.VersionInfo = AppSettings.Instance.VersionInfo;
+            vm.OnlineMode = OfflineChecker.IsConnected;
             BindingContext = vm;
 
             // Setup data dir if not set

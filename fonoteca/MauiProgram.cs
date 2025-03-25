@@ -114,6 +114,8 @@ namespace fonoteca
 
         private static MauiAppBuilder RegisterFirebaseServices(this MauiAppBuilder builder)
         {
+            if (!OfflineChecker.IsConnected) return builder;
+
             builder.ConfigureLifecycleEvents(events =>
             {
 #if ANDROID
