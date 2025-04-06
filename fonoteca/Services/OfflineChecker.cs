@@ -1,35 +1,47 @@
-﻿using System.Net.NetworkInformation;
+﻿using fonoteca.Helpers;
+using System;
+using System.Net.Http;
 
 namespace fonoteca.Services
 {
     /// <summary>
-    /// Static service to check the internet connection.
-    /// The connection check is performed once on the first access and cached thereafter.
+    /// Servicio estático para comprobar la conexión a internet.
+    /// La comprobación se realiza una sola vez en el primer acceso y se almacena el resultado en caché.
     /// </summary>
     public static class OfflineChecker
     {
-        // Lazy initialization to perform the check only once and cache the result.
+        // Inicialización diferida para realizar la comprobación solo una vez y almacenar el resultado.
         private static readonly Lazy<bool> lazyIsConnected = new Lazy<bool>(() =>
         {
             try
             {
-                using (Ping ping = new Ping())
+                // Obtener la URL base desde AppSettings.
+                string baseUrl = AppSettings.Instance.FonotecaApiUrl;
+                // Construir la URL completa añadiendo "firebase/android".
+                string fullUrl = new Uri(new Uri(baseUrl), "firebase/android").ToString();
+
+                using (HttpClient client = new HttpClient())
                 {
-                    // Ping the address 8.8.8.8 (Google DNS) with a timeout of 3000 ms
-                    PingReply reply = ping.Send("8.8.8.8", 3000);
-                    return (reply.Status == IPStatus.Success);
+                    // Configurar el timeout a 3 segundos.
+                    client.Timeout = TimeSpan.FromSeconds(3);
+
+                    // Realizar la solicitud GET de forma sincrónica.
+                    HttpResponseMessage response = client.GetAsync(fullUrl).GetAwaiter().GetResult();
+
+                    // Retornar true si el código de estado indica éxito.
+                    return response.IsSuccessStatusCode;
                 }
             }
             catch (Exception)
             {
-                // If an exception occurs, assume there's no internet connection.
+                // Si ocurre alguna excepción, asumimos que no hay conexión a internet.
                 return false;
             }
         });
 
         /// <summary>
-        /// Gets a value indicating whether there is an internet connection.
-        /// The check is performed once on first access and the result is cached.
+        /// Indica si hay conexión a internet.
+        /// La comprobación se realiza una sola vez en el primer acceso y el resultado se almacena en caché.
         /// </summary>
         public static bool IsConnected
         {

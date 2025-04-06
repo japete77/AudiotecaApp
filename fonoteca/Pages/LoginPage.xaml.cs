@@ -1,12 +1,12 @@
 
 using fonoteca.Services;
 using fonoteca.ViewModels;
+using fonoteca.Helpers;
+#if IOS
 using static UIKit.UIGestureRecognizer;
 using Firebase.CloudMessaging;
-
-
+#endif
 #if ANDROID || IOS
-using fonoteca.Helpers;
 using Plugin.Firebase.CloudMessaging;
 #endif
 

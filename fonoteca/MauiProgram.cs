@@ -11,18 +11,18 @@ using Plugin.Firebase.Bundled.Platforms.Android;
 #endif
 #if IOS
 using Plugin.Firebase.Bundled.Platforms.iOS;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Firebase.Core;
+using UIKit;
+using UserNotifications;
 #endif
 #if ANDROID || IOS
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Bundled.Shared;
 using Plugin.Firebase.Crashlytics;
 using Firebase;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using Firebase.Core;
-using UIKit;
-using UserNotifications;
-using System.Diagnostics;
 #endif
+using System.Diagnostics;
 
 namespace fonoteca
 {
@@ -203,6 +203,7 @@ namespace fonoteca
         }
 #endif
 
+#if IOS
         private static void InitializeFirebaseiOS()
         {
             // Recupera la configuración para iOS
@@ -223,6 +224,7 @@ namespace fonoteca
                 Firebase.Core.App.Configure(options);
             }
         }
+#endif
 
 #if ANDROID || IOS
         private static CrossFirebaseSettings CreateCrossFirebaseSettings()
