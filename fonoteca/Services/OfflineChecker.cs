@@ -1,5 +1,4 @@
-﻿using fonoteca.Helpers;
-using System;
+﻿using System;
 using System.Net.Http;
 
 namespace fonoteca.Services
@@ -15,15 +14,13 @@ namespace fonoteca.Services
         {
             try
             {
-                // Obtener la URL base desde AppSettings.
-                string baseUrl = AppSettings.Instance.FonotecaApiUrl;
-                // Construir la URL completa añadiendo "firebase/android".
-                string fullUrl = new Uri(new Uri(baseUrl), "firebase/android").ToString();
+                // URL fija de la web de Nueva Luz.
+                string fullUrl = "https://www.nuevaluz.org";
 
                 using (HttpClient client = new HttpClient())
                 {
                     // Configurar el timeout a 3 segundos.
-                    client.Timeout = TimeSpan.FromSeconds(3);
+                    client.Timeout = TimeSpan.FromSeconds(5);
 
                     // Realizar la solicitud GET de forma sincrónica.
                     HttpResponseMessage response = client.GetAsync(fullUrl).GetAwaiter().GetResult();
