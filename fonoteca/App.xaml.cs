@@ -5,13 +5,11 @@
         public App()
         {
             InitializeComponent();
-
-            MainPage = new AppShell();
         }
 
         protected override Window CreateWindow(IActivationState activationState)
         {
-            var window = base.CreateWindow(activationState);
+            var window = new Window(new AppShell());
 
             if (DeviceInfo.Platform == DevicePlatform.WinUI)
             {
@@ -19,9 +17,12 @@
                 window.Width = 400; // Ancho en píxeles
                 window.Height = 700; // Alto en píxeles
 
-                // También puedes centrar la ventana en la pantalla
-                window.X = (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density - window.Width) / 2;
-                window.Y = (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density - window.Height) / 2;
+                var display = DeviceDisplay.MainDisplayInfo;
+                var screenWidthDip = display.Width / display.Density;
+                var screenHeightDip = display.Height / display.Density;
+
+                window.X = (screenWidthDip - window.Width) / 2;
+                window.Y = (screenHeightDip - window.Height) / 2;
             }
 
             return window;

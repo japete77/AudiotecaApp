@@ -2,6 +2,7 @@
 
 namespace fonoteca.Helpers
 {
+    [AcceptEmptyServiceProvider]
     public class InverseBoolConverter : IValueConverter, IMarkupExtension
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

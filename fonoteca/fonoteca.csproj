@@ -2,10 +2,10 @@
 
 	<PropertyGroup>
 		<!-- Uncomment to also build the ios app -->
-		<!--<TargetFrameworks>net8.0-ios</TargetFrameworks>-->
+		<targetframeworks>net9.0-ios</targetframeworks>
 		
 		<!-- Uncomment to also build the android app -->
-		<TargetFrameworks>net9.0-android35.0</TargetFrameworks>
+		<!-- <TargetFrameworks>net9.0-android35.0</TargetFrameworks> -->
 
 		<!-- Uncomment to also build the windows app -->
 		<!--<TargetFrameworks>net8.0-windows10.0.22621.0</TargetFrameworks>-->
@@ -36,13 +36,24 @@
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 
 		<!-- Uncomment to also build the ios app -->
-		<!--<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>-->
+		<!-- <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion> -->
 		<!-- Uncomment to also build the android app -->
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
+		<!-- <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion> -->
 		<!--<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>-->
+	</PropertyGroup>
+	
+	<!-- Debug: simulador -->
+	<PropertyGroup Condition="'$(Configuration)'=='Debug' and '$(TargetFramework)'=='net9.0-ios'">
+		<RuntimeIdentifier>iossimulator-arm64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<!-- Release: dispositivo -->
+	<PropertyGroup Condition="'$(Configuration)'=='Release' and '$(TargetFramework)'=='net9.0-ios'">
+		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -60,7 +71,7 @@
 		<AssemblyName>fonoteca</AssemblyName>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
 	  <NoWarn>1701;1702;XC0022</NoWarn>
 	  <MtouchUseLlvm>True</MtouchUseLlvm>
 	</PropertyGroup>
@@ -83,7 +94,7 @@
 	  <NoWarn>1701;1702;XC0022</NoWarn>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
 	  <NoWarn>1701;1702;XC0022</NoWarn>
 	</PropertyGroup>
 
@@ -104,7 +115,7 @@
 	  <NoWarn>1701;1702;XC0022</NoWarn>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-ios'">
 		<CodesignEntitlements>Platforms/iOS/Entitlements.plist</CodesignEntitlements>
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>iPhone Distribution</CodesignKey>
@@ -112,22 +123,10 @@
 	</PropertyGroup>
 
 	<!--https://github.com/xamarin/GoogleApisForiOSComponents/issues/643#issuecomment-1920970044-->
-	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<_ExportSymbolsExplicitly>false</_ExportSymbolsExplicitly>
+	<PropertyGroup>
+		<MauiCompileBindings>true</MauiCompileBindings>
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 	</PropertyGroup>
-	
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
-		<PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="11.8.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.Auth" Version="11.8.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="11.8.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.Core" Version="11.8.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="11.8.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.DynamicLinks" Version="11.8.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="11.8.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.CloudFunctions" Version="11.8.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="11.8.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.Storage" Version="11.8.0" />
-	</ItemGroup>
 	
 	<ItemGroup>
 		<!-- App Icon -->
@@ -154,10 +153,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.301.43" />
-		<PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="3.1.1" />
+		<PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="6.1.2" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.100" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Mopups" Version="1.3.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -167,12 +166,9 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android35.0'">
 		<PackageReference Include="Plugin.Firebase" Version="3.1.3" />
 		<PackageReference Include="Plugin.Firebase.Crashlytics" Version="3.1.1" />
-		<PackageReference Include="Xamarin.AndroidX.Preference">
-			<Version>1.2.1.8</Version>
-		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-ios'">
 		<PackageReference Include="Plugin.Firebase" Version="3.1.3" />
 		<PackageReference Include="Plugin.Firebase.Crashlytics" Version="3.1.1" />
 	</ItemGroup>

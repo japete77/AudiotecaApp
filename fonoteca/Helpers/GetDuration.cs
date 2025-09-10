@@ -3,6 +3,7 @@ using System.Globalization;
 
 namespace fonoteca.Helpers
 {
+    [AcceptEmptyServiceProvider]
     public class GetDuration : IValueConverter, IMarkupExtension
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

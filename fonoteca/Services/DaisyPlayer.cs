@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Core.Primitives;
+﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using fonoteca.Models.Player;
 using Newtonsoft.Json;

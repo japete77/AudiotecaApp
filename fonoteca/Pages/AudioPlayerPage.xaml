@@ -14,6 +14,8 @@
             <StackLayout>
                 <toolkit:MediaElement 
                     x:Name="MediaElement"
+                    MetadataTitle="{Binding Title}"
+                    MetadataArtist="{Binding Chapter}"
                     ShouldShowPlaybackControls="True"
                 />
             </StackLayout>

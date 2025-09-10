@@ -4,8 +4,6 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fonoteca", "fonoteca\fonoteca.csproj", "{6B8E9807-A0E3-423B-A1D6-D128C1FB34AE}"
 EndProject
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "fonotecaPackageWindows", "fonotecaPackageWindows\fonotecaPackageWindows.wapproj", "{5C04989B-1012-4C41-9A04-AB9183421E7A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

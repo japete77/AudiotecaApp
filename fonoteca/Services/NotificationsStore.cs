@@ -94,9 +94,11 @@ namespace fonoteca.Services
                     $"Tienes {unreadNotificationsCount} notificaciones sin leer" :
                     $"Tienes {unreadNotificationsCount} notificación sin leer";
 
-                MainThread.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    App.Current.MainPage.DisplayAlert("Aviso", msg, "Ok");
+                    var current = Shell.Current?.CurrentPage;
+                    if (current is not null)
+                        await current.DisplayAlert("Aviso", msg, "Ok");
                 });
             }
         }

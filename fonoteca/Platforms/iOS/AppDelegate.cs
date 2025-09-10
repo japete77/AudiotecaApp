@@ -1,4 +1,5 @@
-﻿using Firebase.CloudMessaging;
+﻿using AVFoundation;
+using Firebase.CloudMessaging;
 using Foundation;
 using UIKit;
 
@@ -23,6 +24,14 @@ namespace fonoteca
         public void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
         {
             System.Diagnostics.Debug.WriteLine("Error al registrar notificaciones remotas: " + error.LocalizedDescription);
+        }
+
+        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        {
+            var session = AVAudioSession.SharedInstance();
+            session.SetCategory(AVAudioSessionCategory.Playback); // permite background + Control Center
+            session.SetActive(true, out _);
+            return base.FinishedLaunching(app, options);
         }
     }
 }
