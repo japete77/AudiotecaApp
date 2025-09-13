@@ -9,40 +9,40 @@ namespace fonoteca.Services
     /// </summary>
     public static class OfflineChecker
     {
-        // Inicialización diferida para realizar la comprobación solo una vez y almacenar el resultado.
-        private static readonly Lazy<bool> lazyIsConnected = new Lazy<bool>(() =>
-        {
-            try
-            {
-                // URL fija de la web de Nueva Luz.
-                string fullUrl = "https://www.nuevaluz.org";
+        // Cachea la primera comprobación; si queréis refrescar, exponed un método Reset().
+        private static readonly Lazy<Task<bool>> lazyIsConnected =
+            new(() => ProbeAsync(), LazyThreadSafetyMode.ExecutionAndPublication);
 
-                using (HttpClient client = new HttpClient())
-                {
-                    // Configurar el timeout a 3 segundos.
-                    client.Timeout = TimeSpan.FromSeconds(5);
+        /// <summary>Resultado cacheado de la primera comprobación.</summary>
+        public static Task<bool> IsConnectedAsync => lazyIsConnected.Value;
 
-                    // Realizar la solicitud GET de forma sincrónica.
-                    HttpResponseMessage response = client.GetAsync(fullUrl).GetAwaiter().GetResult();
-
-                    // Retornar true si el código de estado indica éxito.
-                    return response.IsSuccessStatusCode;
-                }
-            }
-            catch (Exception)
-            {
-                // Si ocurre alguna excepción, asumimos que no hay conexión a internet.
-                return false;
-            }
-        });
+        /// <summary>Comprobación rápida sin HTTP.</summary>
+        public static bool HasInternetAccessFlag =>
+            Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
 
         /// <summary>
-        /// Indica si hay conexión a internet.
-        /// La comprobación se realiza una sola vez en el primer acceso y el resultado se almacena en caché.
+        /// Sonda real a Internet (HEAD a un 204) con timeout corto.
+        /// Solo se llama la primera vez por el Lazy, y solo si el flag dice que hay Internet.
         /// </summary>
-        public static bool IsConnected
+        private static async Task<bool> ProbeAsync()
         {
-            get { return lazyIsConnected.Value; }
+            if (!HasInternetAccessFlag)
+                return false;
+
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+                using var client = new HttpClient();
+                using var req = new HttpRequestMessage(HttpMethod.Head, "https://connectivitycheck.gstatic.com/generate_204");
+                var resp = await client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cts.Token)
+                                       .ConfigureAwait(false);
+                // 204/200 etc. => consideramos “online”
+                return (int)resp.StatusCode < 500;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

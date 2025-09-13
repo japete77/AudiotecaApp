@@ -9,6 +9,7 @@ namespace fonoteca.Services
     {
         // Singleton implementation
         private static DaisyPlayer _instance;
+        public static PlayerMetadata Metadata { get; } = new();
 
         public static DaisyPlayer Instance
         {
@@ -36,28 +37,43 @@ namespace fonoteca.Services
 
         private PlayerInfo _playerInfo;
         private DaisyBook _book;
-        private readonly System.Timers.Timer _timer;
+        private System.Timers.Timer _timer;
         private bool _seekToCurrentTC = false;
         private bool _fileChanged = false;
 
         private const string PLAYER_STATUS_FILE = "status.json";
 
         public static MediaElement _player;
+        private bool _initialized;
 
-        public DaisyPlayer()
+        // Constructor sin tocar _player (puede ser null aquí)
+        public DaisyPlayer() { }
+
+        // ==> NUEVO: adjunta el MediaElement y arma handlers (idempotente)
+        public void Attach(MediaElement player)
         {
+            if (_initialized) return;
+
+            _player = player;
             _player.Speed = (float)Session.Instance.GetSpeed();
 
-            _timer = new System.Timers.Timer(500)
-            {
-                AutoReset = false
-            };
+            _timer = new System.Timers.Timer(500) { AutoReset = false };
             _timer.Elapsed += PlayCurrentFile;
 
             _player.PositionChanged += Current_PositionChanged;
             _player.StateChanged += Current_StateChanged;
             _player.MediaEnded += Current_MediaItemFinished;
             _player.MediaOpened += Current_MediaOpened;
+
+            _initialized = true;
+        }
+
+        // Centralize metadata update and event
+        private void SetChapter(string title, string chapter)
+        {
+            Metadata.Title = title;
+            Metadata.Chapter = chapter;
+            ChapterUpdate?.Invoke(title, chapter);
         }
 
         private void PlayCurrentFile(object sender, System.Timers.ElapsedEventArgs e)
@@ -160,7 +176,7 @@ namespace fonoteca.Services
 
             LoadStatus();
 
-            ChapterUpdate?.Invoke(_book.Title, _book.Sequence[0].Title);
+            SetChapter(_book.Title, _book.Sequence[0].Title);
 
             PlayCurrentFile();
 
@@ -190,7 +206,7 @@ namespace fonoteca.Services
                 _playerInfo.Position.CurrentTC = 0;
                 _playerInfo.Position.CurrentTitle = _book.Sequence[newIndex].Title;
 
-                ChapterUpdate?.Invoke(_book.Title, _playerInfo.Position.CurrentTitle);
+                SetChapter(_book.Title, _playerInfo.Position.CurrentTitle);
 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
@@ -294,7 +310,7 @@ namespace fonoteca.Services
                 _playerInfo.Position.CurrentTC = _book.Sequence[index].TCIn;
                 _playerInfo.Position.CurrentTitle = _book.Sequence[index].Title;
 
-                ChapterUpdate?.Invoke(_book.Title, _playerInfo.Position.CurrentTitle);
+                SetChapter(_book.Title, _playerInfo.Position.CurrentTitle);
                 TimeCodeUpdate?.Invoke(
                     new TimeSpan()
                         .Add(TimeSpan.FromSeconds(_playerInfo.Position.CurrentSOM))

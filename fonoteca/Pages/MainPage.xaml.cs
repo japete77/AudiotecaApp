@@ -6,42 +6,60 @@ namespace fonoteca.Pages
 {
     public partial class MainPage : ContentPage
     {
+        private readonly MainPageViewModel _vm;
+
         public MainPage(MainPageViewModel vm)
         {
             InitializeComponent();
-            vm.VersionInfo = AppSettings.Instance.VersionInfo;
-            vm.OnlineMode = OfflineChecker.IsConnected;
-            BindingContext = vm;
 
-            // Setup data dir if not set
-            //var currentDataDir = Session.Instance.GetDataDir();
-            //if (string.IsNullOrEmpty(currentDataDir) || DeviceInfo.Platform == DevicePlatform.iOS)
+            //if (DaisyPlayer._player == null)
             //{
-            //    Session.Instance.SetDataDir(AudioBookDataDir.StorageDirs.First().AbsolutePath);
-            //    Session.Instance.SaveSession();
+            //    DaisyPlayer._player = MediaElement;
             //}
+            //else
+            //{
+            //    MediaElement = DaisyPlayer._player;
+            //}
+
+            _vm = vm;
+            _vm.VersionInfo = AppSettings.Instance.VersionInfo;
+            BindingContext = _vm;
+
+            // No bloquear aquí. Esperad a que la vista cargue.
+            this.Loaded += async (_, __) =>
+            {
+                // Paso 1: flag rápido
+                _vm.OnlineMode = OfflineChecker.HasInternetAccessFlag;
+
+                // Paso 2: confirmación asíncrona (no bloquea UI)
+                try
+                {
+                    _vm.OnlineMode = await OfflineChecker.IsConnectedAsync;
+                }
+                catch
+                {
+                    _vm.OnlineMode = false;
+                }
+            };
+
+            // Reaccionar a cambios de conectividad
+            Connectivity.ConnectivityChanged += (_, e) =>
+            {
+                _vm.OnlineMode = e.NetworkAccess == NetworkAccess.Internet;
+            };
+
+            DaisyPlayer.Instance.Attach(MediaElement);
         }
 
+        // Evitad cerrar la app en iOS
         protected override bool OnBackButtonPressed()
         {
-            // Logic to close the app
-            if (DeviceInfo.Platform == DevicePlatform.Android)
-            {
-                // For Android
-                System.Environment.Exit(0);
-            }
-            else if (DeviceInfo.Platform == DevicePlatform.iOS)
-            {
-                // For iOS
-                // iOS does not allow programmatic closing of apps
-                // Optionally, you can navigate to the first page or pop to root
-                Application.Current.Quit();
-            }
-
-            // Returning true indicates that you've handled the back button press
-            // and prevent the default behavior (navigating back).
+#if ANDROID
+            System.Environment.Exit(0);
+#else
+            // En iOS no se debe cerrar programáticamente
+#endif
             return true;
         }
     }
-
 }

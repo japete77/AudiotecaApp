@@ -16,15 +16,6 @@ public partial class AudioPlayerPage : ContentPage
         _vm._page = this;
         BindingContext = vm;
 
-        if (DaisyPlayer._player == null)
-        {
-            DaisyPlayer._player = MediaElement;
-        }
-        else
-        {
-            MediaElement = DaisyPlayer._player;
-        }
-
         DaisyPlayer.Instance.TimeCodeUpdate += vm.Instance_TimeCodeUpdate;
         DaisyPlayer.Instance.StatusUpdate += vm.Instance_StatusUpdate;
         DaisyPlayer.Instance.ChapterUpdate += vm.Instance_ChapterUpdate;

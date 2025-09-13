@@ -26,7 +26,7 @@ public partial class LoginPage : ContentPage
     {
         base.OnAppearing();
 
-        if (!OfflineChecker.IsConnected)
+        if (!OfflineChecker.HasInternetAccessFlag)
         {
             await Shell.Current.GoToAsync(nameof(MainPage));
             return;

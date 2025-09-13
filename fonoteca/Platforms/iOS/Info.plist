@@ -29,7 +29,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.10</string>
+	<string>2.0.11</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.nuevaluz.fonoteca</string>
 	<key>UIBackgroundModes</key>

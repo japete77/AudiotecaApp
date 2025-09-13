@@ -2,10 +2,21 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:fonoteca.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:svc="clr-namespace:fonoteca.Services"
              x:DataType="viewmodel:MainPageViewModel"
              x:Class="fonoteca.Pages.MainPage"
              Shell.NavBarIsVisible="False">
     <StackLayout Padding="20, 10">
+        <StackLayout>
+            <toolkit:MediaElement 
+                x:Name="MediaElement"
+                x:DataType="svc:PlayerMetadata"
+                BindingContext="{x:Static Member=svc:DaisyPlayer.Metadata}"
+                MetadataTitle="{Binding Title}"
+                MetadataArtist="{Binding Chapter}"
+                ShouldShowPlaybackControls="True"/>
+        </StackLayout>
         <Button
             AutomationProperties.IsInAccessibleTree="true"
             SemanticProperties.HeadingLevel="Level1"

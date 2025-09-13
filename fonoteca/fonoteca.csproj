@@ -2,10 +2,10 @@
 
 	<PropertyGroup>
 		<!-- Uncomment to also build the ios app -->
-		<targetframeworks>net9.0-ios</targetframeworks>
+		<!-- <targetframeworks>net9.0-ios</targetframeworks> -->
 		
 		<!-- Uncomment to also build the android app -->
-		<!-- <TargetFrameworks>net9.0-android35.0</TargetFrameworks> -->
+		<TargetFrameworks>net9.0-android35.0</TargetFrameworks>
 
 		<!-- Uncomment to also build the windows app -->
 		<!--<TargetFrameworks>net8.0-windows10.0.22621.0</TargetFrameworks>-->
@@ -36,12 +36,11 @@
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 
 		<!-- Uncomment to also build the ios app -->
-		<!-- <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion> -->
+		<!-- <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion> -->
 		<!-- Uncomment to also build the android app -->
-		<!-- <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion> -->
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
 		<!--<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>-->
 	</PropertyGroup>
@@ -86,8 +85,8 @@
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
 	  <AndroidPackageFormat>aab</AndroidPackageFormat>
 	  <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
-	  <ApplicationDisplayVersion>2.0.5</ApplicationDisplayVersion>
-	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.0.11</ApplicationDisplayVersion>
+	  <ApplicationVersion>11</ApplicationVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
@@ -107,8 +106,8 @@
 	  <AndroidPackageFormat>aab</AndroidPackageFormat>
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
-	  <ApplicationDisplayVersion>2.0.5</ApplicationDisplayVersion>
-	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.0.11</ApplicationDisplayVersion>
+	  <ApplicationVersion>11</ApplicationVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
