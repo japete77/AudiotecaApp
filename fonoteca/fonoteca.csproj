@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<!-- Uncomment to also build the ios app -->
 		<!-- <targetframeworks>net9.0-ios</targetframeworks> -->
@@ -44,7 +43,11 @@
 		<!--<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>-->
 	</PropertyGroup>
-	
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-android35.0'">
+		<RuntimeIdentifiers>android-arm;android-arm64</RuntimeIdentifiers>
+	</PropertyGroup>
+
 	<!-- Debug: simulador -->
 	<PropertyGroup Condition="'$(Configuration)'=='Debug' and '$(TargetFramework)'=='net9.0-ios'">
 		<RuntimeIdentifier>iossimulator-arm64</RuntimeIdentifier>
@@ -85,8 +88,8 @@
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
 	  <AndroidPackageFormat>aab</AndroidPackageFormat>
 	  <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
-	  <ApplicationDisplayVersion>2.0.11</ApplicationDisplayVersion>
-	  <ApplicationVersion>11</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.0.12</ApplicationDisplayVersion>
+	  <ApplicationVersion>12</ApplicationVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
@@ -106,8 +109,8 @@
 	  <AndroidPackageFormat>aab</AndroidPackageFormat>
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
-	  <ApplicationDisplayVersion>2.0.11</ApplicationDisplayVersion>
-	  <ApplicationVersion>11</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.0.12</ApplicationDisplayVersion>
+	  <ApplicationVersion>12</ApplicationVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
